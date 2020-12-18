@@ -1,0 +1,44 @@
+{
+    "name": "strat-ratings-guide",
+    "version": "1.0.0",
+    "description": "Converts Strat-O-Matic Baseball Ratings Guide to wOPS for hitters and pitchers",
+    "main": "index.js",
+    "scripts": {
+        "start": "node server.js",
+        "dev": "concurrently --kill-others-on-fail \"npm run server\" \"cd client && npm run start\"",
+        "server": "nodemon server.js",
+        "build": "cd client && npm install && npm run build",
+        "test": "mocha --exit"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/mike14747/strat-ratings-guide.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/mike14747/strat-ratings-guide/issues"
+    },
+    "homepage": "https://github.com/mike14747/strat-ratings-guide#readme",
+    "devDependencies": {
+        "chai": "^4.2.0",
+        "chai-http": "^4.3.0",
+        "concurrently": "^5.3.0",
+        "eslint": "^7.15.0",
+        "eslint-config-standard": "^16.0.2",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-promise": "^4.2.1",
+        "eslint-plugin-react": "^7.21.5",
+        "eslint-plugin-react-hooks": "^4.2.0",
+        "mocha": "^8.2.1",
+        "nodemon": "^2.0.6"
+    },
+    "dependencies": {
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "joi": "^17.3.0",
+        "mysql2": "^2.2.5"
+    }
+}
