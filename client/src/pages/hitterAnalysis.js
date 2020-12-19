@@ -48,11 +48,13 @@ function HitterAnalysis() {
             </div>
             {hitterData && hitterData.length > 0 &&
                 <table className="tables small m-4">
-                    <tr>
-                        {thLabels.map((th, index) => (
-                            <th key={index} className="text-center p-1 bg-th">{th}</th>
-                        ))}
-                    </tr>
+                    <thead>
+                        <tr>
+                            {thLabels.map((th, index) => (
+                                <th key={index} className="text-center p-1 bg-th">{th}</th>
+                            ))}
+                        </tr>
+                    </thead>
                     <tbody>
                         {hitterData.map((h, i) => (
                             <tr key={i}>
@@ -69,7 +71,7 @@ function HitterAnalysis() {
                                 <td className="text-center p-1"></td>
                                 <td className="text-center p-1"></td>
                                 <td className="text-center p-1"></td>
-                                <td className="text-center p-1"></td>
+                                <td className="text-center p-1">{h.dp_v_l}</td>
                                 <td className="text-center p-1"></td>
                                 <td className="text-center p-1">{h.so_v_r}</td>
                                 <td className="text-center p-1">{h.bb_v_r}</td>
@@ -78,7 +80,7 @@ function HitterAnalysis() {
                                 <td className="text-center p-1"></td>
                                 <td className="text-center p-1"></td>
                                 <td className="text-center p-1"></td>
-                                <td className="text-center p-1"></td>
+                                <td className="text-center p-1">{h.dp_v_r}</td>
                                 <td className="text-center p-1"></td>
                                 <td className="text-left p-1">{h.stealing}</td>
                                 <td className="text-center p-1">{h.spd}</td>

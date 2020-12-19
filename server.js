@@ -5,6 +5,9 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
+const fileUpload = require('express-fileupload');
+app.use(fileUpload());
+
 app.use(express.urlencoded({ limit: '20mb', parameterLimit: 100000, extended: true }));
 app.use(express.json({ limit: '20mb' }));
 
