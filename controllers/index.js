@@ -4,6 +4,8 @@ router.get('/', (req, res) => {
     res.status(200).send('Sending this from the /api root!');
 });
 
+router.use('/hitters', require('./hittersController'));
+
 router.use((req, res, next) => {
     const error = new Error('API route not found!');
     error.status = 404;
