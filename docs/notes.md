@@ -12,19 +12,22 @@
     -   Set the row height for all rows to _18.00_.
     -   Remove all hitters and pitchers that don't have a blank **Location** cell (there will be many that have M or X).
     -   Remove all uncarded players. This will be easy to do for hitters (100+ AB)... harder for pitchers.
-    -   
 
 Modifying the columns in _Hitters.xls_ and _Pitchers.xls_ files:
 
 -   Insert a _Year_ column to the begining of each file (the MLB year).
--   Add an _rml\_team\_id_ column to the end of each file.
--   Rename the _Location_ column to _real\_team\_id_, then populate the column accordingly.
--   Change the _TM_ column to reflect my preferred team abbreviations (eg: ARIZ instead of ARN).
+-   Add an _rml_team_id_ column to the end of each file.
+-   **Notes:**
+    -   It's no longer necessary to rename the _Location_ column to _real_team_id_, since that is now calculated by the app when uploading data.
+    -   It's also no longer necessary to change the _TM_ column to reflect my preferred team abbreviations (eg: ARIZ instead of ARN) since that is now converted by the app when uploading data.
+-   It's important that the _Hitters.xls_ and _hitter_ratings.csv_ files use these exact column names (with no spaces and none of them beginning with a number) because of the csv parser that's being used:
+    -   Year, TM, Location, HITTERS, INJ, AB, SO_v_lhp, BB_v_lhp, HIT_v_lhp, OB_v_lhp, TB_v_lhp, HR_v_lhp, BP_v_lhp, CL_v_lhp, DP_v_lhp, SO_v_rhp, BB_v_rhp, HIT_v_rhp, OB_v_rhp, TB_v_rhp, HR_v_rhp, BP_v_rhp, CL_v_rhp, DP_v_rhp, STEALING, STL, SPD, B, H, d_CA, d_1B, d_2B, d_3B, d_SS, d_LF, d_CF, d_RF, FIELDING, rml_team_id
+
 
 Uploading the data into the database.
 
 -   The files that need to be uploaded are _hitter_ratings.csv_ and _pitcher_ratings.csv_.
--   _hitter\_ratings.csv_ must have the proper columns (ie: Year as the first column, INJ after HITTERS and RML Team at the end).
+-   _hitter_ratings.csv_ must have the proper columns (ie: Year as the first column, INJ after HITTERS and rml_team_id at the end).
 
 **Important:** When uploading hitter and pitcher data (_hitter_ratings.csv_ and _pitcher_ratings.csv_):
 
