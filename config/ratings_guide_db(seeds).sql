@@ -229,7 +229,7 @@ INSERT INTO `bp_ratings` (`bp_rating_id`, `bp_year`, `real_team_id`, `real_team_
 TRUNCATE TABLE `real_teams`;
 
 INSERT INTO `real_teams` (`real_team_id`, `real_team_city`, `real_team_name`, `real_team_abbrev`, `strat_abbrev`, `real_team_league`) VALUES
-(1, '', 'Total', 'TOT', '', ''),
+(1, '', 'Total', 'TOT', 'TOT', ''),
 (2, 'Arizona', 'Diamondbacks', 'ARIZ', 'ARN', 'NL'),
 (3, 'Atlanta', 'Braves', 'ATL', 'ATN', 'NL'),
 (4, 'Baltimore', 'Orioles', 'BAL', 'BAA', 'AL'),

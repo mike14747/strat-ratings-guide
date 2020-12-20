@@ -13,7 +13,6 @@ function HitterAnalysis() {
     const handleSelectedSeason = season => setSeason(season);
 
     const thLabels = ['Year', 'Team', 'Hitter', 'Bats', 'INJ', 'AB', 'SO v L', 'BB v L', 'Hit v L', 'OB v L', 'TB v L', 'HR v L', 'BP v L', 'DP v L', 'wOPS v L', 'SO v R', 'BB v R', 'Hit  v R', 'OB v R', 'TB v R', 'HR v R', 'BP v R', 'DP v R', 'wOPS v R', 'Stealing', 'Speed', 'Bunt', 'H&R', 'CA', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'Fielding', 'RML Team'];
-    // const tdFields = ['h_year', 'real_team', 'hitter_name', 'bats', 'injury', 'ab', 'so_v_l', 'bb_v_l'];
 
     useEffect(() => {
         axios.get('/api/hitters/season-list')

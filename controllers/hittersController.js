@@ -29,17 +29,18 @@ router.post('/', async (req, res, next) => {
 
     const file = req.files.file;
 
-    const saveFile = async () => {
-        await file.mv(path.join(__dirname, '/uploads/hitter_ratings.csv'), error => {
-            if (error) {
-                return next(error);
-            }
-        });
-        await readHittersFile();
-        res.status(201).json({ message: 'Successfully added the new data to the database!' });
-    };
+    const [, error] = await Hitters.truncateHittersTable();
+    if (error) {
+        return res.status(500).json({ message: 'Could not truncate the hitters table in the database!' });
+    }
 
-    saveFile();
+    file.mv(path.join(__dirname, '/uploads/hitter_ratings.csv'), error => {
+        if (error) {
+            return next(error);
+        }
+    });
+    readHittersFile();
+    res.status(201).json({ message: 'Successfully added the new data to the database!' });
 });
 
 module.exports = router;
