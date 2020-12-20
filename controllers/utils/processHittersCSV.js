@@ -15,19 +15,51 @@ const getRealTeamId = async (name) => {
     }
 };
 
+const convertPositionlFielding = (rating) => {
+    return rating !== '' ? `${rating.charAt(0)}e${parseInt(rating.slice(1, 3))}` : '';
+};
+
+const convertNameToNameAndBats = (name) => {
+    return {
+        hitterName: name.slice(-1) === '*'
+            ? name.slice(0, -1)
+            : name.slice(-1) === '+'
+                ? name.slice(0, -1)
+                : name,
+        bats: name.slice(-1) === '*'
+            ? 'L'
+            : name.slice(-1) === '+'
+                ? 'S'
+                : 'R',
+    };
+};
+
+const convertBpToBpWAndBpSi = (bp) => {
+    return {
+        bp: isNaN(bp.charAt[0])
+            ? 0
+            : bp.charAt[0],
+        w: bp.charAt[0] === 'w'
+            ? 'w'
+            : '',
+        bpsi: bp.slice(-1) === '*'
+            ? 0
+            : 2,
+    };
+};
+
 const processInsertData = async (row) => {
-    // console.log(row);
-
     const { realTeam, realTeamId } = await getRealTeamId(row.TM);
-
-    // h_year, real_team, real_team_id, hitter_name, bats, injury, ab, so_v_l, bb_v_l, hit_v_l, ob_v_l, tb_v_l, hr_v_l, bp_hr_v_l, w_v_l, bp_si_v_l, cl_v_l, dp_v_l, so_v_r, bb_v_r, hit_v_r, ob_v_r, tb_v_r, hr_v_r, bp_hr_v_r, w_v_r, bp_si_v_r, cl_v_r, dp_v_r, stealing, stl, spd, bunt, h_r, d_ca, d_1b, d_2b, d_3b, d_ss, d_lf, d_cf, d_rf, fielding, rml_team_id
+    const { hitterName, bats } = convertNameToNameAndBats(row.HITTERS);
+    const { bp: bpVsL, w: wVsL, bpsi: bpSiVsL } = convertBpToBpWAndBpSi(row.BP_v_lhp);
+    const { bp: bpVsR, w: wVsR, bpsi: bpSiVsR } = convertBpToBpWAndBpSi(row.BP_v_rhp);
 
     const modifiedObj = {
         year: parseInt(row.Year),
         realTeam,
         realTeamId,
-        hitter: row.HITTERS.slice(-1) === '*' ? row.HITTERS.slice(0, -1) : row.HITTERS.slice(-1) === '+' ? row.HITTERS.slice(0, -1) : row.HITTERS,
-        bats: row.HITTERS.slice(-1) === '*' ? 'L' : row.HITTERS.slice(-1) === '+' ? 'S' : 'R',
+        hitterName,
+        bats,
         inj: row.INJ,
         ab: parseInt(row.AB),
         soVsL: parseInt(row.SO_v_lhp),
@@ -36,9 +68,9 @@ const processInsertData = async (row) => {
         obVsL: Number(row.OB_v_lhp),
         tbVsL: Number(row.TB_v_lhp),
         hrVsL: Number(row.HR_v_lhp),
-        bpVsL: isNaN(row.BP_v_lhp.charAt[0]) ? 0 : row.BP_v_lhp.charAt[0],
-        wVsL: row.BP_v_lhp.charAt[0] === 'w' ? 'w' : '',
-        bpSiVsL: row.BP_v_lhp.slice(-1) === '*' ? 0 : 2,
+        bpVsL,
+        wVsL,
+        bpSiVsL,
         clVsL: parseInt(row.CL_v_lhp),
         dpVsL: parseInt(row.DP_v_lhp),
         soVsR: parseInt(row.SO_v_rhp),
@@ -47,9 +79,9 @@ const processInsertData = async (row) => {
         obVsR: Number(row.OB_v_rhp),
         tbVsR: Number(row.TB_v_rhp),
         hrVsR: Number(row.HR_v_rhp),
-        bpVsR: isNaN(row.BP_v_rhp.charAt[0]) ? 0 : row.BP_v_rhp.charAt[0],
-        wVsR: row.BP_v_rhp.charAt[0] === 'w' ? 'w' : '',
-        bpSiVsR: row.BP_v_rhp.slice(-1) === '*' ? 0 : 2,
+        bpVsR,
+        wVsR,
+        bpSiVsR,
         clVsR: parseInt(row.CL_v_rhp),
         dpVsR: parseInt(row.DP_v_rhp),
         stealing: row.STEALING,
@@ -57,25 +89,23 @@ const processInsertData = async (row) => {
         spd: parseInt(row.SPD),
         bunt: row.B,
         hitRun: row.H,
-        dCA: row.d_CA !== '' ? `${row.d_CA.charAt(0)}e${parseInt(row.d_CA.slice(1, 3))}` : '',
-        d1B: row.d_1B !== '' ? `${row.d_1B.charAt(0)}e${parseInt(row.d_1B.slice(1, 3))}` : '',
-        d2B: row.d_2B !== '' ? `${row.d_2B.charAt(0)}e${parseInt(row.d_2B.slice(1, 3))}` : '',
-        d3B: row.d_3B !== '' ? `${row.d_3B.charAt(0)}e${parseInt(row.d_3B.slice(1, 3))}` : '',
-        dSS: row.d_SS !== '' ? `${row.d_SS.charAt(0)}e${parseInt(row.d_SS.slice(1, 3))}` : '',
-        dLF: row.d_LF !== '' ? `${row.d_LF.charAt(0)}e${parseInt(row.d_LF.slice(1, 3))}` : '',
-        dCF: row.d_CF !== '' ? `${row.d_CF.charAt(0)}e${parseInt(row.d_CF.slice(1, 3))}` : '',
-        dRF: row.d_RF !== '' ? `${row.d_RF.charAt(0)}e${parseInt(row.d_RF.slice(1, 3))}` : '',
+        dCA: convertPositionlFielding(row.d_CA),
+        d1B: convertPositionlFielding(row.d_1B),
+        d2B: convertPositionlFielding(row.d_2B),
+        d3B: convertPositionlFielding(row.d_3B),
+        dSS: convertPositionlFielding(row.d_SS),
+        dLF: convertPositionlFielding(row.d_LF),
+        dCF: convertPositionlFielding(row.d_CF),
+        dRF: convertPositionlFielding(row.d_RF),
         fielding: row.FIELDING,
         rmlTeamId: row.rml_team_id !== '' ? parseInt(row.rml_team_id) : '',
     };
-
-    // console.log(modifiedObj);
 
     const [, error] = await Hitters.addNewHittersRow(modifiedObj);
     if (error) console.log(error);
 };
 
-const readHittersFile = () => {
+const readHittersFile = async () => {
     return new Promise((resolve, reject) => {
         fs.createReadStream(path.join(__dirname, '../uploads/hitter_ratings.csv'))
             .pipe(
@@ -94,6 +124,12 @@ const readHittersFile = () => {
                 reject(error);
             })
             .on('end', async function () {
+                const fs = require('fs').promises;
+                try {
+                    await fs.unlink(path.join(__dirname, '../uploads/hitter_ratings.csv'));
+                } catch (error) {
+                    console.log(error);
+                }
                 resolve();
             });
     });

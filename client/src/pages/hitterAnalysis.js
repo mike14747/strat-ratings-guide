@@ -85,14 +85,14 @@ function HitterAnalysis() {
                                 <td className="text-center p-1">{h.spd}</td>
                                 <td className="text-center p-1">{h.bunt}</td>
                                 <td className="text-center p-1">{h.h_r}</td>
-                                <td className="text-center p-1"></td>
-                                <td className="text-center p-1"></td>
-                                <td className="text-center p-1"></td>
-                                <td className="text-center p-1"></td>
-                                <td className="text-center p-1"></td>
-                                <td className="text-center p-1"></td>
-                                <td className="text-center p-1"></td>
-                                <td className="text-center p-1"></td>
+                                <td className="text-center p-1">{h.d_ca}</td>
+                                <td className="text-center p-1">{h.d_1b}</td>
+                                <td className="text-center p-1">{h.d_2b}</td>
+                                <td className="text-center p-1">{h.d_3b}</td>
+                                <td className="text-center p-1">{h.d_ss}</td>
+                                <td className="text-center p-1">{h.d_lf}</td>
+                                <td className="text-center p-1">{h.d_cf}</td>
+                                <td className="text-center p-1">{h.d_rf}</td>
                                 <td className="text-left p-1">{h.fielding}</td>
                                 <td className="text-left p-1">{h.rml_team_name}</td>
                             </tr>

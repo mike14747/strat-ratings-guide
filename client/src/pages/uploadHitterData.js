@@ -23,16 +23,11 @@ function UploadHitterData() {
                 })
                     .then(response => setMessage(response.data.message))
                     .catch(error => setMessage(error.message));
-                // setMessage('File was sent!');
             } else {
                 setMessage('The only uploaded file allowed is: "hitter_ratings.csv".');
             }
         }
     };
-
-    // let formData = new FormData();
-
-    // formData.append('file', file);
 
     return (
         <div className="m-4">
