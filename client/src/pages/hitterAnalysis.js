@@ -65,26 +65,22 @@ function HitterAnalysis() {
                                 <td className="text-center p-1">{h.ab}</td>
                                 <td className="text-center p-1">{h.so_v_l}</td>
                                 <td className="text-center p-1">{h.bb_v_l}</td>
-                                {/* Hit v L, OB v L, TB v L, HR v L, BP v L */}
-                                <td className="text-center p-1"></td>
-                                <td className="text-center p-1"></td>
-                                <td className="text-center p-1"></td>
-                                <td className="text-center p-1"></td>
+                                <td className="text-center p-1">{h.hit_v_l}</td>
+                                <td className="text-center p-1">{h.ob_v_l}</td>
+                                <td className="text-center p-1">{h.tb_v_l}</td>
+                                <td className="text-center p-1">{h.hr_v_l}</td>
                                 <td className="text-center p-1">{h.w_v_l}</td>
                                 <td className="text-center p-1">{h.dp_v_l}</td>
-                                {/* wOPS v L */}
-                                <td className="text-center p-1 font-weight-bolder"></td>
+                                <td className="text-center p-1 font-weight-bolder">{h.wops_v_l}</td>
                                 <td className="text-center p-1">{h.so_v_r}</td>
                                 <td className="text-center p-1">{h.bb_v_r}</td>
-                                {/* Hit v R, OB v R, TB v R, HR v R, BP v R */}
-                                <td className="text-center p-1"></td>
-                                <td className="text-center p-1"></td>
-                                <td className="text-center p-1"></td>
-                                <td className="text-center p-1"></td>
+                                <td className="text-center p-1">{h.hit_v_r}</td>
+                                <td className="text-center p-1">{h.ob_v_r}</td>
+                                <td className="text-center p-1">{h.tb_v_r}</td>
+                                <td className="text-center p-1">{h.hr_v_r}</td>
                                 <td className="text-center p-1">{h.w_v_r}</td>
                                 <td className="text-center p-1">{h.dp_v_r}</td>
-                                {/* wOPS v R */}
-                                <td className="text-center p-1 font-weight-bolder"></td>
+                                <td className="text-center p-1 font-weight-bolder">{h.wops_v_r}</td>
                                 <td className="text-left p-1">{h.stealing}</td>
                                 <td className="text-center p-1">{h.spd}</td>
                                 <td className="text-center p-1">{h.bunt}</td>
