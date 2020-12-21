@@ -22,7 +22,6 @@ const ballparkCalculations = (hitter) => {
 
     // ballpark calculations vs Lefty pitchers
     if (hitter.bats === 'L') {
-        // console.log(hitter.st_hr_l);
         bpAdjVsL = ((hitter.st_hr_l / 20) + 0.45) / 2;
         bpSiAdjVsL = 5 * ((hitter.st_si_l + 8) / 40) - 2;
         clAdjVsL = 0.12 * hitter.cl_v_l;
@@ -55,6 +54,7 @@ const ballparkCalculations = (hitter) => {
         bpSiAdjVsR = 0;
         clAdjVsR = 0;
     }
+
     const bpSiVsR = clAdjVsR + bpSiAdjVsR;
     const bpHrVsR = bpAdjVsR * hitter.bp_hr_v_r;
     const bpHitVsR = bpHrVsR + hitter.bp_si_v_r;
@@ -110,7 +110,7 @@ const mainCalculations = (hitter) => {
 };
 
 const calculateHitterValues = (hittersArr) => {
-    const hittersCalculated = hittersArr.map((h, i) => {
+    const hittersCalculated = hittersArr.map(h => {
         const result = mainCalculations(h);
 
         return {
