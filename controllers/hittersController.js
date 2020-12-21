@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Hitters = require('../models/hitters');
-const { readHittersFile } = require('./utils/processHittersCSV');
+const processHittersCSV = require('./utils/processHittersCSV');
+const calculateHitterValues = require('./utils/calculateHitterValues');
 const path = require('path');
 
 router.get('/season-list', async (req, res, next) => {
@@ -15,7 +16,8 @@ router.get('/season-list', async (req, res, next) => {
 router.get('/:year', async (req, res, next) => {
     try {
         const [data, error] = await Hitters.getHittersDataByYear(req.params.year);
-        data ? res.json(data) : next(error);
+        data ? res.json(calculateHitterValues(data)) : next(error);
+        // data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
@@ -38,7 +40,7 @@ router.post('/', async (req, res, next) => {
             return next(error);
         }
     });
-    await readHittersFile();
+    await processHittersCSV();
     res.status(201).json({ message: 'Successfully added the new data to the database!' });
 });
 

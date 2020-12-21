@@ -36,10 +36,10 @@ const convertNameToNameAndBats = (name) => {
 
 const convertBpToBpWAndBpSi = (bp) => {
     return {
-        bp: isNaN(bp.charAt[0])
+        bp: isNaN(bp.charAt(0))
             ? 0
-            : bp.charAt[0],
-        w: bp.charAt[0] === 'w'
+            : bp.charAt(0),
+        w: bp.charAt(0) === 'w'
             ? 'w'
             : '',
         bpsi: bp.slice(-1) === '*'
@@ -51,8 +51,8 @@ const convertBpToBpWAndBpSi = (bp) => {
 const processInsertData = async (row) => {
     const { realTeam, realTeamId } = await getRealTeamId(row.TM);
     const { hitterName, bats } = convertNameToNameAndBats(row.HITTERS);
-    const { bp: bpVsL, w: wVsL, bpsi: bpSiVsL } = convertBpToBpWAndBpSi(row.BP_v_lhp);
-    const { bp: bpVsR, w: wVsR, bpsi: bpSiVsR } = convertBpToBpWAndBpSi(row.BP_v_rhp);
+    const { bp: bpVsL, w: wVsL, bpsi: bpSiVsL } = convertBpToBpWAndBpSi(`${row.BP_v_lhp}`);
+    const { bp: bpVsR, w: wVsR, bpsi: bpSiVsR } = convertBpToBpWAndBpSi(`${row.BP_v_rhp}`);
 
     const modifiedObj = {
         year: parseInt(row.Year),
@@ -63,7 +63,7 @@ const processInsertData = async (row) => {
         inj: row.INJ,
         ab: parseInt(row.AB),
         soVsL: parseInt(row.SO_v_lhp),
-        bbVsL: parseInt(row.BB_v_lhp),
+        bbVsL: parseInt(Number(row.OB_v_lhp) - Number(row.HIT_v_lhp)),
         hitVsL: Number(row.HIT_v_lhp),
         obVsL: Number(row.OB_v_lhp),
         tbVsL: Number(row.TB_v_lhp),
@@ -74,7 +74,7 @@ const processInsertData = async (row) => {
         clVsL: parseInt(row.CL_v_lhp),
         dpVsL: parseInt(row.DP_v_lhp),
         soVsR: parseInt(row.SO_v_rhp),
-        bbVsR: parseInt(row.BB_v_rhp),
+        bbVsR: parseInt(Number(row.OB_v_rhp) - Number(row.HIT_v_rhp)),
         hitVsR: Number(row.HIT_v_rhp),
         obVsR: Number(row.OB_v_rhp),
         tbVsR: Number(row.TB_v_rhp),
@@ -105,7 +105,7 @@ const processInsertData = async (row) => {
     if (error) console.log(error);
 };
 
-const readHittersFile = async () => {
+const processHittersCSV = async () => {
     return new Promise((resolve, reject) => {
         fs.createReadStream(path.join(__dirname, '../uploads/hitter_ratings.csv'))
             .pipe(
@@ -135,6 +135,4 @@ const readHittersFile = async () => {
     });
 };
 
-module.exports = {
-    readHittersFile,
-};
+module.exports = processHittersCSV;
