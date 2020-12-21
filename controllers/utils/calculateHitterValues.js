@@ -16,7 +16,6 @@ const ballparkCalculations = (hitter) => {
     let bpAdjVsL = 0;
     let bpSiAdjVsL = 0;
     let clAdjVsL = 0;
-
     let bpAdjVsR = 0;
     let bpSiAdjVsR = 0;
     let clAdjVsR = 0;
@@ -75,21 +74,38 @@ const ballparkCalculations = (hitter) => {
 
     return {
         hit_v_l: (parseFloat(hitter.hit_v_l) + bpHitVsL + bpSiVsL).toFixed(1),
-        ob_v_l: obVsL,
-        tb_v_l: tbVsL,
+        ob_v_l: obVsL.toFixed(1),
+        tb_v_l: tbVsL.toFixed(1),
         hr_v_l: (parseFloat(hitter.hr_v_l) + bpHrVsL).toFixed(1),
         hit_v_r: (parseFloat(hitter.hit_v_r) + bpHitVsR + bpSiVsR).toFixed(1),
-        ob_v_r: obVsR,
-        tb_v_r: tbVsR,
+        ob_v_r: obVsR.toFixed(1),
+        tb_v_r: tbVsR.toFixed(1),
         hr_v_r: (parseFloat(hitter.hr_v_r) + bpHrVsR).toFixed(1),
         wopsVsL,
         wopsVsR,
     };
 };
 
+const withoutBPCalculations = (hitter) => {
+    return {
+        hit_v_l: `~${(parseFloat(hitter.hit_v_l) + hitter.bp_si_v_l).toFixed(1)}`,
+        ob_v_l: `~${(parseFloat(hitter.ob_v_l) + hitter.bp_si_v_l).toFixed(1)}`,
+        tb_v_l: `~${(parseFloat(hitter.tb_v_l) + hitter.bp_si_v_l).toFixed(1)}`,
+        hr_v_l: `~${(parseFloat(hitter.hr_v_l)).toFixed(1)}`,
+        hit_v_r: `~${(parseFloat(hitter.hit_v_r) + hitter.bp_si_v_r).toFixed(1)}`,
+        ob_v_r: `~${(parseFloat(hitter.ob_v_r) + hitter.bp_si_v_r).toFixed(1)}`,
+        tb_v_r: `~${(parseFloat(hitter.tb_v_r) + hitter.bp_si_v_r).toFixed(1)}`,
+        hr_v_r: `~${(parseFloat(hitter.hr_v_r)).toFixed(1)}`,
+        wopsVsL: '',
+        wopsVsR: '',
+    };
+};
+
 const mainCalculations = (hitter) => {
     if (hitter.real_team_id !== 1) {
         return ballparkCalculations(hitter);
+    } else {
+        return withoutBPCalculations(hitter);
     }
 };
 
@@ -107,8 +123,8 @@ const calculateHitterValues = (hittersArr) => {
             so_v_l: h.so_v_l,
             bb_v_l: h.bb_v_l,
             hit_v_l: result.hit_v_l,
-            ob_v_l: result.ob_v_l.toFixed(1),
-            tb_v_l: result.tb_v_l.toFixed(1),
+            ob_v_l: result.ob_v_l,
+            tb_v_l: result.tb_v_l,
             hr_v_l: result.hr_v_l,
             w_v_l: processWColumn(h.real_team_id, h.bp_hr_v_l, h.w_v_l, h.bp_si_v_l),
             dp_v_l: h.dp_v_l,
@@ -116,8 +132,8 @@ const calculateHitterValues = (hittersArr) => {
             so_v_r: h.so_v_r,
             bb_v_r: h.bb_v_r,
             hit_v_r: result.hit_v_r,
-            ob_v_r: result.ob_v_r.toFixed(1),
-            tb_v_r: result.tb_v_r.toFixed(1),
+            ob_v_r: result.ob_v_r,
+            tb_v_r: result.tb_v_r,
             hr_v_r: result.hr_v_r,
             w_v_r: processWColumn(h.real_team_id, h.bp_hr_v_r, h.w_v_r, h.bp_si_v_r),
             dp_v_r: h.dp_v_r,
