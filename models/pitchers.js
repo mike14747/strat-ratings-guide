@@ -8,7 +8,7 @@ const Pitchers = {
             .then(([rows]) => [rows, null])
             .catch(error => [null, error]);
     },
-    getSeasonsListWithPitchersData: async () => {
+    getSeasonsListWithPitcherData: async () => {
         const queryString = 'SELECT DISTINCT(p_year) FROM pitcher_ratings ORDER BY p_year DESC;';
         const queryParams = [];
         return await pool.query(queryString, queryParams)
@@ -16,7 +16,8 @@ const Pitchers = {
             .catch(error => [null, error]);
     },
     addNewPitchersRow: async (pitcherObj) => {
-        const queryString = 'INSERT INTO pitcher_ratings (p_year, real_team, real_team_id, pitcher_name, throws, ip, so_v_l, bb_v_l, hit_v_l, ob_v_l, tb_v_l, hr_v_l, bp_hr_v_l, bp_si_v_l, dp_v_l, so_v_r, bb_v_r, hit_v_r, ob_v_r, tb_v_r, hr_v_r, bp_hr_v_r, bp_si_v_r, dp_v_r, ho, endurance, field, balk, wp, batting_b, stl, spd, rml_team_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
+        // console.log(pitcherObj);
+        const queryString = 'INSERT INTO pitcher_ratings (p_year, real_team, real_team_id, pitcher_name, throws, ip, so_v_l, bb_v_l, hit_v_l, ob_v_l, tb_v_l, hr_v_l, bp_hr_v_l, bp_si_v_l, dp_v_l, so_v_r, bb_v_r, hit_v_r, ob_v_r, tb_v_r, hr_v_r, bp_hr_v_r, bp_si_v_r, dp_v_r, ho, endurance, field, balk, wp, batting_b, stl, spd, rml_team_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
         const queryParams = [...Object.values(pitcherObj)];
         return await pool.query(queryString, queryParams)
             .then(([rows]) => [rows, null])

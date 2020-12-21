@@ -22,7 +22,7 @@ const convertNameToNameAndThrows = (name) => {
             : name.slice(-1) === '+'
                 ? name.slice(0, -1)
                 : name,
-        bats: name.slice(-1) === '*'
+        throws: name.slice(-1) === '*'
             ? 'L'
             : name.slice(-1) === '+'
                 ? 'S'
@@ -30,9 +30,22 @@ const convertNameToNameAndThrows = (name) => {
     };
 };
 
+const convertBpToBpAndBpSi = (bp) => {
+    return {
+        bp: isNaN(bp.charAt(0))
+            ? 0
+            : parseInt(bp.charAt(0)),
+        bpsi: bp.slice(-1) === '*'
+            ? 0
+            : 2,
+    };
+};
+
 const processInsertData = async (row) => {
     const { realTeam, realTeamId } = await getRealTeamId(row.TM);
     const { pitcherName, throws } = convertNameToNameAndThrows(row.PITCHERS);
+    const { bp: bpVsL, bpsi: bpSiVsL } = convertBpToBpAndBpSi(`${row.BP_v_lhp}`);
+    const { bp: bpVsR, bpsi: bpSiVsR } = convertBpToBpAndBpSi(`${row.BP_v_rhp}`);
 
     const modifiedObj = {
         year: parseInt(row.Year),
@@ -40,30 +53,33 @@ const processInsertData = async (row) => {
         realTeamId,
         pitcherName,
         throws,
-        inj: row.INJ,
-        ab: parseInt(row.AB),
-        soVsL: parseInt(row.SO_v_lhp),
-        bbVsL: Math.round(parseFloat(row.OB_v_lhp) - parseFloat(row.HIT_v_lhp)),
-        hitVsL: parseFloat(row.HIT_v_lhp),
-        obVsL: parseFloat(row.OB_v_lhp),
-        tbVsL: parseFloat(row.TB_v_lhp),
-        hrVsL: parseFloat(row.HR_v_lhp),
-        clVsL: parseInt(row.CL_v_lhp),
-        dpVsL: parseInt(row.DP_v_lhp),
-        soVsR: parseInt(row.SO_v_rhp),
-        bbVsR: Math.round(parseFloat(row.OB_v_rhp) - parseFloat(row.HIT_v_rhp)),
-        hitVsR: parseFloat(row.HIT_v_rhp),
-        obVsR: parseFloat(row.OB_v_rhp),
-        tbVsR: parseFloat(row.TB_v_rhp),
-        hrVsR: parseFloat(row.HR_v_rhp),
-        clVsR: parseInt(row.CL_v_rhp),
-        dpVsR: parseInt(row.DP_v_rhp),
-        stealing: row.STEALING,
+        ip: parseInt(row.IP),
+        soVsL: parseInt(row.SO_v_l),
+        bbVsL: parseFloat(row.BB_v_l),
+        hitVsL: parseFloat(row.HIT_v_l),
+        obVsL: parseFloat(row.OB_v_l),
+        tbVsL: parseFloat(row.TB_v_l),
+        hrVsL: parseFloat(row.HR_v_l),
+        bpVsL,
+        bpSiVsL,
+        dpVsL: parseInt(row.DP_v_l),
+        soVsR: parseInt(row.SO_v_r),
+        bbVsR: parseFloat(row.BB_v_r),
+        hitVsR: parseFloat(row.HIT_v_r),
+        obVsR: parseFloat(row.OB_v_r),
+        tbVsR: parseFloat(row.TB_v_r),
+        hrVsR: parseFloat(row.HR_v_r),
+        bpVsR,
+        bpSiVsR,
+        dpVsR: parseInt(row.DP_v_r),
+        hold: parseInt(row.HO),
+        endurance: row.ENDURANCE,
+        field: row.FIELD.replace('-', 'e'),
+        balk: parseInt(row.BK),
+        wp: parseInt(row.WP),
+        batting: row.BAT_B,
         stl: row.STL,
         spd: parseInt(row.SPD),
-        bunt: row.B,
-        hitRun: row.H,
-        fielding: row.FIELD,
         rmlTeamId: row.rml_team_id !== '' ? parseInt(row.rml_team_id) : '',
     };
 
