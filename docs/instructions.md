@@ -1,6 +1,6 @@
 ### Steps from receiving the new ratings guide to showing all the wOPS numbers
 
--   Convert _Ballpark.text_ team by team singles/homers data to _bp_ratings.xlsx_ where the formatted data column can be added to _bp_ratings.sql_, then imported to the _ratings_guide_ database.
+-   Convert _Ballpark.text_ team by team singles/homers data to _data/bp_ratings.xlsx_ where the formatted data column can be added to _data/bp_ratings.sql_, then imported to the _ratings_guide_ database in MySQL Workbench using copy/paste of the whole _data/bp_ratings.sql_ file..
 
 -   Convert the hitter and pitcher data files into database ready data:
 
