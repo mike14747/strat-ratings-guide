@@ -24,24 +24,28 @@ router.get('/:year', async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
-    if (req.files === null) {
-        return res.status(400).json({ message: 'No file was uploaded!' });
-    }
-
-    const file = req.files.file;
-
-    const [, error] = await Hitters.truncateHittersTable();
-    if (error) {
-        return res.status(500).json({ message: 'Could not truncate the hitters table in the database!' });
-    }
-
-    await file.mv(path.join(__dirname, '/uploads/hitter_ratings.csv'), error => {
-        if (error) {
-            return next(error);
+    try {
+        if (req.files === null) {
+            return res.status(400).json({ message: 'No file was uploaded!' });
         }
-    });
-    await processHittersCSV();
-    res.status(201).json({ message: 'Successfully added the new data to the database!' });
+
+        const file = req.files.file;
+
+        const [, error] = await Hitters.truncateHittersTable();
+        if (error) {
+            return res.status(500).json({ message: 'Could not truncate the hitters table in the database!' });
+        }
+
+        await file.mv(path.join(__dirname, '/uploads/hitter_ratings.csv'), error => {
+            if (error) {
+                return next(error);
+            }
+        });
+        await processHittersCSV();
+        res.status(201).json({ message: 'Successfully added the new data to the database!' });
+    } catch (error) {
+        next(error);
+    }
 });
 
 module.exports = router;

@@ -2,16 +2,20 @@ const parse = require('csv-parse');
 const fs = require('fs');
 const path = require('path');
 const Pitchers = require('../../models/pitchers');
-const realTeam = require('../../models/realTeam');
+const RealTeam = require('../../models/realTeam');
 
 const getRealTeamId = async (name) => {
-    const [data, error] = await realTeam.getRealTeamIdByStratName(name);
-    if (error) console.log(error);
-    if (data && data.length === 1) {
-        return {
-            realTeam: data[0].real_team_abbrev,
-            realTeamId: parseInt(data[0].real_team_id),
-        };
+    try {
+        const [data, error] = await RealTeam.getRealTeamIdByStratName(name);
+        if (error) console.log(error.message);
+        if (data && data.length === 1) {
+            return {
+                realTeam: data[0].real_team_abbrev,
+                realTeamId: parseInt(data[0].real_team_id),
+            };
+        }
+    } catch (error) {
+        console.log(error.message);
     }
 };
 
@@ -42,49 +46,52 @@ const convertBpToBpAndBpSi = (bp) => {
 };
 
 const processInsertData = async (row) => {
-    const { realTeam, realTeamId } = await getRealTeamId(row.TM);
-    const { pitcherName, throws } = convertNameToNameAndThrows(row.PITCHERS);
-    const { bp: bpVsL, bpsi: bpSiVsL } = convertBpToBpAndBpSi(`${row.BP_v_lhp}`);
-    const { bp: bpVsR, bpsi: bpSiVsR } = convertBpToBpAndBpSi(`${row.BP_v_rhp}`);
+    try {
+        const { realTeam, realTeamId } = await getRealTeamId(row.TM);
+        const { pitcherName, throws } = convertNameToNameAndThrows(row.PITCHERS);
+        const { bp: bpVsL, bpsi: bpSiVsL } = convertBpToBpAndBpSi(`${row.BP_v_l}`);
+        const { bp: bpVsR, bpsi: bpSiVsR } = convertBpToBpAndBpSi(`${row.BP_v_r}`);
 
-    const modifiedObj = {
-        year: parseInt(row.Year),
-        realTeam,
-        realTeamId,
-        pitcherName,
-        throws,
-        ip: parseInt(row.IP),
-        soVsL: parseInt(row.SO_v_l),
-        bbVsL: parseFloat(row.BB_v_l),
-        hitVsL: parseFloat(row.HIT_v_l),
-        obVsL: parseFloat(row.OB_v_l),
-        tbVsL: parseFloat(row.TB_v_l),
-        hrVsL: parseFloat(row.HR_v_l),
-        bpVsL,
-        bpSiVsL,
-        dpVsL: parseInt(row.DP_v_l),
-        soVsR: parseInt(row.SO_v_r),
-        bbVsR: parseFloat(row.BB_v_r),
-        hitVsR: parseFloat(row.HIT_v_r),
-        obVsR: parseFloat(row.OB_v_r),
-        tbVsR: parseFloat(row.TB_v_r),
-        hrVsR: parseFloat(row.HR_v_r),
-        bpVsR,
-        bpSiVsR,
-        dpVsR: parseInt(row.DP_v_r),
-        hold: parseInt(row.HO),
-        endurance: row.ENDURANCE,
-        field: row.FIELD.replace('-', 'e'),
-        balk: parseInt(row.BK),
-        wp: parseInt(row.WP),
-        batting: row.BAT_B,
-        stl: row.STL,
-        spd: parseInt(row.SPD),
-        rmlTeamId: row.rml_team_id !== '' ? parseInt(row.rml_team_id) : '',
-    };
+        const modifiedObj = {
+            year: parseInt(row.Year),
+            realTeam,
+            realTeamId,
+            pitcherName,
+            throws,
+            ip: parseInt(row.IP),
+            soVsL: parseInt(row.SO_v_l),
+            bbVsL: parseFloat(row.BB_v_l),
+            hitVsL: parseFloat(row.HIT_v_l),
+            obVsL: parseFloat(row.OB_v_l),
+            tbVsL: parseFloat(row.TB_v_l),
+            hrVsL: parseFloat(row.HR_v_l),
+            bpVsL,
+            bpSiVsL,
+            dpVsL: parseInt(row.DP_v_l),
+            soVsR: parseInt(row.SO_v_r),
+            bbVsR: parseFloat(row.BB_v_r),
+            hitVsR: parseFloat(row.HIT_v_r),
+            obVsR: parseFloat(row.OB_v_r),
+            tbVsR: parseFloat(row.TB_v_r),
+            hrVsR: parseFloat(row.HR_v_r),
+            bpVsR,
+            bpSiVsR,
+            dpVsR: parseInt(row.DP_v_r),
+            hold: parseInt(row.HO),
+            endurance: row.ENDURANCE,
+            field: row.FIELD.replace('-', 'e').replace(' ', ''),
+            balk: parseInt(row.BK),
+            wp: parseInt(row.WP),
+            batting: row.BAT_B,
+            stl: row.STL,
+            spd: parseInt(row.SPD),
+            rmlTeamId: row.rml_team_id !== '' ? parseInt(row.rml_team_id) : '',
+        };
 
-    const [, error] = await Pitchers.addNewPitchersRow(modifiedObj);
-    if (error) console.log(error);
+        await Pitchers.addNewPitchersRow(modifiedObj);
+    } catch (error) {
+        console.log(error.message);
+    }
 };
 
 const processPitchersCSV = async () => {

@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const Pitchers = require('../models/pitchers');
 const processPitchersCSV = require('./utils/processPitchersCSV');
-// const calculatePitcherValues = require('./utils/calculatePitchersValues');
+const calculatePitcherValues = require('./utils/calculatePitcherValues');
 const path = require('path');
 
 router.get('/season-list', async (req, res, next) => {
@@ -16,8 +16,8 @@ router.get('/season-list', async (req, res, next) => {
 router.get('/:year', async (req, res, next) => {
     try {
         const [data, error] = await Pitchers.getPitchersDataByYear(req.params.year);
-        // data ? res.json(calculatePitcherValues(data)) : next(error);
-        data ? res.json(data) : next(error);
+        data ? res.json(calculatePitcherValues(data)) : next(error);
+        // data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
