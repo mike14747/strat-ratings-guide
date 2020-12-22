@@ -2,7 +2,7 @@ const pool = require('../config/connectionPool.js').getDb();
 
 const Pitchers = {
     getPitchersDataByYear: async (year) => {
-        const queryString = 'SELECT p.*, b.st_si_l, b.st_si_r, b.st_hr_l, b.st_hr_r, r.rml_team_name FROM pitcher_ratings AS p LEFT JOIN bp_ratings AS b ON p.p_year=b.bp_year && p.real_team_id=b.real_team_id LEFT JOIN rml_teams AS r ON p.rml_team_id=r.rml_team_id WHERE p.p_year=? ORDER BY p.real_team ASC, p.pitcher_name ASC;';
+        const queryString = 'SELECT p.*, b.st_si_l, b.st_si_r, b.st_hr_l, b.st_hr_r, r.rml_team_name FROM pitcher_ratings AS p LEFT JOIN bp_ratings AS b ON p.p_year=b.bp_year && p.real_team_id=b.real_team_id LEFT JOIN rml_teams AS r ON p.rml_team_id=r.rml_team_id WHERE p.p_year=? ORDER BY pitcher_name ASC, p.real_team ASC, p.pitcher_name ASC;';
         const queryParams = [year];
         return await pool.query(queryString, queryParams)
             .then(([rows]) => [rows, null])

@@ -100,7 +100,7 @@ const calculatePitcherValues = (pitchersArr) => {
         const result = mainCalculations(p);
 
         return {
-            p_year: p.h_year,
+            p_year: p.p_year,
             real_team: p.real_team,
             pitcher_name: p.pitcher_name,
             throws: p.throws,
@@ -123,7 +123,7 @@ const calculatePitcherValues = (pitchersArr) => {
             bp_v_r: processBpColumn(p.real_team_id, p.bp_hr_v_r, p.bp_si_v_r),
             dp_v_r: p.dp_v_r,
             wops_v_r: result.wopsVsR,
-            hold: p.ho,
+            hold: p.hold,
             endurance: p.endurance,
             fielding: p.fielding,
             balk: p.balk,

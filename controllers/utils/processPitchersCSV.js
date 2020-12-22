@@ -79,7 +79,7 @@ const processInsertData = async (row) => {
             dpVsR: parseInt(row.DP_v_r),
             hold: parseInt(row.HO),
             endurance: row.ENDURANCE,
-            field: row.FIELD.replace('-', 'e').replace(' ', ''),
+            field: row.FIELD.replace('\'', '').replace('-', 'e').replace(' ', ''),
             balk: parseInt(row.BK),
             wp: parseInt(row.WP),
             batting: row.BAT_B,
