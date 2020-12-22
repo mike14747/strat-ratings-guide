@@ -55,17 +55,17 @@ const ballparkCalculations = (pitcher) => {
     // end calculating fielding impact on wOPS
 
     // start wOPS calculations
-    const wopsVsL = ((obValue * obVsL) + (tbValue * tbVsL) - (obValue * 20 * pitcher.dp_v_l / 108) + gbpWops + (0.103 * pitcher.balk) + (0.205 * pitcher.wp)).toFixed(2);
-    const wopsVsR = ((obValue * obVsR) + (tbValue * tbVsR) - (obValue * 20 * pitcher.dp_v_r / 108) + gbpWops + (0.103 * pitcher.balk) + (0.205 * pitcher.wp)).toFixed(2);
+    const wopsVsL = ((obValue * obVsL) + (tbValue * tbVsL) - (obValue * 20 * pitcher.dp_v_l / 108) + gbpWops + (0.103 * pitcher.balk) + (0.205 * pitcher.wp)).toFixed(1);
+    const wopsVsR = ((obValue * obVsR) + (tbValue * tbVsR) - (obValue * 20 * pitcher.dp_v_r / 108) + gbpWops + (0.103 * pitcher.balk) + (0.205 * pitcher.wp)).toFixed(1);
 
     return {
         hit_v_l: (parseFloat(pitcher.hit_v_l) + bpHitVsL + bpSiVsL).toFixed(1),
-        ob_v_l: obVsL.toFixed(2),
-        tb_v_l: tbVsL.toFixed(2),
+        ob_v_l: obVsL.toFixed(1),
+        tb_v_l: tbVsL.toFixed(1),
         hr_v_l: (parseFloat(pitcher.hr_v_l) + bpHrVsL).toFixed(1),
         hit_v_r: (parseFloat(pitcher.hit_v_r) + bpHitVsR + bpSiVsR).toFixed(1),
-        ob_v_r: obVsR.toFixed(2),
-        tb_v_r: tbVsR.toFixed(2),
+        ob_v_r: obVsR.toFixed(1),
+        tb_v_r: tbVsR.toFixed(1),
         hr_v_r: (parseFloat(pitcher.hr_v_r) + bpHrVsR).toFixed(1),
         wopsVsL,
         wopsVsR,
