@@ -17,7 +17,6 @@ router.get('/:year', async (req, res, next) => {
     try {
         const [data, error] = await Pitchers.getPitchersDataByYear(req.params.year);
         data ? res.json(calculatePitcherValues(data)) : next(error);
-        // data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }

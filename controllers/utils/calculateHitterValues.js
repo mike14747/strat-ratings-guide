@@ -13,6 +13,9 @@ const processWColumn = (realTeamId, bphr, w, bpsi) => {
 };
 
 const ballparkCalculations = (hitter) => {
+    const obValue = 1.2;
+    const tbValue = 0.845;
+
     let bpAdjVsL = 0;
     let bpSiAdjVsL = 0;
     let clAdjVsL = 0;
@@ -67,10 +70,10 @@ const ballparkCalculations = (hitter) => {
     const tbVsR = parseFloat(hitter.tb_v_r) + bpTbVsR + bpSiVsR;
 
     // start wOPS calculations
-    const wAdjVsL = hitter.w_v_l === 'w' ? 0.845 * 9 : 0;
-    const wopsVsL = (((1.2 * obVsL) + (0.845 * tbVsL) - (1.2 * 20 * hitter.dp_v_l / 108)) - wAdjVsL).toFixed(1);
-    const wAdjVsR = hitter.w_v_r === 'w' ? 0.845 * 9 : 0;
-    const wopsVsR = (((1.2 * obVsR) + (0.845 * tbVsR) - (1.2 * 20 * hitter.dp_v_r / 108)) - wAdjVsR).toFixed(1);
+    const wAdjVsL = hitter.w_v_l === 'w' ? tbValue * 9 : 0;
+    const wopsVsL = (((obValue * obVsL) + (tbValue * tbVsL) - (obValue * 20 * hitter.dp_v_l / 108)) - wAdjVsL).toFixed(1);
+    const wAdjVsR = hitter.w_v_r === 'w' ? tbValue * 9 : 0;
+    const wopsVsR = (((obValue * obVsR) + (tbValue * tbVsR) - (obValue * 20 * hitter.dp_v_r / 108)) - wAdjVsR).toFixed(1);
 
     return {
         hit_v_l: (parseFloat(hitter.hit_v_l) + bpHitVsL + bpSiVsL).toFixed(1),
