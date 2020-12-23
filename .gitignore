@@ -1,6 +1,5 @@
 # all files in the data folder (mainly .csv, xlsx and .sql)
 data
-data1
 
 # Logs
 logs
