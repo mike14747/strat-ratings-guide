@@ -103,7 +103,7 @@ const processInsertData = async (row) => {
             dCF: convertPositionlFielding(row.d_CF),
             dRF: convertPositionlFielding(row.d_RF),
             fielding: row.FIELDING,
-            rmlTeamId: row.rml_team_id !== '' ? parseInt(row.rml_team_id) : '',
+            rmlTeamId: row.rml_team_id ? parseInt(row.rml_team_id) : null,
         };
 
         await Hitters.addNewHittersRow(modifiedObj);

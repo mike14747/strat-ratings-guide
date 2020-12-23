@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS ratings_guide_db;
-CREATE DATABASE ratings_guide_db;
-USE ratings_guide_db;
+DROP DATABASE IF EXISTS `ratings_guide_db`;
+CREATE DATABASE `ratings_guide_db`;
+USE `ratings_guide_db`;
 
 set foreign_key_checks=0;
 
@@ -10,6 +10,7 @@ CREATE TABLE `bp_ratings` (
     `bp_rating_id` int unsigned NOT NULL AUTO_INCREMENT,
     `bp_year` int NOT NULL,
     `real_team_id` int unsigned NOT NULL,
+    FOREIGN KEY (`real_team_id`) REFERENCES `real_teams`(`real_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     `real_team_league` varchar(2) NOT NULL,
     `real_team_abbrev` varchar(10) NOT NULL,
     `st_si_l` int unsigned NOT NULL,
@@ -17,7 +18,7 @@ CREATE TABLE `bp_ratings` (
     `st_hr_l` int unsigned NOT NULL,
     `st_hr_r` int unsigned NOT NULL,
     PRIMARY KEY (`bp_rating_id`)
-) AUTO_INCREMENT = 1;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
 
@@ -26,6 +27,7 @@ CREATE TABLE `hitter_ratings` (
     `h_year` int NOT NULL,
     `real_team` varchar(10) NOT NULL,
     `real_team_id` int unsigned DEFAULT NULL,
+    FOREIGN KEY (`real_team_id`) REFERENCES `real_teams`(`real_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     `hitter_name` varchar(30) NOT NULL,
     `bats` varchar(1) NOT NULL,
     `injury` varchar(1) NOT NULL,
@@ -67,6 +69,7 @@ CREATE TABLE `hitter_ratings` (
     `d_rf` varchar(4) NOT NULL,
     `fielding` varchar(70) NOT NULL,
     `rml_team_id` int unsigned DEFAULT NULL,
+    FOREIGN KEY (`rml_team_id`) REFERENCES `rml_teams`(`rml_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     PRIMARY KEY (`hitter_id`)
 ) AUTO_INCREMENT=1;
 
@@ -77,6 +80,7 @@ CREATE TABLE `pitcher_ratings` (
     `p_year` int NOT NULL,
     `real_team` varchar(10) NOT NULL,
     `real_team_id` int unsigned DEFAULT NULL,
+    FOREIGN KEY (`real_team_id`) REFERENCES `real_teams`(`real_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     `pitcher_name` varchar(30) NOT NULL,
     `throws` varchar(1) NOT NULL,
     `ip` int unsigned NOT NULL,
@@ -107,6 +111,7 @@ CREATE TABLE `pitcher_ratings` (
     `stl` varchar(1) NOT NULL,
     `spd` int unsigned NOT NULL,
     `rml_team_id` int unsigned DEFAULT NULL,
+    FOREIGN KEY (`rml_team_id`) REFERENCES `rml_teams`(`rml_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     PRIMARY KEY (`pitcher_id`)
 ) AUTO_INCREMENT=1;
 

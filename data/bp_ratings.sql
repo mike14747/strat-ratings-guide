@@ -1,22 +1,14 @@
 USE ratings_guide_db;
-DROP TABLE IF EXISTS `bp_ratings`;
 
-CREATE TABLE `bp_ratings` (
-  `bp_rating_id` int unsigned NOT NULL AUTO_INCREMENT,
-  `bp_year` int NOT NULL,
-  `real_team_id` int unsigned NOT NULL,
-  `real_team_league` varchar(2) NOT NULL,
-  `real_team_abbrev` varchar(10) NOT NULL,
-  `st_si_l` int unsigned NOT NULL,
-  `st_si_r` int unsigned NOT NULL,
-  `st_hr_l` int unsigned NOT NULL,
-  `st_hr_r` int unsigned NOT NULL,
-  PRIMARY KEY (`bp_rating_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+set foreign_key_checks=0;
+
+-- --------------------------------------------------------
 
 --
 -- Dumping data for table `bp_ratings`
 --
+
+TRUNCATE TABLE `bp_ratings`;
 
 INSERT INTO `bp_ratings` (`bp_year`, `real_team_id`, `real_team_league`, `real_team_abbrev`, `st_si_l`, `st_si_r`, `st_hr_l`, `st_hr_r`) VALUES
 (2013, 2, 'NL', 'ARIZ', 11, 11, 11, 11),
@@ -229,3 +221,7 @@ INSERT INTO `bp_ratings` (`bp_year`, `real_team_id`, `real_team_league`, `real_t
 (2019, 29, 'AL', 'TEX', 19, 19, 11, 11),
 (2019, 30, 'AL', 'TOR', 5, 5, 12, 12),
 (2019, 31, 'NL', 'WASH', 17, 14, 13, 13);
+
+-- --------------------------------------------------------
+
+set foreign_key_checks=1;

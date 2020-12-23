@@ -85,7 +85,7 @@ const processInsertData = async (row) => {
             batting: row.BAT_B,
             stl: row.STL,
             spd: parseInt(row.SPD),
-            rmlTeamId: row.rml_team_id !== '' ? parseInt(row.rml_team_id) : '',
+            rmlTeamId: row.rml_team_id ? parseInt(row.rml_team_id) : null,
         };
 
         await Pitchers.addNewPitchersRow(modifiedObj);
