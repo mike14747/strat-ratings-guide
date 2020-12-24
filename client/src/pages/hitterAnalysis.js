@@ -115,6 +115,6 @@ function HitterAnalysis() {
         </>
 
     );
-};
+}
 
 export default HitterAnalysis;

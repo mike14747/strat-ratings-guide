@@ -3,6 +3,7 @@ const Hitters = require('../models/hitters');
 const processHittersCSV = require('./utils/processHittersCSV');
 const calculateHitterValues = require('./utils/calculateHitterValues');
 const path = require('path');
+const fs = require('fs');
 
 router.get('/season-list', async (req, res, next) => {
     try {
@@ -34,6 +35,13 @@ router.post('/', async (req, res, next) => {
         const [, error] = await Hitters.truncateHittersTable();
         if (error) {
             return res.status(500).json({ message: 'Could not truncate the hitters table in the database!' });
+        }
+
+        if (!fs.existsSync(path.join(__dirname, '/uploads'))) {
+            console.log('there is not an uploads folder.');
+            fs.mkdirSync(path.join(__dirname, '/uploads'), {
+                recursive: true
+            });
         }
 
         await file.mv(path.join(__dirname, '/uploads/hitter_ratings.csv'), error => {

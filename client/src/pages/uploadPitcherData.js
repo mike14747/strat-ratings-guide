@@ -54,6 +54,6 @@ function UploadPitcherData() {
             </div>
         </div>
     );
-};
+}
 
 export default UploadPitcherData;

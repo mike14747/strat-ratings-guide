@@ -108,6 +108,6 @@ function PitcherAnalysis() {
             }
         </>
     );
-};
+}
 
 export default PitcherAnalysis;

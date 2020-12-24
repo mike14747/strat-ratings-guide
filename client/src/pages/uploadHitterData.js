@@ -54,6 +54,6 @@ function UploadHitterData() {
             </div>
         </div>
     );
-};
+}
 
 export default UploadHitterData;
