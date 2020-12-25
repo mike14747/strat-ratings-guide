@@ -38,9 +38,8 @@ router.post('/', async (req, res, next) => {
         }
 
         if (!fs.existsSync(path.join(__dirname, '/uploads'))) {
-            console.log('there is not an uploads folder.');
             fs.mkdirSync(path.join(__dirname, '/uploads'), {
-                recursive: true
+                recursive: true,
             });
         }
 
@@ -49,8 +48,8 @@ router.post('/', async (req, res, next) => {
                 return next(error);
             }
         });
-        await processHittersCSV();
-        res.status(201).json({ message: 'Successfully added the new data to the database!' });
+        const newRecordsInserted = await processHittersCSV();
+        res.status(201).json({ message: `Successfully added ${newRecordsInserted} new hitter row(s) to the database!` });
     } catch (error) {
         next(error);
     }
