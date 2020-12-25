@@ -39,7 +39,9 @@ router.post('/', async (req, res, next) => {
                     .catch(() => {
                         fs.promises.mkdir(path.join(__dirname, '/uploads'))
                             .then(() => resolve())
-                            .catch(error => next(error));
+                            .catch(error => {
+                                throw new Error(error);
+                            });
                     });
             });
         };

@@ -21,7 +21,7 @@ router.use((error, req, res, next) => {
         return res.status(400).send(error.message);
     }
     res.status(error.status || 500);
-    error.status === 404 ? res.send(error.message) : res.send('Request failed... please check your request and try again!\n' + error.message);
+    error.status === 404 ? res.send(error.message) : res.json({ message: 'An error occurred! ' + error.message });
 });
 
 module.exports = router;

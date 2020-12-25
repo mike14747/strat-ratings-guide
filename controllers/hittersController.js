@@ -39,7 +39,9 @@ router.post('/', async (req, res, next) => {
                     .catch(() => {
                         fs.promises.mkdir(path.join(__dirname, '/uploads'))
                             .then(() => resolve())
-                            .catch(error => next(error));
+                            .catch(error => {
+                                throw new Error(error);
+                            });
                     });
             });
         };
@@ -51,6 +53,7 @@ router.post('/', async (req, res, next) => {
         const newRecordsInserted = await processHittersCSV();
         res.status(201).json({ message: `Successfully added ${newRecordsInserted} new hitter row(s) to the database!` });
     } catch (error) {
+        console.log('the error was caught:', error.message);
         next(error);
     }
 });

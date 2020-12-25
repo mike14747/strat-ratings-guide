@@ -102,7 +102,7 @@ const processInsertData = async (csvData) => {
         });
 
         const [data] = await Hitters.addNewHittersData(modifiedArray);
-        return data.affectedRows || 0;
+        return (data && data.affectedRows) || 0;
     } catch (error) {
         console.log(error.message);
     }
@@ -128,10 +128,9 @@ const processHittersCSV = async () => {
                 reject(error);
             })
             .on('end', async function () {
-                const numInserted = await processInsertData(csvData);
-                const fs = require('fs').promises;
+                const numInserted = await processInsertData(csvData) || 0;
                 try {
-                    await fs.unlink(path.join(__dirname, '../uploads/hitter_ratings.csv'));
+                    await fs.promises.unlink(path.join(__dirname, '../uploads/hitter_ratings.csv'));
                 } catch (error) {
                     console.log(error);
                 }

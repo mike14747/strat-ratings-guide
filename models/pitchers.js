@@ -25,7 +25,9 @@ const Pitchers = {
     truncatePitchersTable: async () => {
         const queryString = 'TRUNCATE TABLE pitcher_ratings;';
         const queryParams = [];
-        return await pool.query(queryString, queryParams);
+        return await pool.query(queryString, queryParams)
+            .then(([rows]) => [rows, null])
+            .catch(error => [null, error]);
     },
 };
 

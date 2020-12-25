@@ -22,7 +22,14 @@ function UploadHitterData() {
                     },
                 })
                     .then(response => setMessage(response.data.message))
-                    .catch(error => setMessage(error.message));
+                    .catch(error => {
+                        if (error.response) {
+                            setMessage(error.response.data.message);
+                        } else {
+                            setMessage('An unknown error occurred. Please try your request again.');
+                            console.log(error);
+                        }
+                    });
             } else {
                 setMessage('The only uploaded file allowed is: "hitter_ratings.csv".');
             }
