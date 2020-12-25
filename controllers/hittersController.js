@@ -18,7 +18,6 @@ router.get('/:year', async (req, res, next) => {
     try {
         const [data, error] = await Hitters.getHittersDataByYear(req.params.year);
         data ? res.json(calculateHitterValues(data)) : next(error);
-        // data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
@@ -26,27 +25,28 @@ router.get('/:year', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
     try {
-        if (req.files === null) {
-            return res.status(400).json({ message: 'No file was uploaded!' });
-        }
+        if (req.files === null) return res.status(400).json({ message: 'No file was uploaded!' });
 
         const file = req.files.file;
 
         const [, error] = await Hitters.truncateHittersTable();
-        if (error) {
-            return res.status(500).json({ message: 'Could not truncate the hitters table in the database!' });
-        }
+        if (error) return next(error);
 
-        if (!fs.existsSync(path.join(__dirname, '/uploads'))) {
-            fs.mkdirSync(path.join(__dirname, '/uploads'), {
-                recursive: true,
+        const ensureUploadsExists = async () => {
+            return new Promise((resolve, reject) => {
+                fs.promises.access(path.join(__dirname, '/uploads'), fs.constants.F_OK)
+                    .then(() => resolve())
+                    .catch(() => {
+                        fs.promises.mkdir(path.join(__dirname, '/uploads'))
+                            .then(() => resolve())
+                            .catch(error => next(error));
+                    });
             });
-        }
+        };
+        await ensureUploadsExists();
 
         await file.mv(path.join(__dirname, '/uploads/hitter_ratings.csv'), error => {
-            if (error) {
-                return next(error);
-            }
+            if (error) return next(error);
         });
         const newRecordsInserted = await processHittersCSV();
         res.status(201).json({ message: `Successfully added ${newRecordsInserted} new hitter row(s) to the database!` });
