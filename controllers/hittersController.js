@@ -18,7 +18,6 @@ router.get('/:year', async (req, res, next) => {
     try {
         const [data, error] = await Hitters.getHittersDataByYear(req.params.year);
         data ? res.json(calculateHitterValues(data)) : next(error);
-        // data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }

@@ -4,21 +4,6 @@ const path = require('path');
 const Hitters = require('../../models/hitters');
 const RealTeam = require('../../models/realTeam');
 
-const getRealTeamId = async (name) => {
-    try {
-        const [data, error] = await RealTeam.getRealTeamIdByStratName(name);
-        if (error) console.log(error.message);
-        if (data && data.length === 1) {
-            return {
-                realTeam: data[0].real_team_abbrev,
-                realTeamId: parseInt(data[0].real_team_id),
-            };
-        }
-    } catch (error) {
-        console.log(error.message);
-    }
-};
-
 const convertPositionlFielding = (rating) => {
     return rating !== '' ? `${rating.charAt(0)}e${parseInt(rating.slice(1, 3))}` : '';
 };
@@ -144,7 +129,6 @@ const processHittersCSV = async () => {
             })
             .on('end', async function () {
                 const numInserted = await processInsertData(csvData);
-                // console.log(numInserted);
                 const fs = require('fs').promises;
                 try {
                     await fs.unlink(path.join(__dirname, '../uploads/hitter_ratings.csv'));

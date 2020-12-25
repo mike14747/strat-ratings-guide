@@ -4,7 +4,6 @@ const processPitchersCSV = require('./utils/processPitchersCSV');
 const calculatePitcherValues = require('./utils/calculatePitcherValues');
 const path = require('path');
 const fs = require('fs');
-// const fsPromises = fs.promises;
 
 router.get('/season-list', async (req, res, next) => {
     try {
@@ -26,31 +25,31 @@ router.get('/:year', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
     try {
-        if (req.files === null) {
-            return res.status(400).json({ message: 'No file was uploaded!' });
-        }
+        if (req.files === null) return res.status(400).json({ message: 'No file was uploaded!' });
 
         const file = req.files.file;
 
         const [, error] = await Pitchers.truncatePitchersTable();
-        if (error) {
-            return res.status(500).json({ message: 'Could not truncate the pitchers table in the database!' });
-        }
+        if (error) return next(error);
 
-        if (!fs.existsSync(path.join(__dirname, '/uploads'))) {
-            console.log('there is not an uploads folder.');
-            fs.mkdirSync(path.join(__dirname, '/uploads'), {
-                recursive: true
+        const ensureUploadsExists = async () => {
+            return new Promise((resolve, reject) => {
+                fs.promises.access(path.join(__dirname, '/uploads'), fs.constants.F_OK)
+                    .then(() => resolve())
+                    .catch(() => {
+                        fs.promises.mkdir(path.join(__dirname, '/uploads'))
+                            .then(() => resolve())
+                            .catch(error => next(error));
+                    });
             });
-        }
+        };
+        await ensureUploadsExists();
 
         await file.mv(path.join(__dirname, '/uploads/pitcher_ratings.csv'), error => {
-            if (error) {
-                return next(error);
-            }
+            if (error) return next(error);
         });
-        await processPitchersCSV();
-        res.status(201).json({ message: 'Successfully added the new data to the database!' });
+        const newRecordsInserted = await processPitchersCSV();
+        res.status(201).json({ message: `Successfully added ${newRecordsInserted} new pitcher row(s) to the database!` });
     } catch (error) {
         next(error);
     }
