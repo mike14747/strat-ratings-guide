@@ -101,7 +101,8 @@ const processInsertData = async (csvData) => {
             return Object.values(hitterObj);
         });
 
-        const [data] = await Hitters.addNewHittersData(modifiedArray);
+        const [data, error] = await Hitters.addNewHittersData(modifiedArray);
+        if (error) console.log(error);
         return (data && data.affectedRows) || 0;
     } catch (error) {
         console.log(error.message);

@@ -25,7 +25,8 @@ const processInsertData = async (csvData) => {
             return Object.values(hitterObj);
         });
 
-        const [data] = await Hitters.addMultiTeamHittersData(modifiedArray);
+        const [data, error] = await Hitters.addMultiTeamHittersData(modifiedArray);
+        if (error) console.log(error);
         return (data && data.affectedRows) || 0;
     } catch (error) {
         console.log(error.message);

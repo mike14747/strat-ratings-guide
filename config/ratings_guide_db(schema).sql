@@ -55,7 +55,7 @@ CREATE TABLE `hitter_ratings` (
     `cl_v_r` int NOT NULL,
     `dp_v_r` int unsigned NOT NULL,
     `stealing` varchar(30) NOT NULL,
-    `stl` varchar(1) NOT NULL,
+    `stl` varchar(2) NOT NULL,
     `spd` int unsigned NOT NULL,
     `bunt` varchar(1) NOT NULL,
     `h_r` varchar(1) NOT NULL,
@@ -114,6 +114,17 @@ CREATE TABLE `pitcher_ratings` (
     FOREIGN KEY (`rml_team_id`) REFERENCES `rml_teams`(`rml_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     PRIMARY KEY (`pitcher_id`)
 ) AUTO_INCREMENT=1;
+
+-- --------------------------------------------------------
+
+CREATE TABLE `multi_team_hitters` (
+    `year` int unsigned NOT NULL,
+    `real_team_id` int unsigned NOT NULL,
+    FOREIGN KEY (`real_team_id`) REFERENCES `real_teams`(`real_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    `hitter` varchar(30) NOT NULL,
+    `bats` varchar(1) NOT NULL,
+    `ab` int unsigned NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
