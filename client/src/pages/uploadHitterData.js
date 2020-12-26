@@ -44,7 +44,7 @@ function UploadHitterData() {
             <ul>
                 <li>The only file allowed for upload is &quot;<span className="font-weight-bolder">hitter_ratings.csv</span>&quot;.</li>
                 <li>The file must have the proper columns (ie: Year as the first column, INJ after HITTERS and RML Team at the end).</li>
-                <li>This process will delete the entire hitter_ratings table and replace it with the data in the uploaded file.</li>
+                <li>This process will truncate the hitter_ratings table and replace it with the data in the uploaded file.</li>
             </ul>
 
             <div className="my-4">

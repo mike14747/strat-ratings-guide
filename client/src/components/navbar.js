@@ -7,27 +7,23 @@ function Navbar() {
             <Link to="/">
                 Home
             </Link>
-            <span className="mx-4">
-                |
-            </span>
+            <span className="mx-4">|</span>
             <Link to="/hitterAnalysis">
                 View Hitter Analysis
             </Link>
-            <span className="mx-4">
-                |
-            </span>
+            <span className="mx-4">|</span>
             <Link to="/uploadHitterData">
                 Upload Hitter Data
             </Link>
-            <span className="mx-4">
-                |
-            </span>
+            <span className="mx-4">|</span>
+            <Link to="/uploadMultiTeamHitterData">
+                Upload Multi-Team Hitter Data
+            </Link>
+            <span className="mx-4">|</span>
             <Link to="/pitcherAnalysis">
                 View Pitcher Analysis
             </Link>
-            <span className="mx-4">
-                |
-            </span>
+            <span className="mx-4">|</span>
             <Link to="/uploadPitcherData">
                 Upload Pitcher Data
             </Link>

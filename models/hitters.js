@@ -29,6 +29,20 @@ const Hitters = {
             .then(([rows]) => [rows, null])
             .catch(error => [null, error]);
     },
+    addMultiTeamHittersData: async (hitterArr) => {
+        const queryString = 'INSERT INTO multi_team_hitters (year, real_team_id, hitter, bats, ab) VALUES ?;';
+        const queryParams = [hitterArr];
+        return await pool.query(queryString, queryParams)
+            .then(([rows]) => [rows, null])
+            .catch(error => [null, error]);
+    },
+    truncateMultiTeamHittersTable: async () => {
+        const queryString = 'TRUNCATE TABLE multi_team_hitters;';
+        const queryParams = [];
+        return await pool.query(queryString, queryParams)
+            .then(([rows]) => [rows, null])
+            .catch(error => [null, error]);
+    },
 };
 
 module.exports = Hitters;

@@ -123,6 +123,7 @@ CREATE TABLE `real_teams` (
     `real_team_name` varchar(20) NOT NULL,
     `real_team_abbrev` varchar(10) NOT NULL,
     `strat_abbrev` varchar(10) NOT NULL,
+    `bbref_abbrev` varchar(10) NOT NULL,
     `real_team_league` varchar(2) NOT NULL,
     PRIMARY KEY (`real_team_id`)
 ) AUTO_INCREMENT=1;
