@@ -1,3 +1,5 @@
+const Hitters = require('../../models/hitters');
+
 const processWColumn = (realTeamId, bphr, w, bpsi) => {
     let wCol = '';
 
@@ -7,7 +9,7 @@ const processWColumn = (realTeamId, bphr, w, bpsi) => {
     return wCol;
 };
 
-const ballparkCalculations = (hitter) => {
+const ballparkCalculations = (hitter, partials) => {
     const obValue = 1.2;
     const tbValue = 0.845;
 
@@ -84,9 +86,48 @@ const ballparkCalculations = (hitter) => {
     };
 };
 
-const calculateHitterValues = (hittersArr) => {
+const withoutBPCalculations = (hitter) => {
+    return {
+        hit_v_l: `~${(parseFloat(hitter.hit_v_l) + hitter.bp_si_v_l).toFixed(1)}`,
+        ob_v_l: `~${(parseFloat(hitter.ob_v_l) + hitter.bp_si_v_l).toFixed(1)}`,
+        tb_v_l: `~${(parseFloat(hitter.tb_v_l) + hitter.bp_si_v_l).toFixed(1)}`,
+        hr_v_l: `~${(parseFloat(hitter.hr_v_l)).toFixed(1)}`,
+        hit_v_r: `~${(parseFloat(hitter.hit_v_r) + hitter.bp_si_v_r).toFixed(1)}`,
+        ob_v_r: `~${(parseFloat(hitter.ob_v_r) + hitter.bp_si_v_r).toFixed(1)}`,
+        tb_v_r: `~${(parseFloat(hitter.tb_v_r) + hitter.bp_si_v_r).toFixed(1)}`,
+        hr_v_r: `~${(parseFloat(hitter.hr_v_r)).toFixed(1)}`,
+        wopsVsL: '',
+        wopsVsR: '',
+    };
+};
+
+const mainCalculations = (hitter, partials) => {
+    const partialABTotal = partials.reduce((acc, cur) => {
+        return acc + cur.ab;
+    }, 0);
+
+    // check to see if the AB totals in TOT match the parts in the multi_team_hitters table
+    if (hitter.ab === partialABTotal) {
+        console.log('The hitter AB total matches the partials: ', hitter.ab);
+        return ballparkCalculations(hitter, partials);
+    } else {
+        // since they don't match, return as before with no wOPS numbers
+        console.log('The AB totals do NOT match:', hitter.ab);
+        return withoutBPCalculations(hitter);
+    }
+};
+
+const calculateMultiTeamHitterValues = async (hittersArr, year) => {
+    // get all hitters from the multi_team_hitters table
+    const [result1, error] = await Hitters.getMultiTeamHittersPartialByYear(year);
+    const hittersTeamsAndABPerTeam = JSON.parse(JSON.stringify(result1));
+    if (error) console.log(error);
+
     const hittersCalculated = hittersArr.map(h => {
-        const result = ballparkCalculations(h);
+        // find the hitter in the hittersTeamsAndABPerTeam array
+        const partialTeams = hittersTeamsAndABPerTeam.filter(hp => hp.hitter === h.hitter_name);
+
+        const result = mainCalculations(h, partialTeams);
 
         return {
             h_year: h.h_year,
@@ -132,4 +173,4 @@ const calculateHitterValues = (hittersArr) => {
     return hittersCalculated;
 };
 
-module.exports = calculateHitterValues;
+module.exports = calculateMultiTeamHitterValues;

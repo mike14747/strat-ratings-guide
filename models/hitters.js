@@ -9,14 +9,14 @@ const Hitters = {
             .catch(error => [null, error]);
     },
     getMultiTeamHittersDataByYear: async (year) => {
-        const queryString = 'SELECT h.*, b.st_si_l, b.st_si_r, b.st_hr_l, b.st_hr_r, r.rml_team_name FROM hitter_ratings AS h LEFT JOIN bp_ratings AS b ON h.h_year=b.bp_year && h.real_team_id=b.real_team_id LEFT JOIN rml_teams AS r ON h.rml_team_id=r.rml_team_id WHERE h.h_year=? && h.real_team_id=1 ORDER BY h.hitter_name ASC, h.real_team ASC;';
+        const queryString = 'SELECT h.*, r.rml_team_name FROM hitter_ratings AS h LEFT JOIN rml_teams AS r ON h.rml_team_id=r.rml_team_id WHERE h.h_year=? && h.real_team_id=1 ORDER BY h.hitter_name ASC, h.real_team ASC;';
         const queryParams = [year];
         return await pool.query(queryString, queryParams)
             .then(([rows]) => [rows, null])
             .catch(error => [null, error]);
     },
     getMultiTeamHittersPartialByYear: async (year) => {
-        const queryString = 'SELECT real_team_id, hitter, ab FROM multi_team_hitters WHERE year=?;';
+        const queryString = 'SELECT m.real_team_id, m.hitter, m.ab, b.st_si_l, b.st_si_r, b.st_hr_l, b.st_hr_r FROM multi_team_hitters AS m LEFT JOIN bp_ratings AS b ON m.year=b.bp_year && m.real_team_id=b.real_team_id WHERE year=?;';
         const queryParams = [year];
         return await pool.query(queryString, queryParams)
             .then(([rows]) => [rows, null])
