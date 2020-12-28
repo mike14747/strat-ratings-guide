@@ -134,7 +134,7 @@ CREATE TABLE `multi_team_pitchers` (
     FOREIGN KEY (`real_team_id`) REFERENCES `real_teams`(`real_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     `pitcher` varchar(30) NOT NULL,
     `throws` varchar(1) NOT NULL,
-    `ip` int unsigned NOT NULL
+    `ip` decimal(5,2) NOT NULL
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------

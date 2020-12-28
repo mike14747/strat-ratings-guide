@@ -36,7 +36,10 @@ function MultiTeamPitcherAnalysis() {
     useEffect(() => {
         if (querySeason) {
             axios.get(`/api/pitchers/multi-team/${querySeason}`)
-                .then(response => setPitcherData(response.data))
+                .then(response => {
+                    console.log(response.data);
+                    setPitcherData(response.data);
+                })
                 .catch(error => console.error(error.message));
         }
     }, [querySeason]);

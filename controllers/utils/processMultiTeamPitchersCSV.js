@@ -17,7 +17,7 @@ const processInsertData = async (csvData) => {
                 realTeamId,
                 pitcher: row.Name,
                 throws: row.Throws,
-                ip: parseInt(row.IP),
+                ip: parseFloat(row.IP),
             };
 
             return Object.values(pitcherObj);
