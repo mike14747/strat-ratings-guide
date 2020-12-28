@@ -8,8 +8,29 @@ const Pitchers = {
             .then(([rows]) => [rows, null])
             .catch(error => [null, error]);
     },
+    getMultiTeamPitchersDataByYear: async (year) => {
+        const queryString = 'SELECT p.*, r.rml_team_name FROM pitcher_ratings AS p LEFT JOIN rml_teams AS r ON p.rml_team_id=r.rml_team_id WHERE p.p_year=? && p.real_team_id=1 ORDER BY pitcher_name ASC, p.real_team ASC, p.pitcher_name ASC;';
+        const queryParams = [year];
+        return await pool.query(queryString, queryParams)
+            .then(([rows]) => [rows, null])
+            .catch(error => [null, error]);
+    },
+    getMultiTeamPitchersPartialByYear: async (year) => {
+        const queryString = 'SELECT m.real_team_id, m.pitcher, m.ip, b.st_si_l, b.st_si_r, b.st_hr_l, b.st_hr_r FROM multi_team_pitchers AS m LEFT JOIN bp_ratings AS b ON m.year=b.bp_year && m.real_team_id=b.real_team_id WHERE year=?;';
+        const queryParams = [year];
+        return await pool.query(queryString, queryParams)
+            .then(([rows]) => [rows, null])
+            .catch(error => [null, error]);
+    },
     getSeasonsListWithPitcherData: async () => {
         const queryString = 'SELECT DISTINCT(p_year) FROM pitcher_ratings ORDER BY p_year DESC;';
+        const queryParams = [];
+        return await pool.query(queryString, queryParams)
+            .then(([rows]) => [rows, null])
+            .catch(error => [null, error]);
+    },
+    getSeasonsListWithMultiTeamPitcherData: async () => {
+        const queryString = 'SELECT DISTINCT(year) FROM multi_team_pitchers ORDER BY year DESC;';
         const queryParams = [];
         return await pool.query(queryString, queryParams)
             .then(([rows]) => [rows, null])
@@ -24,6 +45,20 @@ const Pitchers = {
     },
     truncatePitchersTable: async () => {
         const queryString = 'TRUNCATE TABLE pitcher_ratings;';
+        const queryParams = [];
+        return await pool.query(queryString, queryParams)
+            .then(([rows]) => [rows, null])
+            .catch(error => [null, error]);
+    },
+    addMultiTeamPitchersData: async (pitcherArr) => {
+        const queryString = 'INSERT INTO multi_team_pitchers (year, real_team_id, pitcher, throws, ip) VALUES ?;';
+        const queryParams = [pitcherArr];
+        return await pool.query(queryString, queryParams)
+            .then(([rows]) => [rows, null])
+            .catch(error => [null, error]);
+    },
+    truncateMultiTeamPitchersTable: async () => {
+        const queryString = 'TRUNCATE TABLE multi_team_pitchers;';
         const queryParams = [];
         return await pool.query(queryString, queryParams)
             .then(([rows]) => [rows, null])

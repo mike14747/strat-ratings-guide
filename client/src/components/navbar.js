@@ -31,6 +31,14 @@ function Navbar() {
             <Link to="/uploadPitcherData">
                 Upload Pitcher Data
             </Link>
+            <span className="mx-4">|</span>
+            <Link to="/multiTeamPitcherAnalysis">
+                View Multi-Team Pitcher Analysis
+            </Link>
+            <span className="mx-4">|</span>
+            <Link to="/uploadMultiTeamPitcherData">
+                Upload Multi-Team Pitcher Data
+            </Link>
         </div>
     );
 }
