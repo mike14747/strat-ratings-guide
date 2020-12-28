@@ -62,3 +62,71 @@ There are some duplicate teams in the _rml_teams_ table (eg: _Twins-1_ and _Twin
 -   Indians-2: The old Mudcats (not Chuck's old Mudcats). They became Indians-2 in the 2017 RML season, then later changed to the River Cats and Stogies (Indians-2 is no longer in existence).
 -   Twins-1: Kurt Novak's old team (Twins-1 is no longer in existence).
 -   Twins-2: Dave Scott's new team name.
+
+---
+
+### Multi-team hitters
+
+The first consideration is to make sure each multi-team hitter is listed in the regular _data/hitter_ratings.csv_ file as being on team **TOT**.
+
+Then it's time to move on to getting each multi-team hitter's _teams_ and _AB_ per team from [baseball-reference.com].
+
+It's going to take some data manipulation to get that info into _data/multi_team_hitters.xlsx_. What this includes:
+
+-   The final data needs to have these columns (and a row for each team played for):
+
+    -   Year
+    -   Name
+    -   Bats
+    -   Tm
+    -   AB
+
+-   Keep the [baseball-reference.com] tem names as they are... they will be converted to _real_team_id_ by the app before getting loaded into the database.
+
+-   Each hitter's name will need to be changed to match the exact name Strat uses in the ratings guide (since that will be how the ratings guide links the multi-team hitters to this data). Strat's name format is _last name, comma, then first initial_... without a space after the comma... eg: _Doe,J_.
+
+-   The _Bats_ column data can be extracted from the hitter's name from [baseball-reference.com]. They use the following system:
+
+    -   '*' aftre their name means L
+    -   '#' after their name means S
+    -   neither of the above after their name means R
+
+Once the data is in the proper format and gets added to: _data/multi_team_hitters.xlsx_, save the file, then save it as: _data/hitter_ratings.csv_.
+
+Now the whole file can get uploaded from the _Upload Multi-Team Hitter Data_ page. This process will truncate the current _multi_team_hitters_ table in the database and replace it with the new file's data.
+
+You'll have to merge the multi-team hitter results into the main results manually... getting rid of the main files _TOT_ hitters and adding the hitter results from the _View Multi-Team Hitter Analysis_ page.
+
+---
+
+### Multi-team pitchers
+
+The first consideration is to make sure each multi-team pitcher is listed in the regular _data/pitcher_ratings.csv_ file as being on team **TOT**.
+
+Then it's time to move on to getting each multi-team pitcher's _teams_ and _IP_ per team from [baseball-reference.com].
+
+It's going to take some data manipulation to get that info into _data/multi_team_pitchers.xlsx_. What this includes:
+
+-   The final data needs to have these columns (and a row for each team played for):
+
+    -   Year
+    -   Name
+    -   Throws
+    -   Tm
+    -   IP
+
+-   Keep the [baseball-reference.com] tem names as they are... they will be converted to _real_team_id_ by the app before getting loaded into the database.
+
+-   Each pitcher's name will need to be changed to match the exact name Strat uses in the ratings guide (since that will be how the ratings guide links the multi-team pitchers to this data). Strat's name format is _last name, comma, then first initial_... without a space after the comma... eg: _Doe,J_.
+
+-   The _Throws_ column data can be extracted from the pitcher's name from [baseball-reference.com]. They use the following system:
+
+    -   '*' aftre their name means L
+    -   '#' after their name means S
+    -   neither of the above after their name means R
+
+Once the data is in the proper format and gets added to: _data/multi_team_pitchers.xlsx_, save the file, then save it as: _data/pitcher_ratings.csv_.
+
+Now the whole file can get uploaded from the _Upload Multi-Team Pitcher Data_ page. This process will truncate the current _multi_team_pitchers_ table in the database and replace it with the new file's data.
+
+You'll have to merge the multi-team pitcher results into the main results manually... getting rid of the main files _TOT_ pitchers and adding the pitcher results from the _View Multi-Team Pitcher Analysis_ page.
