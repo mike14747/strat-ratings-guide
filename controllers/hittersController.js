@@ -19,7 +19,7 @@ router.get('/season-list', async (req, res, next) => {
 router.get('/multi-team/:year', async (req, res, next) => {
     try {
         const [data, error] = await Hitters.getMultiTeamHittersDataByYear(req.params.year);
-        data ? res.json(calculateMultiTeamHitterValues(data, req.params.year)) : next(error);
+        data ? res.json(await calculateMultiTeamHitterValues(data, req.params.year)) : next(error);
     } catch (error) {
         next(error);
     }

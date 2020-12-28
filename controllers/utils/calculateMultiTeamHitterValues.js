@@ -20,46 +20,60 @@ const ballparkCalculations = (hitter, partials) => {
     let bpSiAdjVsR = 0;
     let clAdjVsR = 0;
 
-    // ballpark calculations vs Lefty pitchers
-    if (hitter.bats === 'L') {
-        bpAdjVsL = ((hitter.st_hr_l / 20) + 0.45) / 2;
-        bpSiAdjVsL = 5 * ((hitter.st_si_l + 8) / 40) - 2;
-        clAdjVsL = 0.12 * hitter.cl_v_l;
-    } else if (hitter.bats === 'R' || hitter.bats === 'S') {
-        bpAdjVsL = ((hitter.st_hr_r / 20) + 0.45) / 2;
-        bpSiAdjVsL = 5 * ((hitter.st_si_r + 8) / 40) - 2;
-        clAdjVsL = 0.12 * hitter.cl_v_l;
-    }
-    if (hitter.bp_si_v_l === 0) {
-        bpSiAdjVsL = 0;
-        clAdjVsL = 0;
-    }
-    const bpSiVsL = clAdjVsL + bpSiAdjVsL;
-    const bpHrVsL = bpAdjVsL * hitter.bp_hr_v_l;
-    const bpHitVsL = bpHrVsL + hitter.bp_si_v_l;
-    const bpObVsL = bpHrVsL + hitter.bp_si_v_l;
-    const bpTbVsL = (4 * bpHrVsL) + hitter.bp_si_v_l;
+    let bpSiVsR = 0;
+    let bpHrVsR = 0;
+    let bpHitVsR = 0;
+    let bpObVsR = 0;
+    let bpTbVsR = 0;
 
-    // ballpark calculations vs Righty pitchers
-    if (hitter.bats === 'L' || hitter.bats === 'S') {
-        bpAdjVsR = ((hitter.st_hr_l / 20) + 0.45) / 2;
-        bpSiAdjVsR = 5 * ((hitter.st_si_l + 8) / 40) - 2;
-        clAdjVsR = 0.12 * hitter.cl_v_r;
-    } else if (hitter.bats === 'R') {
-        bpAdjVsR = ((hitter.st_hr_r / 20) + 0.45) / 2;
-        bpSiAdjVsR = 5 * ((hitter.st_si_r + 8) / 40) - 2;
-        clAdjVsR = 0.12 * hitter.cl_v_r;
-    }
-    if (hitter.bp_si_v_r === 0) {
-        bpSiAdjVsR = 0;
-        clAdjVsR = 0;
-    }
+    let bpSiVsL = 0;
+    let bpHrVsL = 0;
+    let bpHitVsL = 0;
+    let bpObVsL = 0;
+    let bpTbVsL = 0;
 
-    const bpSiVsR = clAdjVsR + bpSiAdjVsR;
-    const bpHrVsR = bpAdjVsR * hitter.bp_hr_v_r;
-    const bpHitVsR = bpHrVsR + hitter.bp_si_v_r;
-    const bpObVsR = bpHrVsR + hitter.bp_si_v_r;
-    const bpTbVsR = (4 * bpHrVsR) + hitter.bp_si_v_r;
+    partials.forEach(t => {
+        // ballpark calculations vs Lefty pitchers
+        if (hitter.bats === 'L') {
+            bpAdjVsL = ((t.st_hr_l / 20) + 0.45) / 2;
+            bpSiAdjVsL = 5 * ((t.st_si_l + 8) / 40) - 2;
+            clAdjVsL = 0.12 * hitter.cl_v_l;
+        } else if (hitter.bats === 'R' || hitter.bats === 'S') {
+            bpAdjVsL = ((t.st_hr_r / 20) + 0.45) / 2;
+            bpSiAdjVsL = 5 * ((t.st_si_r + 8) / 40) - 2;
+            clAdjVsL = 0.12 * hitter.cl_v_l;
+        }
+        if (hitter.bp_si_v_l === 0) {
+            bpSiAdjVsL = 0;
+            clAdjVsL = 0;
+        }
+        bpSiVsL += (clAdjVsL + bpSiAdjVsL) * t.ab / hitter.ab;
+        bpHrVsL += (bpAdjVsL * hitter.bp_hr_v_l) * t.ab / hitter.ab;
+        bpHitVsL += (bpHrVsL + hitter.bp_si_v_l) * t.ab / hitter.ab;
+        bpObVsL += (bpHrVsL + hitter.bp_si_v_l) * t.ab / hitter.ab;
+        bpTbVsL += ((4 * bpHrVsL) + hitter.bp_si_v_l) * t.ab / hitter.ab;
+
+        // ballpark calculations vs Righty pitchers
+        if (hitter.bats === 'L' || hitter.bats === 'S') {
+            bpAdjVsR = ((t.st_hr_l / 20) + 0.45) / 2;
+            bpSiAdjVsR = 5 * ((t.st_si_l + 8) / 40) - 2;
+            clAdjVsR = 0.12 * hitter.cl_v_r;
+        } else if (hitter.bats === 'R') {
+            bpAdjVsR = ((t.st_hr_r / 20) + 0.45) / 2;
+            bpSiAdjVsR = 5 * ((t.st_si_r + 8) / 40) - 2;
+            clAdjVsR = 0.12 * hitter.cl_v_r;
+        }
+        if (hitter.bp_si_v_r === 0) {
+            bpSiAdjVsR = 0;
+            clAdjVsR = 0;
+        }
+
+        bpSiVsR += (clAdjVsR + bpSiAdjVsR) * t.ab / hitter.ab;
+        bpHrVsR += (bpAdjVsR * hitter.bp_hr_v_r) * t.ab / hitter.ab;
+        bpHitVsR += (bpHrVsR + hitter.bp_si_v_r) * t.ab / hitter.ab;
+        bpObVsR += (bpHrVsR + hitter.bp_si_v_r) * t.ab / hitter.ab;
+        bpTbVsR += ((4 * bpHrVsR) + hitter.bp_si_v_r) * t.ab / hitter.ab;
+    });
 
     const obVsL = parseFloat(hitter.ob_v_l) + bpObVsL + bpSiVsL;
     const tbVsL = parseFloat(hitter.tb_v_l) + bpTbVsL + bpSiVsL;
@@ -108,7 +122,6 @@ const mainCalculations = (hitter, partials) => {
 
     // check to see if the AB totals in TOT match the parts in the multi_team_hitters table
     if (hitter.ab === partialABTotal) {
-        console.log('The hitter AB total matches the partials: ', hitter.ab);
         return ballparkCalculations(hitter, partials);
     } else {
         // since they don't match, return as before with no wOPS numbers
@@ -128,6 +141,7 @@ const calculateMultiTeamHitterValues = async (hittersArr, year) => {
         const partialTeams = hittersTeamsAndABPerTeam.filter(hp => hp.hitter === h.hitter_name);
 
         const result = mainCalculations(h, partialTeams);
+        console.log(h.hitter_name, result);
 
         return {
             h_year: h.h_year,
