@@ -16,6 +16,15 @@ router.get('/season-list', async (req, res, next) => {
     }
 });
 
+router.get('/multi-team-season-list', async (req, res, next) => {
+    try {
+        const [data, error] = await Hitters.getSeasonsListWithMultiTeamHitterData();
+        data ? res.json(data) : next(error);
+    } catch (error) {
+        next(error);
+    }
+});
+
 router.get('/multi-team/:year', async (req, res, next) => {
     try {
         const [data, error] = await Hitters.getMultiTeamHittersDataByYear(req.params.year);

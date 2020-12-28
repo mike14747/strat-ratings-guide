@@ -6,6 +6,7 @@ import Navbar from './components/navbar';
 import Home from './pages/home';
 import NoMatch from './pages/noMatch';
 import HitterAnalysis from './pages/hitterAnalysis';
+import MultiTeamHitterAnalysis from './pages/multiTeamHitterAnalysis';
 import UploadHitterData from './pages/uploadHitterData';
 import UploadMultiTeamHitterData from './pages/uploadMultiTeamHitterData';
 import PitcherAnalysis from './pages/pitcherAnalysis';
@@ -24,6 +25,7 @@ function App() {
                 <Switch>
                     <Route exact path="/" component={Home} />
                     <Route exact path="/hitterAnalysis" component={HitterAnalysis} />
+                    <Route exact path="/multiTeamHitterAnalysis" component={MultiTeamHitterAnalysis} />
                     <Route exact path="/uploadHitterData" component={UploadHitterData} />
                     <Route exact path="/uploadMultiTeamHitterData" component={UploadMultiTeamHitterData} />
                     <Route exact path="/pitcherAnalysis" component={PitcherAnalysis} />

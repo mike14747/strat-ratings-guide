@@ -137,11 +137,9 @@ const calculateMultiTeamHitterValues = async (hittersArr, year) => {
     if (error) console.log(error);
 
     const hittersCalculated = hittersArr.map(h => {
-        // find the hitter in the hittersTeamsAndABPerTeam array
         const partialTeams = hittersTeamsAndABPerTeam.filter(hp => hp.hitter === h.hitter_name);
 
         const result = mainCalculations(h, partialTeams);
-        console.log(h.hitter_name, result);
 
         return {
             h_year: h.h_year,

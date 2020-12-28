@@ -16,6 +16,10 @@ function Navbar() {
                 Upload Hitter Data
             </Link>
             <span className="mx-4">|</span>
+            <Link to="/multiTeamHitterAnalysis">
+                View Multi-Team Hitter Analysis
+            </Link>
+            <span className="mx-4">|</span>
             <Link to="/uploadMultiTeamHitterData">
                 Upload Multi-Team Hitter Data
             </Link>
