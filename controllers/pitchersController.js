@@ -101,7 +101,7 @@ router.post('/multi-team', async (req, res, next) => {
         };
         await ensureUploadsExists();
 
-        await file.mv(path.join(__dirname, '/uploads/pitcher_ratings.csv'), error => {
+        await file.mv(path.join(__dirname, '/uploads/multi_team_pitchers.csv'), error => {
             if (error) return next(error);
         });
         const newRecordsInserted = await processMultiTeamPitchersCSV();

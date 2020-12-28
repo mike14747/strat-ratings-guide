@@ -128,6 +128,17 @@ CREATE TABLE `multi_team_hitters` (
 
 -- --------------------------------------------------------
 
+CREATE TABLE `multi_team_pitchers` (
+    `year` int unsigned NOT NULL,
+    `real_team_id` int unsigned NOT NULL,
+    FOREIGN KEY (`real_team_id`) REFERENCES `real_teams`(`real_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    `pitcher` varchar(30) NOT NULL,
+    `throws` varchar(1) NOT NULL,
+    `ip` int unsigned NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
 CREATE TABLE `real_teams` (
     `real_team_id` int unsigned NOT NULL AUTO_INCREMENT,
     `real_team_city` varchar(20) NOT NULL,

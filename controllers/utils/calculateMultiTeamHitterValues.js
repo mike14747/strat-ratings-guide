@@ -1,6 +1,6 @@
 const Hitters = require('../../models/hitters');
 
-const processWColumn = (realTeamId, bphr, w, bpsi) => {
+const processWColumn = (w, bpsi) => {
     let wCol = '';
 
     if (w === 'w') wCol += 'w';
@@ -154,7 +154,7 @@ const calculateMultiTeamHitterValues = async (hittersArr, year) => {
             ob_v_l: result.ob_v_l,
             tb_v_l: result.tb_v_l,
             hr_v_l: result.hr_v_l,
-            w_v_l: processWColumn(h.real_team_id, h.bp_hr_v_l, h.w_v_l, h.bp_si_v_l),
+            w_v_l: processWColumn(h.w_v_l, h.bp_si_v_l),
             dp_v_l: h.dp_v_l,
             wops_v_l: result.wopsVsL,
             so_v_r: h.so_v_r,
@@ -163,7 +163,7 @@ const calculateMultiTeamHitterValues = async (hittersArr, year) => {
             ob_v_r: result.ob_v_r,
             tb_v_r: result.tb_v_r,
             hr_v_r: result.hr_v_r,
-            w_v_r: processWColumn(h.real_team_id, h.bp_hr_v_r, h.w_v_r, h.bp_si_v_r),
+            w_v_r: processWColumn(h.w_v_r, h.bp_si_v_r),
             dp_v_r: h.dp_v_r,
             wops_v_r: result.wopsVsR,
             stealing: h.stealing,
