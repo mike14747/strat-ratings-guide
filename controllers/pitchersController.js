@@ -37,8 +37,7 @@ router.get('/:year', async (req, res, next) => {
 router.get('/multi-team/:year', async (req, res, next) => {
     try {
         const [data, error] = await Pitchers.getMultiTeamPitchersDataByYear(req.params.year);
-        console.log(data);
-        data ? res.json(calculateMultiTeamPitcherValues(data, req.params.year)) : next(error);
+        data ? res.json(await calculateMultiTeamPitcherValues(data, req.params.year)) : next(error);
     } catch (error) {
         next(error);
     }

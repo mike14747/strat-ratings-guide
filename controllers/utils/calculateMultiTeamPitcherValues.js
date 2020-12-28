@@ -98,7 +98,6 @@ const withoutBPCalculations = (pitcher) => {
 };
 
 const mainCalculations = (pitcher, partials) => {
-    // console.log(pitcher.pitcher_name, pitcher.ip);
     const partialIPTotal = partials.reduce((acc, cur) => {
         return acc + parseFloat(cur.ip);
     }, 0);
@@ -117,18 +116,14 @@ const calculateMultiTeamPitcherValues = async (pitchersArr, year) => {
     // get all pitchers from the multi_team_pitchers table
     const [result1, error] = await Pitchers.getMultiTeamPitchersPartialByYear(year);
     const pitchersTeamsAndIPPerTeam = JSON.parse(JSON.stringify(result1));
-    // console.log(pitchersTeamsAndIPPerTeam);
     if (error) console.log(error);
 
     const PitchersCalculated = pitchersArr.map(p => {
-        // console.log(p.pitcher_name);
         const partialTeams = pitchersTeamsAndIPPerTeam.filter(pp => {
-            // console.log(pp.pitcher);
             return pp.pitcher === p.pitcher_name;
         });
 
         const result = mainCalculations(p, partialTeams);
-        // console.log(result);
 
         return {
             p_year: p.p_year,
