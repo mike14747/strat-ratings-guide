@@ -67,7 +67,7 @@ CREATE TABLE `hitter_ratings` (
     `d_lf` varchar(4) NOT NULL,
     `d_cf` varchar(4) NOT NULL,
     `d_rf` varchar(4) NOT NULL,
-    `fielding` varchar(70) NOT NULL,
+    `fielding` varchar(100) NOT NULL,
     `rml_team_id` int unsigned DEFAULT NULL,
     FOREIGN KEY (`rml_team_id`) REFERENCES `rml_teams`(`rml_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     PRIMARY KEY (`hitter_id`)
