@@ -19,11 +19,27 @@
     background-color: rgba(47, 95, 153, 0.2);
 }
 
-.tables th,
 .tables td {
     border: 1px solid #6c757d;
 }
 
 .bg-th {
     background-color: #ffddaa;
+}
+
+.sticky-th {
+    position: sticky;
+    overflow: hidden;
+    top: 0;
+}
+
+.th-inner {
+    border-top: 2px solid #da8911;
+    border-left: 1px solid #da8911;
+    border-right: 1px solid #da8911;
+    border-bottom: 3px solid #da8911;
+}
+
+.small-2 {
+    font-size: 92.5%;
 }

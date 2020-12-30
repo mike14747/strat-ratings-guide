@@ -57,11 +57,15 @@ function MultiTeamHitterAnalysis() {
                 </h4>
             }
             {hitterData && hitterData.length > 0 &&
-                <table className="tables small m-4">
+                <table className="tables small-2 m-4">
                     <thead>
                         <tr>
                             {thLabels.map((th, index) => (
-                                <th key={index} className="text-center p-1 bg-th">{th}</th>
+                                <th key={index} className="text-center p-0 bg-th sticky-th">
+                                    <div className="th-inner p-1">
+                                        {th}
+                                    </div>
+                                </th>
                             ))}
                         </tr>
                     </thead>
@@ -109,7 +113,6 @@ function MultiTeamHitterAnalysis() {
                             </tr>
                         ))}
                     </tbody>
-
                 </table>
             }
         </>
