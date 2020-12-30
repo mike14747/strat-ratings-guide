@@ -35,14 +35,14 @@ function Navbar() {
         },
         {
             text: 'Multi-Team Pitcher Data',
-            url: '/uploadMultiTeamPitcherrData',
+            url: '/uploadMultiTeamPitcherData',
         },
     ];
     return (
-        <div>
+        <>
             <Dropdown buttonText="View Analysis" listItems={viewItems} />
             <Dropdown buttonText="Upload Data" listItems={uploadItems} />
-        </div>
+        </>
     );
 }
 

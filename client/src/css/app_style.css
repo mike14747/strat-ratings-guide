@@ -43,3 +43,13 @@
 .small-2 {
     font-size: 92.5%;
 }
+
+sup {
+    position: relative;
+    font-size: 75%;
+    line-height: 0;
+    vertical-align: baseline;
+    top: -0.25em;
+    text-decoration: underline;
+    font-style: italic;
+}
