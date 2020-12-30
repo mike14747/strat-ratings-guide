@@ -13,7 +13,7 @@ function Navbar() {
         },
         {
             text: 'Pitcher Analysis',
-            url: '/uploadPitcherAnalysis',
+            url: '/pitcherAnalysis',
         },
         {
             text: 'Multi-Team Pitcher Analysis',
@@ -40,8 +40,8 @@ function Navbar() {
     ];
     return (
         <div>
-            <Dropdown buttonText="View" listItems={viewItems} />
-            <Dropdown buttonText="Upload" listItems={uploadItems} />
+            <Dropdown buttonText="View Analysis" listItems={viewItems} />
+            <Dropdown buttonText="Upload Data" listItems={uploadItems} />
         </div>
     );
 }
