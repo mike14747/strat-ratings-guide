@@ -1,8 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import Header from './components/header';
-import Navbar from './components/navbar';
+import Header from './components/header/header';
 import Home from './pages/home';
 import NoMatch from './pages/noMatch';
 import HitterAnalysis from './pages/hitterAnalysis';
@@ -23,7 +22,6 @@ function App() {
         <Router>
             <div className="bg-white">
                 <Header />
-                <Navbar />
                 <Switch>
                     <Route exact path="/" component={Home} />
                     <Route exact path="/hitterAnalysis" component={HitterAnalysis} />
