@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import SeasonDropdown from '../components/seasonDropdown/seasonDropdown';
+import PageHeading from '../components/pageHeading';
 
 function HitterAnalysis() {
     const [season, setSeason] = useState(null);
@@ -43,9 +44,9 @@ function HitterAnalysis() {
 
     return (
         <>
-            <div className="row no-gutters mb-4 bg-gray5 border-bottom border-secondary">
+            <div className="row mb-4 bg-gray5 border-bottom border-secondary">
                 <div className="col-sm-6 text-left">
-                    <h4 className="p-2">Hitter Analysis</h4>
+                    <PageHeading text="Hitter Analysis" />
                 </div>
                 <div className="col-sm-6 text-right">
                     <SeasonDropdown currentSeason={querySeason} buttonText="View Analysis From" listItems={seasonList} handleSelectedSeason={handleSelectedSeason} />

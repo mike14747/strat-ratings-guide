@@ -20,7 +20,7 @@ function App() {
     return (
         // the router can have only one child element
         <Router>
-            <div className="bg-white">
+            <div className="container-fluid bg-white">
                 <Header />
                 <Switch>
                     <Route exact path="/" component={Home} />

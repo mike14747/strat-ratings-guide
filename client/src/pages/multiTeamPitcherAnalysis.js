@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import SeasonDropdown from '../components/seasonDropdown/seasonDropdown';
+import PageHeading from '../components/pageHeading';
 
 function MultiTeamPitcherAnalysis() {
     const [season, setSeason] = useState(null);
@@ -46,9 +47,9 @@ function MultiTeamPitcherAnalysis() {
 
     return (
         <>
-            <div className="row no-gutters mb-4 bg-gray5 border-bottom border-secondary">
+            <div className="row mb-4 bg-gray5 border-bottom border-secondary">
                 <div className="col-sm-6 text-left">
-                    <h4 className="p-2">Pitcher Analysis</h4>
+                    <PageHeading text="Multi-team Pitcher Analysis" />
                 </div>
                 <div className="col-sm-6 text-right">
                     <SeasonDropdown currentSeason={querySeason} buttonText="View Analysis From" listItems={seasonList} handleSelectedSeason={handleSelectedSeason} />
