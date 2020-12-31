@@ -46,10 +46,10 @@
 
 sup {
     position: relative;
-    font-size: 75%;
+    font-size: 60%;
     line-height: 0;
     vertical-align: baseline;
-    top: -0.25em;
-    text-decoration: underline;
+    top: -0.50em;
+    /* text-decoration: underline; */
     font-style: italic;
 }

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 const Dropdown = ({ buttonText, listItems }) => {
     return (
-        <div className="d-flex justify-content-center align-items-center border-right border-secondary">
+        <div className="d-flex justify-content-center align-items-center">
             <div className="navdropdown">
                 <div className="navdropbtn">{buttonText}<i className="arrow down"></i></div>
                 <div className="navdropdown-content">
