@@ -4,8 +4,8 @@ const processPitchersCSV = require('./utils/processPitchersCSV');
 const processMultiTeamPitchersCSV = require('./utils/processMultiTeamPitchersCSV');
 const calculatePitcherValues = require('./utils/calculatePitcherValues');
 const calculateMultiTeamPitcherValues = require('./utils/calculateMultiTeamPitcherValues');
+const ensureUploadsExists = require('./utils/ensureUploadsExists');
 const path = require('path');
-const fs = require('fs');
 
 router.get('/season-list', async (req, res, next) => {
     try {
@@ -52,19 +52,6 @@ router.post('/', async (req, res, next) => {
         const [, error] = await Pitchers.truncatePitchersTable();
         if (error) return next(error);
 
-        const ensureUploadsExists = async () => {
-            return new Promise((resolve, reject) => {
-                fs.promises.access(path.join(__dirname, '/uploads'), fs.constants.F_OK)
-                    .then(() => resolve())
-                    .catch(() => {
-                        fs.promises.mkdir(path.join(__dirname, '/uploads'))
-                            .then(() => resolve())
-                            .catch(error => {
-                                throw new Error(error);
-                            });
-                    });
-            });
-        };
         await ensureUploadsExists();
 
         await file.mv(path.join(__dirname, '/uploads/pitcher_ratings.csv'), error => {
@@ -86,19 +73,6 @@ router.post('/multi-team', async (req, res, next) => {
         const [, error] = await Pitchers.truncateMultiTeamPitchersTable();
         if (error) return next(error);
 
-        const ensureUploadsExists = async () => {
-            return new Promise((resolve, reject) => {
-                fs.promises.access(path.join(__dirname, '/uploads'), fs.constants.F_OK)
-                    .then(() => resolve())
-                    .catch(() => {
-                        fs.promises.mkdir(path.join(__dirname, '/uploads'))
-                            .then(() => resolve())
-                            .catch(error => {
-                                throw new Error(error);
-                            });
-                    });
-            });
-        };
         await ensureUploadsExists();
 
         await file.mv(path.join(__dirname, '/uploads/multi_team_pitchers.csv'), error => {
