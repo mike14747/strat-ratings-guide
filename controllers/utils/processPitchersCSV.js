@@ -104,12 +104,8 @@ const processPitchersCSV = async () => {
                     trim: true,
                 }),
             )
-            .on('data', async row => {
-                csvData.push(row);
-            })
-            .on('error', error => {
-                reject(error);
-            })
+            .on('data', row => csvData.push(row))
+            .on('error', error => reject(error))
             .on('end', async function () {
                 const numInserted = await processInsertData(csvData) || 0;
                 try {
