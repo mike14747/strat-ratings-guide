@@ -6,6 +6,7 @@ const calculatePitcherValues = require('./utils/calculatePitcherValues');
 const calculateMultiTeamPitcherValues = require('./utils/calculateMultiTeamPitcherValues');
 const ensureUploadsExists = require('./utils/ensureUploadsExists');
 const path = require('path');
+const fileUpload = require('express-fileupload');
 
 router.get('/season-list', async (req, res, next) => {
     try {
@@ -43,7 +44,7 @@ router.get('/multi-team/:year', async (req, res, next) => {
     }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', fileUpload(), async (req, res, next) => {
     try {
         if (req.files === null) return res.status(400).json({ message: 'No file was uploaded!' });
 
@@ -64,7 +65,7 @@ router.post('/', async (req, res, next) => {
     }
 });
 
-router.post('/multi-team', async (req, res, next) => {
+router.post('/multi-team', fileUpload(), async (req, res, next) => {
     try {
         if (req.files === null) return res.status(400).json({ message: 'No file was uploaded!' });
 

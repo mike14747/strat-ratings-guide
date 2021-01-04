@@ -57,12 +57,12 @@ const ballparkCalculations = (hitter) => {
         bpSiAdjVsR = 0;
         clAdjVsR = 0;
     }
-
     const bpSiVsR = clAdjVsR + bpSiAdjVsR;
     const bpHrVsR = bpAdjVsR * hitter.bp_hr_v_r;
     const bpHitVsR = bpHrVsR + hitter.bp_si_v_r;
     const bpObVsR = bpHrVsR + hitter.bp_si_v_r;
     const bpTbVsR = (4 * bpHrVsR) + hitter.bp_si_v_r;
+    // end ballpark calculations
 
     const obVsL = parseFloat(hitter.ob_v_l) + bpObVsL + bpSiVsL;
     const tbVsL = parseFloat(hitter.tb_v_l) + bpTbVsL + bpSiVsL;

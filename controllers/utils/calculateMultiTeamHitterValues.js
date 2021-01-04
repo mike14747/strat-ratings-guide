@@ -67,7 +67,6 @@ const ballparkCalculations = (hitter, partials) => {
             bpSiAdjVsR = 0;
             clAdjVsR = 0;
         }
-
         bpSiVsR += (clAdjVsR + bpSiAdjVsR) * t.ab / hitter.ab;
         bpHrVsR += (bpAdjVsR * hitter.bp_hr_v_r) * t.ab / hitter.ab;
         bpHitVsR += (bpHrVsR + hitter.bp_si_v_r) * t.ab / hitter.ab;

@@ -19,9 +19,7 @@ const ballparkCalculations = (pitcher) => {
     // ballpark calculations vs Lefty hitters
     bpAdjVsL = ((pitcher.st_hr_l / 20) + 0.45) / 2;
     bpSiAdjVsL = 5 * ((pitcher.st_si_l + 8) / 40) - 2;
-    if (pitcher.bp_si_v_l === 0) {
-        bpSiAdjVsL = 0;
-    }
+    if (pitcher.bp_si_v_l === 0) bpSiAdjVsL = 0;
     const bpSiVsL = bpSiAdjVsL;
     const bpHrVsL = bpAdjVsL * pitcher.bp_hr_v_l;
     const bpHitVsL = bpHrVsL + pitcher.bp_si_v_l;
@@ -31,9 +29,7 @@ const ballparkCalculations = (pitcher) => {
     // ballpark calculations vs Righty hitters
     bpAdjVsR = ((pitcher.st_hr_r / 20) + 0.45) / 2;
     bpSiAdjVsR = 5 * ((pitcher.st_si_r + 8) / 40) - 2;
-    if (pitcher.bp_si_v_r === 0) {
-        bpSiAdjVsR = 0;
-    }
+    if (pitcher.bp_si_v_r === 0) bpSiAdjVsR = 0;
     const bpSiVsR = bpSiAdjVsR;
     const bpHrVsR = bpAdjVsR * pitcher.bp_hr_v_r;
     const bpHitVsR = bpHrVsR + pitcher.bp_si_v_r;

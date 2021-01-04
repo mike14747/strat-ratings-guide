@@ -27,9 +27,7 @@ const ballparkCalculations = (pitcher, partials) => {
         // ballpark calculations vs Lefty hitters
         bpAdjVsL = ((t.st_hr_l / 20) + 0.45) / 2;
         bpSiAdjVsL = 5 * ((t.st_si_l + 8) / 40) - 2;
-        if (pitcher.bp_si_v_l === 0) {
-            bpSiAdjVsL = 0;
-        }
+        if (pitcher.bp_si_v_l === 0) bpSiAdjVsL = 0;
         bpSiVsL += (bpSiAdjVsL) * t.ip / parseFloat(pitcher.ip);
         bpHrVsL += (bpAdjVsL * pitcher.bp_hr_v_l) * t.ip / parseFloat(pitcher.ip);
         bpHitVsL += (bpHrVsL + pitcher.bp_si_v_l) * t.ip / parseFloat(pitcher.ip);
@@ -39,10 +37,7 @@ const ballparkCalculations = (pitcher, partials) => {
         // ballpark calculations vs Righty hitters
         bpAdjVsR = ((t.st_hr_r / 20) + 0.45) / 2;
         bpSiAdjVsR = 5 * ((t.st_si_r + 8) / 40) - 2;
-        if (pitcher.bp_si_v_r === 0) {
-            bpSiAdjVsR = 0;
-        }
-
+        if (pitcher.bp_si_v_r === 0) bpSiAdjVsR = 0;
         bpSiVsR += (bpSiAdjVsR) * t.ip / parseFloat(pitcher.ip);
         bpHrVsR += (bpAdjVsR * pitcher.bp_hr_v_r) * t.ip / parseFloat(pitcher.ip);
         bpHitVsR += (bpHrVsR + pitcher.bp_si_v_r) * t.ip / parseFloat(pitcher.ip);
