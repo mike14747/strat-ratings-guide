@@ -29,7 +29,8 @@ router.get('/multi-team-season-list', async (req, res, next) => {
 router.get('/:year', async (req, res, next) => {
     try {
         const [data, error] = await Pitchers.getPitchersDataByYear(req.params.year);
-        data ? res.json(calculatePitcherValues(data)) : next(error);
+        const [multiData, multiError] = await Pitchers.getMultiTeamPitchersPartialByYear(req.params.year);
+        data && multiData ? res.json(calculatePitcherValues(data, multiData)) : next(error || multiError);
     } catch (error) {
         next(error);
     }

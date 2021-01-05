@@ -15,7 +15,7 @@ function PitcherAnalysis() {
 
     const handleSelectedSeason = season => setSeason(season);
 
-    const thLabels = ['Year', 'Team', 'Pitcher', 'Throws', 'IP', 'SO v L', 'BB v L', 'Hit v L', 'OB v L', 'TB v L', 'HR v L', 'BP v L', 'DP v L', 'wOPS v L', 'SO v R', 'BB v R', 'Hit v R', 'OB v R', 'TB v R', 'HR v R', 'BP v R', 'DP v R', 'wOPS v R', 'Hold', 'Endurance', 'Fielding', 'Balk', 'WP', 'Batting', 'Stl', 'Spd', 'RML Team'];
+    const thLabels = ['Year', 'Team', 'Pitcher', 'Throws', 'IP', 'SO v L', 'BB v L', 'Hit v L', 'OB v L', 'TB v L', 'HR v L', 'si v L', 'DP v L', 'wOPS v L', 'SO v R', 'BB v R', 'Hit v R', 'OB v R', 'TB v R', 'HR v R', 'si v R', 'DP v R', 'wOPS v R', 'Hold', 'Endurance', 'Fielding', 'Balk', 'WP', 'Batting', 'Stl', 'Spd', 'RML Team'];
 
     useEffect(() => {
         axios.get('/api/pitchers/season-list')
