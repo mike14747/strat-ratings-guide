@@ -3,8 +3,8 @@
 }
 
 .tables {
-    /* display: block; */
-    /* overflow-x: auto; */
+    /* display: block;
+    overflow-x: auto; */
     white-space: nowrap;
     border: 1px solid #6c757d;
     border-collapse: collapse;
