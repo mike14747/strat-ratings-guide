@@ -8,16 +8,8 @@ function Navbar() {
             url: '/hitterAnalysis',
         },
         {
-            text: 'Multi-Team Hitter Analysis',
-            url: '/multiTeamHitterAnalysis',
-        },
-        {
             text: 'Pitcher Analysis',
             url: '/pitcherAnalysis',
-        },
-        {
-            text: 'Multi-Team Pitcher Analysis',
-            url: '/multiTeamPitcherAnalysis',
         },
     ];
     const uploadItems = [

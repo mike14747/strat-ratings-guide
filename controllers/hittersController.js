@@ -3,7 +3,6 @@ const Hitters = require('../models/hitters');
 const processHittersCSV = require('./utils/processHittersCSV');
 const processMultiTeamHittersCSV = require('./utils/processMultiTeamHittersCSV');
 const calculateHitterValues = require('./utils/calculateHitterValues');
-const calculateMultiTeamHitterValues = require('./utils/calculateMultiTeamHitterValues');
 const ensureUploadsExists = require('./utils/ensureUploadsExists');
 const path = require('path');
 const fileUpload = require('express-fileupload');
@@ -12,24 +11,6 @@ router.get('/season-list', async (req, res, next) => {
     try {
         const [data, error] = await Hitters.getSeasonsListWithHitterData();
         data ? res.json(data) : next(error);
-    } catch (error) {
-        next(error);
-    }
-});
-
-router.get('/multi-team-season-list', async (req, res, next) => {
-    try {
-        const [data, error] = await Hitters.getSeasonsListWithMultiTeamHitterData();
-        data ? res.json(data) : next(error);
-    } catch (error) {
-        next(error);
-    }
-});
-
-router.get('/multi-team/:year', async (req, res, next) => {
-    try {
-        const [data, error] = await Hitters.getMultiTeamHittersDataByYear(req.params.year);
-        data ? res.json(await calculateMultiTeamHitterValues(data, req.params.year)) : next(error);
     } catch (error) {
         next(error);
     }
