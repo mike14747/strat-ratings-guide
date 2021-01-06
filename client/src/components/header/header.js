@@ -4,7 +4,7 @@ import Navbar from './subcomponents/navbar';
 
 function Header() {
     return (
-        <div id="header" className="row">
+        <div id="header" className="row no-gutters">
             <div className="col-md-auto d-flex justify-content-start align-items-stretch border-bottom border-secondary">
                 <div className="d-flex align-items-center">
                     <img src="/images/analyze.png" alt="Strat Ratings Guide Analysis" width="30px" height="33px" className="mx-3" />

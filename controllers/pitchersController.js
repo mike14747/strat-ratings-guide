@@ -3,7 +3,6 @@ const Pitchers = require('../models/pitchers');
 const processPitchersCSV = require('./utils/processPitchersCSV');
 const processMultiTeamPitchersCSV = require('./utils/processMultiTeamPitchersCSV');
 const calculatePitcherValues = require('./utils/calculatePitcherValues');
-const calculateMultiTeamPitcherValues = require('./utils/calculateMultiTeamPitcherValues');
 const ensureUploadsExists = require('./utils/ensureUploadsExists');
 const path = require('path');
 const fileUpload = require('express-fileupload');
@@ -17,28 +16,11 @@ router.get('/season-list', async (req, res, next) => {
     }
 });
 
-router.get('/multi-team-season-list', async (req, res, next) => {
-    try {
-        const [data, error] = await Pitchers.getSeasonsListWithMultiTeamPitcherData();
-        data ? res.json(data) : next(error);
-    } catch (error) {
-        next(error);
-    }
-});
-
 router.get('/:year', async (req, res, next) => {
     try {
         const [data, error] = await Pitchers.getPitchersDataByYear(req.params.year);
-        data ? res.json(calculatePitcherValues(data)) : next(error);
-    } catch (error) {
-        next(error);
-    }
-});
-
-router.get('/multi-team/:year', async (req, res, next) => {
-    try {
-        const [data, error] = await Pitchers.getMultiTeamPitchersDataByYear(req.params.year);
-        data ? res.json(await calculateMultiTeamPitcherValues(data, req.params.year)) : next(error);
+        const [multiData, multiError] = await Pitchers.getMultiTeamPitchersPartialByYear(req.params.year);
+        data && multiData ? res.json(calculatePitcherValues(data, multiData)) : next(error || multiError);
     } catch (error) {
         next(error);
     }

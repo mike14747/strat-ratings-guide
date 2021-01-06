@@ -9,8 +9,8 @@ const Dropdown = ({ buttonText, listItems }) => {
             <div className="navdropdown">
                 <div className="navdropbtn">{buttonText}<i className="arrow down"></i></div>
                 <div className="navdropdown-content">
-                    {listItems.map(item => (
-                        <div className="item" key={item.id}>
+                    {listItems.map((item, index) => (
+                        <div className="item" key={index}>
                             <Link to={item.url}>{item.text}</ Link>
                         </div>
                     ))}
