@@ -35,13 +35,15 @@ router.post('/', fileUpload(), async (req, res, next) => {
         const [, error] = await Pitchers.truncatePitchersTable();
         if (error) return next(error);
 
-        await ensureUploadsExists();
-
-        await file.mv(path.join(__dirname, '/uploads/pitcher_ratings.csv'), error => {
-            if (error) return next(error);
-        });
-        const newRecordsInserted = await processPitchersCSV();
-        res.status(201).json({ message: `Successfully added ${newRecordsInserted} new pitcher row(s) to the database!` });
+        ensureUploadsExists()
+            .then(async () => {
+                await file.mv(path.join(__dirname, '/uploads/pitcher_ratings.csv'), error => {
+                    if (error) return next(error);
+                });
+                const newRecordsInserted = await processPitchersCSV();
+                res.status(201).json({ message: `Successfully added ${newRecordsInserted} new pitcher row(s) to the database!` });
+            })
+            .catch(error => next(error));
     } catch (error) {
         next(error);
     }
@@ -56,13 +58,15 @@ router.post('/multi-team', fileUpload(), async (req, res, next) => {
         const [, error] = await Pitchers.truncateMultiTeamPitchersTable();
         if (error) return next(error);
 
-        await ensureUploadsExists();
-
-        await file.mv(path.join(__dirname, '/uploads/multi_team_pitchers.csv'), error => {
-            if (error) return next(error);
-        });
-        const newRecordsInserted = await processMultiTeamPitchersCSV();
-        res.status(201).json({ message: `Successfully added ${newRecordsInserted} new pitcher row(s) to the database!` });
+        ensureUploadsExists()
+            .then(async () => {
+                await file.mv(path.join(__dirname, '/uploads/multi_team_pitchers.csv'), error => {
+                    if (error) return next(error);
+                });
+                const newRecordsInserted = await processMultiTeamPitchersCSV();
+                res.status(201).json({ message: `Successfully added ${newRecordsInserted} new pitcher row(s) to the database!` });
+            })
+            .catch(error => next(error));
     } catch (error) {
         next(error);
     }

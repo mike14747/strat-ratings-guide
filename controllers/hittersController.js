@@ -35,13 +35,15 @@ router.post('/', fileUpload(), async (req, res, next) => {
         const [, error] = await Hitters.truncateHittersTable();
         if (error) return next(error);
 
-        await ensureUploadsExists();
-
-        await file.mv(path.join(__dirname, '/uploads/hitter_ratings.csv'), error => {
-            if (error) return next(error);
-        });
-        const newRecordsInserted = await processHittersCSV();
-        res.status(201).json({ message: `Successfully added ${newRecordsInserted} new hitter row(s) to the database!` });
+        ensureUploadsExists()
+            .then(async () => {
+                await file.mv(path.join(__dirname, '/uploads/hitter_ratings.csv'), error => {
+                    if (error) return next(error);
+                });
+                const newRecordsInserted = await processHittersCSV();
+                return res.status(201).json({ message: `Successfully added ${newRecordsInserted} new hitter row(s) to the database!` });
+            })
+            .catch(error => next(error));
     } catch (error) {
         next(error);
     }
@@ -56,13 +58,15 @@ router.post('/multi-team', fileUpload(), async (req, res, next) => {
         const [, error] = await Hitters.truncateMultiTeamHittersTable();
         if (error) return next(error);
 
-        await ensureUploadsExists();
-
-        await file.mv(path.join(__dirname, '/uploads/multi_team_hitters.csv'), error => {
-            if (error) return next(error);
-        });
-        const newRecordsInserted = await processMultiTeamHittersCSV();
-        res.status(201).json({ message: `Successfully added ${newRecordsInserted} new multi-team hitter row(s) to the database!` });
+        ensureUploadsExists()
+            .then(async () => {
+                await file.mv(path.join(__dirname, '/uploads/multi_team_hitters.csv'), error => {
+                    if (error) return next(error);
+                });
+                const newRecordsInserted = await processMultiTeamHittersCSV();
+                return res.status(201).json({ message: `Successfully added ${newRecordsInserted} new multi-team hitter row(s) to the database!` });
+            })
+            .catch(error => next(error));
     } catch (error) {
         next(error);
     }
