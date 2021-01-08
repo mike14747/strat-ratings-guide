@@ -1,9 +1,9 @@
 const processBpColumn = (bpsi) => bpsi === 0 ? '*' : '';
 
-const ballparkCalculations = (pitcher) => {
-    const obValue = 1.2;
-    const tbValue = 0.845;
+const obValue = 1.2;
+const tbValue = 0.845;
 
+const ballparkCalculations = (pitcher) => {
     let bpAdjVsL = 0;
     let bpSiAdjVsL = 0;
     let bpAdjVsR = 0;
@@ -62,9 +62,6 @@ const ballparkCalculations = (pitcher) => {
 };
 
 const multiBallparkCalculations = (pitcher, partials) => {
-    const obValue = 1.2;
-    const tbValue = 0.845;
-
     let bpAdjVsL = 0;
     let bpSiAdjVsL = 0;
     let bpAdjVsR = 0;
@@ -155,18 +152,9 @@ const mainCalculations = (pitcher, partials = []) => {
     if (pitcher.real_team_id !== 1) {
         return ballparkCalculations(pitcher);
     } else {
-        const partialIPTotal = partials.reduce((acc, cur) => {
-            return acc + parseFloat(cur.ip);
-        }, 0);
-
         // check to see if the IP totals in TOT match the parts in the multi_team_pitchers table
-        if (pitcher.ip === Math.round(partialIPTotal)) {
-            return multiBallparkCalculations(pitcher, partials);
-        } else {
-            // since they don't match, return as before with no wOPS numbers
-            console.log('The IP totals do NOT match:', pitcher.ip, Math.round(partialIPTotal));
-            return withoutBPCalculations(pitcher);
-        }
+        const partialIPTotal = partials.reduce((acc, cur) => acc + parseFloat(cur.ip), 0);
+        return pitcher.ip === Math.round(partialIPTotal) ? multiBallparkCalculations(pitcher, partials) : withoutBPCalculations(pitcher);
     }
 };
 

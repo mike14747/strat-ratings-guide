@@ -7,10 +7,10 @@ const processWColumn = (w, bpsi) => {
     return wCol;
 };
 
-const ballparkCalculations = (hitter) => {
-    const obValue = 1.2;
-    const tbValue = 0.845;
+const obValue = 1.2;
+const tbValue = 0.845;
 
+const ballparkCalculations = (hitter) => {
     let bpAdjVsL = 0;
     let bpSiAdjVsL = 0;
     let clAdjVsL = 0;
@@ -85,9 +85,6 @@ const ballparkCalculations = (hitter) => {
 };
 
 const multiBallparkCalculations = (hitter, partials) => {
-    const obValue = 1.2;
-    const tbValue = 0.845;
-
     let bpAdjVsL = 0;
     let bpSiAdjVsL = 0;
     let clAdjVsL = 0;
@@ -194,18 +191,9 @@ const mainCalculations = (hitter, partials = []) => {
     if (hitter.real_team_id !== 1) {
         return ballparkCalculations(hitter);
     } else {
-        const partialABTotal = partials.reduce((acc, cur) => {
-            return acc + cur.ab;
-        }, 0);
-
         // check to see if the AB totals in TOT match the parts in the multi_team_hitters table
-        if (hitter.ab === partialABTotal) {
-            return multiBallparkCalculations(hitter, partials);
-        } else {
-            // since they don't match, return as before with no wOPS numbers
-            console.log('The AB totals do NOT match:', hitter.ab);
-            return withoutBPCalculations(hitter);
-        }
+        const partialABTotal = partials.reduce((acc, cur) => acc + cur.ab, 0);
+        return hitter.ab === partialABTotal ? multiBallparkCalculations(hitter, partials) : withoutBPCalculations(hitter);
     }
 };
 
