@@ -107,13 +107,14 @@ const processPitchersCSV = async () => {
             .on('data', row => csvData.push(row))
             .on('error', error => reject(error))
             .on('end', async function () {
-                const numInserted = await processInsertData(csvData) || 0;
                 try {
                     await fs.promises.unlink(path.join(__dirname, '../uploads/pitcher_ratings.csv'));
+                    const numInserted = await processInsertData(csvData) || 0;
+                    resolve(numInserted);
                 } catch (error) {
                     console.log(error);
+                    reject(error);
                 }
-                resolve(numInserted);
             });
     });
 };
