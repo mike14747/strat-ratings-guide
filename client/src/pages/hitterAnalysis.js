@@ -46,7 +46,12 @@ function HitterAnalysis() {
                     setHitterData(response.data);
                     setIsLoaded(true);
                 })
-                .catch(error => console.error(error.message));
+                .catch(error => {
+                    setHitterData(null);
+                    setIsLoaded(true);
+                    setErrorMessage('An error occurred fetching hitter data');
+                    console.error(error.message);
+                });
         }
     }, [querySeason]);
 
