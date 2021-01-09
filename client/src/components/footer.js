@@ -6,6 +6,6 @@ function Footer() {
             &copy; 2020 Strat Ratings Guide
         </div>
     );
-};
+}
 
 export default Footer;
