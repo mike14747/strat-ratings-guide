@@ -1,17 +1,18 @@
 ### Steps from receiving the new ratings guide to showing all the wOPS numbers
 
--   Convert _Ballpark.text_ team by team singles/homers data to _data/bp_ratings.xlsx_ where the formatted data column can be added to _data/bp_ratings.sql_, then imported to the _ratings_guide_ database in MySQL Workbench using copy/paste of the whole _data/bp_ratings.sql_ file..
+Convert _Ballpark.txt_ team by team singles/homers data to _data/bp_ratings.xlsx_ where the formatted data column can be added to _data/bp_ratings.sql_, then imported to the _ratings_guide_ database in MySQL Workbench using copy/paste of the whole _data/bp_ratings.sql_ file..
 
--   Convert the hitter and pitcher data files into database ready data:
+Convert the hitter and pitcher data files into database ready data:
 
-    -   Open the _Hitters.xls_ and _Pitchers.xls_ files that come in the ratings disk
-    -   Save each to: _Hitters.xlsx_ and _Pitchers.xlsx_ (this will use Excel's latest format and protect the original data from alteration).
-    -   Rename the lone sheet in each file to _Original_, then copy it to the end and rename the name sheet to _Modified_.
-    -   Working from the _Modified_ sheet in each file, set the font to _Calibri_ and _12pt_.
-    -   Set the top row to a light gray background, then freeze the top row in each file.
-    -   Set the row height for all rows to _18.00_.
-    -   Remove all hitters and pitchers that don't have a blank **Location** cell (there will be many that have M or X). **However**, you might find that a couple low IP, carded pitchers might have been part of the X players group and have to be brough back in from the original file.
-    -   Remove all uncarded players. This will be easy to do for hitters (100+ AB)... harder for pitchers.
+-   Open the _Hitters.xls_ and _Pitchers.xls_ files that come in the ratings disk
+-   Save each to: _Hitters.xlsx_ and _Pitchers.xlsx_ (this will use Excel's latest format and protect the original data from alteration).
+-   Rename the lone sheet in each file to _Original_, then copy it to the end and rename the name sheet to _Modified_.
+-   Working from the _Modified_ sheet in each file, set the font to _Calibri_ and _12pt_.
+-   Set the top row to a light gray background, then freeze the top row in each file.
+-   Set the row height for all rows to _18.00_.
+-   Remove all hitters and pitchers that don't have a blank **Location** cell (there will be many that have M or X). **However**, you might find that a couple low IP, carded pitchers might have been part of the X players group and have to be brough back in from the original file.
+-   Remove all uncarded players. This will be easy to do for hitters (100+ AB)... harder for pitchers.
+-   Make sure Strat's and baseball-reference's real team abbreviations haven't changed from what they've been.
 
 Modifying the columns in _Hitters.xls_ and _Pitchers.xls_ files:
 
@@ -45,7 +46,7 @@ Column names for the _Pitchers.xls_, _data/pitcher_ratings.xlsx_ and especially 
 **Important:** When uploading hitter and pitcher data (_data/hitter_ratings.csv_ and _data/pitcher_ratings.csv_):
 
 -   Use the _data/pitcher_ratings.xlsx_ file first. Once that is populated with all the new season's data, save the file as _data/pitcher_ratings.csv_. Do the same thing for the hitters files.
--   **Note:** This next step isn't necessary if you added an apostrophe as a prefix to each pitcher's fielding rating. 
+-   **Note:** This next step isn't necessary if you added an apostrophe as a prefix to each pitcher's fielding rating.
     -   While _data/pitcher_ratings.csv_ is still open, upload the data via the '**Upload Pitcher Data**' link on the website. If you close _data/pitcher_ratings.csv_ before uploading it, the fielding column will be formatted like dates and it will fail to import properly into the database.
 
 ---
@@ -87,7 +88,7 @@ It's going to take some data manipulation to get that info into _data/multi_team
 
 -   The _Bats_ column data can be extracted from the hitter's name from [baseball-reference.com]. They use the following system:
 
-    -   '*' aftre their name means L
+    -   '\*' aftre their name means L
     -   '#' after their name means S
     -   neither of the above after their name means R
 
@@ -121,7 +122,7 @@ It's going to take some data manipulation to get that info into _data/multi_team
 
 -   The _Throws_ column data can be extracted from the pitcher's name from [baseball-reference.com]. They use the following system:
 
-    -   '*' aftre their name means L
+    -   '\*' aftre their name means L
     -   '#' after their name means S
     -   neither of the above after their name means R
 
