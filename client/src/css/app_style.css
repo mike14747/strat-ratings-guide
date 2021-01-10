@@ -59,3 +59,10 @@ sup {
     /* text-decoration: underline; */
     font-style: italic;
 }
+
+.empty-result {
+    color: #dc3545;
+    font-weight: 600;
+    font-size: 120%;
+    margin-bottom: 1rem;
+}
