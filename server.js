@@ -28,6 +28,7 @@ app.use(require('./controllers/testController'));
 
 dbTest()
     .then(() => {
+        app.use('/api/test', authenticateToken, require('./controllers/testController'));
         app.use('/api/auth', require('./controllers/authController'));
         app.use('/api', authenticateToken, require('./controllers'));
     })
