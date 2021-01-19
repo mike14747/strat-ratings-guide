@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Hitters = require('../models/hitters');
+const RealTeam = require('../models/realTeam');
 const processHittersCSV = require('./utils/processHittersCSV');
 const processMultiTeamHittersCSV = require('./utils/processMultiTeamHittersCSV');
 const calculateHitterValues = require('./utils/calculateHitterValues');
@@ -29,22 +30,17 @@ router.get('/:year', async (req, res, next) => {
 router.post('/', fileUpload(), async (req, res, next) => {
     try {
         if (req.files === null) return res.status(400).json({ message: 'No file was uploaded!' });
-
         const file = req.files.file;
 
-        const [, err] = await Hitters.truncateHittersTable();
-        if (err) return next(err);
-
         await ensureUploadsExists();
-
         await file.mv(path.join(__dirname, '/uploads/hitter_ratings.csv'), error => {
             if (error) return next(error);
         });
 
-        const processedHitters = await processHittersCSV();
-
+        const [realTeams] = await RealTeam.getAllRealTeams();
+        const processedHitters = await processHittersCSV(realTeams);
         const [data, error] = await Hitters.addNewHittersData(processedHitters);
-        data ? res.status(201).json({ message: `Successfully added ${data.affectedRows} new hitter row(s) to the database!` }) : next(error);
+        data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!` }) : next(error);
     } catch (error) {
         next(error);
     }
