@@ -32,18 +32,19 @@ router.post('/', fileUpload(), async (req, res, next) => {
 
         const file = req.files.file;
 
-        const [, error] = await Hitters.truncateHittersTable();
-        if (error) return next(error);
+        const [, err] = await Hitters.truncateHittersTable();
+        if (err) return next(err);
 
-        ensureUploadsExists()
-            .then(async () => {
-                await file.mv(path.join(__dirname, '/uploads/hitter_ratings.csv'), error => {
-                    if (error) return next(error);
-                });
-                const newRecordsInserted = await processHittersCSV();
-                return res.status(201).json({ message: `Successfully added ${newRecordsInserted} new hitter row(s) to the database!` });
-            })
-            .catch(error => next(error));
+        await ensureUploadsExists();
+
+        await file.mv(path.join(__dirname, '/uploads/hitter_ratings.csv'), error => {
+            if (error) return next(error);
+        });
+
+        const processedHitters = await processHittersCSV();
+
+        const [data, error] = await Hitters.addNewHittersData(processedHitters);
+        data ? res.status(201).json({ message: `Successfully added ${data.affectedRows} new hitter row(s) to the database!` }) : next(error);
     } catch (error) {
         next(error);
     }

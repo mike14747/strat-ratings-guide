@@ -1,7 +1,6 @@
 const parse = require('csv-parse');
 const fs = require('fs');
 const path = require('path');
-const Hitters = require('../../models/hitters');
 const RealTeam = require('../../models/realTeam');
 
 const convertPositionlFielding = (rating) => {
@@ -44,8 +43,8 @@ const processInsertData = async (csvData) => {
 
         const modifiedArray = csvData.map(row => {
             const { hitterName, bats } = convertNameToNameAndBats(row.HITTERS);
-            const { bp: bpVsL, w: wVsL, bpsi: bpSiVsL } = convertBpToBpWAndBpSi(`${row.BP_v_lhp}`);
-            const { bp: bpVsR, w: wVsR, bpsi: bpSiVsR } = convertBpToBpWAndBpSi(`${row.BP_v_rhp}`);
+            const { bp: bpVsL, w: wVsL, bpsi: bpSiVsL } = convertBpToBpWAndBpSi(row.BP_v_lhp);
+            const { bp: bpVsR, w: wVsR, bpsi: bpSiVsR } = convertBpToBpWAndBpSi(row.BP_v_rhp);
 
             const { real_team_abbrev: realTeam, real_team_id: realTeamId } = realTeams.find((team) => {
                 return team.strat_abbrev === row.TM;
@@ -101,9 +100,7 @@ const processInsertData = async (csvData) => {
             return Object.values(hitterObj);
         });
 
-        const [data, error] = await Hitters.addNewHittersData(modifiedArray);
-        if (error) console.log(error);
-        return (data && data.affectedRows) || 0;
+        return modifiedArray;
     } catch (error) {
         console.log(error.message);
     }
@@ -122,13 +119,16 @@ const processHittersCSV = async () => {
                     trim: true,
                 }),
             )
-            .on('data', row => csvData.push(row))
+            .on('data', row => {
+                csvData.push(row);
+                // console.log(row);
+            })
             .on('error', error => reject(error))
             .on('end', async function () {
                 try {
                     await fs.promises.unlink(path.join(__dirname, '../uploads/hitter_ratings.csv'));
-                    const numInserted = await processInsertData(csvData) || 0;
-                    resolve(numInserted);
+                    const processedHitters = await processInsertData(csvData);
+                    resolve(processedHitters);
                 } catch (error) {
                     console.log(error);
                     reject(error);
