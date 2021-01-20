@@ -30,7 +30,7 @@ CREATE TABLE `hitter_ratings` (
     FOREIGN KEY (`real_team_id`) REFERENCES `real_teams`(`real_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     `hitter_name` varchar(30) NOT NULL,
     `bats` varchar(1) NOT NULL,
-    `injury` varchar(1) NOT NULL,
+    `injury` int unsigned DEFAULT NULL,
     `ab` int unsigned NOT NULL,
     `so_v_l` int unsigned NOT NULL,
     `bb_v_l` int unsigned NOT NULL,

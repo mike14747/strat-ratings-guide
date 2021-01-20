@@ -46,38 +46,38 @@ const processInsertData = (csvData, realTeams) => {
         });
 
         const hitterObj = {
-            year: parseInt(row.Year),
+            year: row.Year,
             realTeam,
             realTeamId,
             hitterName,
             bats,
-            inj: row.INJ,
-            ab: parseInt(row.AB),
-            soVsL: parseInt(row.SO_v_lhp),
-            bbVsL: Math.round(parseFloat(row.OB_v_lhp) - parseFloat(row.HIT_v_lhp)),
-            hitVsL: parseFloat(row.HIT_v_lhp),
-            obVsL: parseFloat(row.OB_v_lhp),
-            tbVsL: parseFloat(row.TB_v_lhp),
-            hrVsL: parseFloat(row.HR_v_lhp),
+            inj: row.INJ ? row.INJ : null,
+            ab: row.AB,
+            soVsL: row.SO_v_lhp,
+            bbVsL: Math.round(row.OB_v_lhp - row.HIT_v_lhp),
+            hitVsL: row.HIT_v_lhp,
+            obVsL: row.OB_v_lhp,
+            tbVsL: row.TB_v_lhp,
+            hrVsL: row.HR_v_lhp,
             bpVsL,
             wVsL,
             bpSiVsL,
-            clVsL: parseInt(row.CL_v_lhp),
-            dpVsL: parseInt(row.DP_v_lhp),
-            soVsR: parseInt(row.SO_v_rhp),
-            bbVsR: Math.round(parseFloat(row.OB_v_rhp) - parseFloat(row.HIT_v_rhp)),
-            hitVsR: parseFloat(row.HIT_v_rhp),
-            obVsR: parseFloat(row.OB_v_rhp),
-            tbVsR: parseFloat(row.TB_v_rhp),
-            hrVsR: parseFloat(row.HR_v_rhp),
+            clVsL: row.CL_v_lhp,
+            dpVsL: row.DP_v_lhp,
+            soVsR: row.SO_v_rhp,
+            bbVsR: Math.round(row.OB_v_rhp - row.HIT_v_rhp),
+            hitVsR: row.HIT_v_rhp,
+            obVsR: row.OB_v_rhp,
+            tbVsR: row.TB_v_rhp,
+            hrVsR: row.HR_v_rhp,
             bpVsR,
             wVsR,
             bpSiVsR,
-            clVsR: parseInt(row.CL_v_rhp),
-            dpVsR: parseInt(row.DP_v_rhp),
+            clVsR: row.CL_v_rhp,
+            dpVsR: row.DP_v_rhp,
             stealing: row.STEALING,
             stl: row.STL,
-            spd: parseInt(row.SPD),
+            spd: row.SPD,
             bunt: row.B,
             hitRun: row.H,
             dCA: convertPositionlFielding(row.d_CA),
@@ -89,7 +89,7 @@ const processInsertData = (csvData, realTeams) => {
             dCF: convertPositionlFielding(row.d_CF),
             dRF: convertPositionlFielding(row.d_RF),
             fielding: row.FIELDING,
-            rmlTeamId: row.rml_team_id ? parseInt(row.rml_team_id) : null,
+            rmlTeamId: row.rml_team_id ? row.rml_team_id : null,
         };
 
         return Object.values(hitterObj);
@@ -98,7 +98,7 @@ const processInsertData = (csvData, realTeams) => {
     return modifiedArray;
 };
 
-const processHittersCSV = async (realTeams) => {
+const processHittersCSV = async () => {
     const csvData = [];
     return new Promise((resolve, reject) => {
         fs.createReadStream(path.join(__dirname, '../uploads/hitter_ratings.csv'))
@@ -109,18 +109,33 @@ const processHittersCSV = async (realTeams) => {
                     // from_line: 1,
                     // to_line: 2,
                     trim: true,
+                    // cast: true,
+                    cast: function (value, { header, index }) {
+                        const castInts = [0, 2, 5, 6, 7, 13, 14, 15, 16, 22, 23, 26];
+                        const castFloats = [8, 9, 10, 11, 17, 18, 19, 20];
+                        const possibleNull = [4, 38];
+                        if (header) {
+                            return value;
+                        } else {
+                            if (castInts.includes(index)) {
+                                return parseInt(value);
+                            } else if (castFloats.includes(index)) {
+                                return parseFloat(value);
+                            } else if (possibleNull.includes(index)) {
+                                return value ? parseInt(value) : null;
+                            } else {
+                                return value;
+                            }
+                        }
+                    },
                 }),
             )
-            .on('data', row => {
-                csvData.push(row);
-                // console.log(row);
-            })
+            .on('data', row => csvData.push(row))
             .on('error', error => reject(error))
             .on('end', async function () {
                 try {
                     await fs.promises.unlink(path.join(__dirname, '../uploads/hitter_ratings.csv'));
-                    const processedHitters = processInsertData(csvData, realTeams);
-                    resolve(processedHitters);
+                    resolve(csvData);
                 } catch (error) {
                     console.log(error);
                     reject(error);
@@ -129,4 +144,7 @@ const processHittersCSV = async (realTeams) => {
     });
 };
 
-module.exports = processHittersCSV;
+module.exports = {
+    processHittersCSV,
+    processInsertData,
+};
