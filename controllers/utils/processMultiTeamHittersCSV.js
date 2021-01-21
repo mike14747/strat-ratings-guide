@@ -9,11 +9,11 @@ const processMultiTeamHittersInsertData = (csvData, realTeams) => {
         });
 
         const hitterObj = {
-            year: parseInt(row.Year),
+            year: row.Year,
             realTeamId,
             hitter: row.Name,
             bats: row.Bats,
-            ab: parseInt(row.AB),
+            ab: row.AB,
         };
 
         return Object.values(hitterObj);
@@ -33,6 +33,7 @@ const processMultiTeamHittersCSV = async () => {
                     // from_line: 1,
                     // to_line: 2,
                     trim: true,
+                    cast: true,
                 }),
             )
             .on('data', row => csvData.push(row))
