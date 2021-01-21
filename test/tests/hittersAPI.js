@@ -4,8 +4,50 @@ const chaiHttp = require('chai-http');
 chai.should();
 chai.use(chaiHttp);
 const requester = chai.request(app).keepOpen();
+const fs = require('fs');
+const path = require('path');
+
+chai.Assertion.addMethod('numberOrNull', function (prop = 'Unspecified property') {
+    typeof this._obj === 'number' || this._obj === null ? this.assert(true) : this.assert(false, `${prop} should be a number or null`);
+});
 
 describe('Users API (/api/hitters/:year)', function () {
+    it('should FAIL to POST hitter data from "/test/testData/hitter_ratings.csv" because the Year field is missing', function (done) {
+        requester
+            .post('/api/hitters')
+            .attach('file', fs.readFileSync(path.join(__dirname, '../testData/hitter_ratings.csv')))
+            .then((response) => {
+                response.should.have.status(400);
+                response.body.should.be.an('object').and.have.all.keys('message');
+                done();
+            })
+            .catch((error) => done(error));
+    });
+
+    it('should POST hitter data from "/data/hitter_ratings.csv"', function (done) {
+        requester
+            .post('/api/hitters')
+            .attach('file', fs.readFileSync(path.join(__dirname, '../../data/hitter_ratings.csv')))
+            .then((response) => {
+                response.should.have.status(201);
+                response.body.should.be.an('object').and.have.all.keys('message', 'added');
+                response.body.added.should.be.a('number').and.at.least(1);
+                done();
+            })
+            .catch((error) => done(error));
+    });
+
+    it('should try to GET all hitters from the year 1899 and return an empty array', function (done) {
+        requester
+            .get('/api/hitters/1899')
+            .then((response) => {
+                response.should.have.status(200);
+                response.body.should.be.a('array').and.have.lengthOf(0);
+                done();
+            })
+            .catch((error) => done(error));
+    });
+
     it('should GET all hitters from the year 2019', function (done) {
         requester
             .get('/api/hitters/2019')
@@ -58,7 +100,7 @@ describe('Users API (/api/hitters/:year)', function () {
                     element.real_team.should.be.a('string').and.have.lengthOf.at.least(2);
                     element.hitter_name.should.be.a('string').and.have.lengthOf.at.least(1);
                     element.bats.should.be.a('string').and.have.lengthOf(1);
-                    element.injury.should.be.an('string').and.have.lengthOf.within(0, 1);
+                    chai.expect(element.injury).to.be.numberOrNull();
                     element.ab.should.be.a('number').and.to.be.at.least(1);
                     element.so_v_l.should.be.a('number').and.to.be.at.least(0);
                     element.bb_v_l.should.be.a('number').and.to.be.at.least(0);
@@ -78,7 +120,7 @@ describe('Users API (/api/hitters/:year)', function () {
                     element.w_v_r.should.be.a('string').and.have.lengthOf.within(0, 3);
                     element.dp_v_r.should.be.a('number').and.to.be.at.least(0);
                     element.wops_v_r.should.be.a('string');
-                    element.stealing.should.be.a('string').and.have.lengthOf.at.least(1);
+                    element.stealing.should.be.a('string').and.have.lengthOf.at.least(9);
                     element.spd.should.be.a('number').and.to.be.within(8, 17);
                     element.bunt.should.be.a('string').and.to.be.oneOf(['A', 'B', 'C', 'D']);
                     element.h_r.should.be.a('string').and.to.be.oneOf(['A', 'B', 'C', 'D']);
