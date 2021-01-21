@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const hitterSchema = Joi.array().items({
+const hittersSchema = Joi.array().items({
     Year: Joi.number().integer().min(1900).max(2050).required(),
     TM: Joi.string().length(3).required(),
     real_team_id: Joi.optional(),
@@ -12,7 +12,6 @@ const hitterSchema = Joi.array().items({
     HIT_v_lhp: Joi.number().min(0).required(),
     OB_v_lhp: Joi.number().min(0).required(),
     TB_v_lhp: Joi.number().min(0).required(),
-
     HR_v_lhp: Joi.number().min(0).required(),
     BP_v_lhp: Joi.string().min(1).max(2).required(),
     CL_v_lhp: Joi.number().integer().required(),
@@ -23,7 +22,6 @@ const hitterSchema = Joi.array().items({
     OB_v_rhp: Joi.number().min(0).required(),
     TB_v_rhp: Joi.number().min(0).required(),
     HR_v_rhp: Joi.number().min(0).required(),
-
     BP_v_rhp: Joi.string().min(1).max(2).required(),
     CL_v_rhp: Joi.number().integer().required(),
     DP_v_rhp: Joi.number().integer().min(0).required(),
@@ -44,4 +42,4 @@ const hitterSchema = Joi.array().items({
     rml_team_id: Joi.optional(),
 });
 
-module.exports = hitterSchema;
+module.exports = hittersSchema;

@@ -35,7 +35,7 @@ const convertBpToBpWAndBpSi = (bp) => {
     };
 };
 
-const processInsertData = (csvData, realTeams) => {
+const processHittersInsertData = (csvData, realTeams) => {
     const modifiedArray = csvData.map(row => {
         const { hitterName, bats } = convertNameToNameAndBats(row.HITTERS);
         const { bp: bpVsL, w: wVsL, bpsi: bpSiVsL } = convertBpToBpWAndBpSi(row.BP_v_lhp);
@@ -146,5 +146,5 @@ const processHittersCSV = async () => {
 
 module.exports = {
     processHittersCSV,
-    processInsertData,
+    processHittersInsertData,
 };
