@@ -30,7 +30,7 @@ CREATE TABLE `hitter_ratings` (
     FOREIGN KEY (`real_team_id`) REFERENCES `real_teams`(`real_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     `hitter_name` varchar(30) NOT NULL,
     `bats` varchar(1) NOT NULL,
-    `injury` varchar(1) NOT NULL,
+    `injury` int unsigned DEFAULT NULL,
     `ab` int unsigned NOT NULL,
     `so_v_l` int unsigned NOT NULL,
     `bb_v_l` int unsigned NOT NULL,
@@ -158,6 +158,17 @@ CREATE TABLE `rml_teams` (
     `rml_team_abbrev` varchar(10) NOT NULL,
     `rml_team_league` varchar(2) NOT NULL,
     PRIMARY KEY (`rml_team_id`)
+) AUTO_INCREMENT=1;
+
+-- --------------------------------------------------------
+
+CREATE TABLE `users` (
+    `user_id` int unsigned NOT NULL AUTO_INCREMENT,
+    `username` varchar(20) NOT NULL,
+    `password` varchar(100) NOT NULL,
+    `email` varchar(100) NOT NULL,
+    `admin` int unsigned DEFAULT 0,
+    PRIMARY KEY (`user_id`)
 ) AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------

@@ -24,39 +24,25 @@ const Hitters = {
     },
     addNewHittersData: async (hitterArr = []) => {
         if (hitterArr.length > 0) {
-            const queryString = 'INSERT INTO hitter_ratings (h_year, real_team, real_team_id, hitter_name, bats, injury, ab, so_v_l, bb_v_l, hit_v_l, ob_v_l, tb_v_l, hr_v_l, bp_hr_v_l, w_v_l, bp_si_v_l, cl_v_l, dp_v_l, so_v_r, bb_v_r, hit_v_r, ob_v_r, tb_v_r, hr_v_r, bp_hr_v_r, w_v_r, bp_si_v_r, cl_v_r, dp_v_r, stealing, stl, spd, bunt, h_r, d_ca, d_1b, d_2b, d_3b, d_ss, d_lf, d_cf, d_rf, fielding, rml_team_id) VALUES ?;';
+            const queryString = 'TRUNCATE TABLE hitter_ratings;INSERT INTO hitter_ratings (h_year, real_team, real_team_id, hitter_name, bats, injury, ab, so_v_l, bb_v_l, hit_v_l, ob_v_l, tb_v_l, hr_v_l, bp_hr_v_l, w_v_l, bp_si_v_l, cl_v_l, dp_v_l, so_v_r, bb_v_r, hit_v_r, ob_v_r, tb_v_r, hr_v_r, bp_hr_v_r, w_v_r, bp_si_v_r, cl_v_r, dp_v_r, stealing, stl, spd, bunt, h_r, d_ca, d_1b, d_2b, d_3b, d_ss, d_lf, d_cf, d_rf, fielding, rml_team_id) VALUES ?;SHOW WARNINGS;';
             const queryParams = [hitterArr];
             return await pool.query(queryString, queryParams)
                 .then(([rows]) => [rows, null])
                 .catch(error => [null, error]);
         } else {
-            return [{ affectedRows: 0 }, null];
+            return [[[], { affectedRows: 0 }], null];
         }
-    },
-    truncateHittersTable: async () => {
-        const queryString = 'TRUNCATE TABLE hitter_ratings;';
-        const queryParams = [];
-        return await pool.query(queryString, queryParams)
-            .then(([rows]) => [rows, null])
-            .catch(error => [null, error]);
     },
     addMultiTeamHittersData: async (hitterArr = []) => {
         if (hitterArr.length > 0) {
-            const queryString = 'INSERT INTO multi_team_hitters (year, real_team_id, hitter, bats, ab) VALUES ?;';
+            const queryString = 'TRUNCATE TABLE multi_team_hitters;INSERT INTO multi_team_hitters (year, real_team_id, hitter, bats, ab) VALUES ?;';
             const queryParams = [hitterArr];
             return await pool.query(queryString, queryParams)
                 .then(([rows]) => [rows, null])
                 .catch(error => [null, error]);
         } else {
-            return [{ affectedRows: 0 }, null];
+            return [[[], { affectedRows: 0 }], null];
         }
-    },
-    truncateMultiTeamHittersTable: async () => {
-        const queryString = 'TRUNCATE TABLE multi_team_hitters;';
-        const queryParams = [];
-        return await pool.query(queryString, queryParams)
-            .then(([rows]) => [rows, null])
-            .catch(error => [null, error]);
     },
 };
 
