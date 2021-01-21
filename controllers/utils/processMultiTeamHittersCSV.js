@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const processMultiTeamHittersInsertData = (csvData, realTeams) => {
-    const modifiedArray = csvData.map(row => {
+    return csvData.map(row => {
         const { real_team_id: realTeamId } = realTeams.find((team) => {
             return team.bbref_abbrev === row.Tm;
         });
@@ -18,8 +18,6 @@ const processMultiTeamHittersInsertData = (csvData, realTeams) => {
 
         return Object.values(hitterObj);
     });
-
-    return modifiedArray;
 };
 
 const processMultiTeamHittersCSV = async () => {

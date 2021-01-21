@@ -1,34 +1,21 @@
 const parse = require('csv-parse');
 const fs = require('fs');
 const path = require('path');
-const Pitchers = require('../../models/pitchers');
-const RealTeam = require('../../models/realTeam');
 
-const processInsertData = async (csvData) => {
-    try {
-        const [result] = await RealTeam.getAllRealTeams();
-        const realTeams = JSON.parse(JSON.stringify(result));
+const processMultiTeamPitchersInsertData = (csvData, realTeams) => {
+    return csvData.map(row => {
+        const { real_team_id: realTeamId } = realTeams.find(team => team.bbref_abbrev === row.Tm);
 
-        const modifiedArray = csvData.map(row => {
-            const { real_team_id: realTeamId } = realTeams.find(team => team.bbref_abbrev === row.Tm);
+        const pitcherObj = {
+            year: row.Year,
+            realTeamId,
+            pitcher: row.Name,
+            throws: row.Throws,
+            ip: row.IP,
+        };
 
-            const pitcherObj = {
-                year: parseInt(row.Year),
-                realTeamId,
-                pitcher: row.Name,
-                throws: row.Throws,
-                ip: parseFloat(row.IP),
-            };
-
-            return Object.values(pitcherObj);
-        });
-
-        const [data, error] = await Pitchers.addMultiTeamPitchersData(modifiedArray);
-        if (error) console.log(error);
-        return (data && data.affectedRows) || 0;
-    } catch (error) {
-        console.log(error.message);
-    }
+        return Object.values(pitcherObj);
+    });
 };
 
 const processMultiTeamPitchersCSV = async () => {
@@ -42,6 +29,7 @@ const processMultiTeamPitchersCSV = async () => {
                     // from_line: 1,
                     // to_line: 2,
                     trim: true,
+                    cast: true,
                 }),
             )
             .on('data', row => csvData.push(row))
@@ -49,8 +37,7 @@ const processMultiTeamPitchersCSV = async () => {
             .on('end', async function () {
                 try {
                     await fs.promises.unlink(path.join(__dirname, '../uploads/multi_team_pitchers.csv'));
-                    const numInserted = await processInsertData(csvData) || 0;
-                    resolve(numInserted);
+                    resolve(csvData);
                 } catch (error) {
                     console.log(error);
                     reject(error);
@@ -59,4 +46,7 @@ const processMultiTeamPitchersCSV = async () => {
     });
 };
 
-module.exports = processMultiTeamPitchersCSV;
+module.exports = {
+    processMultiTeamPitchersCSV,
+    processMultiTeamPitchersInsertData,
+};

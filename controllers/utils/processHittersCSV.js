@@ -36,7 +36,7 @@ const convertBpToBpWAndBpSi = (bp) => {
 };
 
 const processHittersInsertData = (csvData, realTeams) => {
-    const modifiedArray = csvData.map(row => {
+    return csvData.map(row => {
         const { hitterName, bats } = convertNameToNameAndBats(row.HITTERS);
         const { bp: bpVsL, w: wVsL, bpsi: bpSiVsL } = convertBpToBpWAndBpSi(row.BP_v_lhp);
         const { bp: bpVsR, w: wVsR, bpsi: bpSiVsR } = convertBpToBpWAndBpSi(row.BP_v_rhp);
@@ -94,8 +94,6 @@ const processHittersInsertData = (csvData, realTeams) => {
 
         return Object.values(hitterObj);
     });
-
-    return modifiedArray;
 };
 
 const processHittersCSV = async () => {

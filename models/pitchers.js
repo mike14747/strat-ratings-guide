@@ -30,18 +30,19 @@ const Pitchers = {
                 .then(([rows]) => [rows, null])
                 .catch(error => [null, error]);
         } else {
-            return [{ affectedRows: 0 }, null];
+            return [[[], { affectedRows: 0 }], null];
         }
     },
     addMultiTeamPitchersData: async (pitcherArr = []) => {
         if (pitcherArr.length > 0) {
+            console.log(pitcherArr);
             const queryString = 'TRUNCATE TABLE multi_team_pitchers;INSERT INTO multi_team_pitchers (year, real_team_id, pitcher, throws, ip) VALUES ?;';
             const queryParams = [pitcherArr];
             return await pool.query(queryString, queryParams)
                 .then(([rows]) => [rows, null])
                 .catch(error => [null, error]);
         } else {
-            return [{ affectedRows: 0 }, null];
+            return [[[], { affectedRows: 0 }], null];
         }
     },
 };

@@ -29,7 +29,7 @@ const convertBpToBpAndBpSi = (bp) => {
 };
 
 const processPitchersInsertData = (csvData, realTeams) => {
-    const modifiedArray = csvData.map(row => {
+    return csvData.map(row => {
         const { pitcherName, throws } = convertNameToNameAndThrows(row.PITCHERS);
         const { bp: bpVsL, bpsi: bpSiVsL } = convertBpToBpAndBpSi(`${row.BP_v_l}`);
         const { bp: bpVsR, bpsi: bpSiVsR } = convertBpToBpAndBpSi(`${row.BP_v_r}`);
@@ -76,8 +76,6 @@ const processPitchersInsertData = (csvData, realTeams) => {
 
         return Object.values(pitcherObj);
     });
-
-    return modifiedArray;
 };
 
 const processPitchersCSV = async () => {

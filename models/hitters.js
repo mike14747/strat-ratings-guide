@@ -30,7 +30,7 @@ const Hitters = {
                 .then(([rows]) => [rows, null])
                 .catch(error => [null, error]);
         } else {
-            return [{ affectedRows: 0 }, null];
+            return [[[], { affectedRows: 0 }], null];
         }
     },
     addMultiTeamHittersData: async (hitterArr = []) => {
@@ -41,7 +41,7 @@ const Hitters = {
                 .then(([rows]) => [rows, null])
                 .catch(error => [null, error]);
         } else {
-            return [{ affectedRows: 0 }, null];
+            return [[[], { affectedRows: 0 }], null];
         }
     },
 };
