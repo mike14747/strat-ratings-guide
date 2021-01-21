@@ -2,7 +2,7 @@ import React from 'react';
 
 function Home() {
     return (
-        <div className="m-4">
+        <div className="container my-4">
             <h2 className="mb-3">Welcome to my Strat-O-Matic Ratings Guide analysis!</h2>
 
             <p>If you play Strat-O-Matic baseball and purchase their annual Ratings Guide, many of the numbers you&apos;ll see aren&apos;t exactly what you&apos;ll see on their individual cards… depending upon the rules you and/or your league are implementing.</p>
