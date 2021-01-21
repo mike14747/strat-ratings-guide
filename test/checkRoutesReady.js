@@ -7,7 +7,9 @@ chai.use(chaiHttp);
 describe('Test the hitter and pitcher routes', function () {
     const runTests = () => {
         require('./tests/hittersAPI');
-        // require('./tests/pitchersAPI');
+        require('./tests/multiTeamHittersAPI');
+        require('./tests/pitchersAPI');
+        require('./tests/multiTeamPitchersAPI');
     };
 
     const checkRoutes = () => {

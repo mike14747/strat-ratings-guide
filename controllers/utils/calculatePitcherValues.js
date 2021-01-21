@@ -202,7 +202,7 @@ const calculatePitcherValues = (pitchersArr, multiData) => {
             batting_b: p.batting_b,
             stl: p.stl,
             spd: p.spd,
-            rml_team_name: p.rml_team_name,
+            rml_team_name: p.rml_team_name ? p.rml_team_name : '',
         };
     });
     return PitchersCalculated;

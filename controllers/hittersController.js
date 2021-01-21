@@ -45,7 +45,7 @@ router.post('/', fileUpload(), async (req, res, next) => {
         const processedHitters = processHittersInsertData(csvData, realTeams);
 
         const [data, error] = await Hitters.addNewHittersData(processedHitters);
-        data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!` }) : next(error);
+        data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);
     } catch (error) {
         next(error);
     }
@@ -67,7 +67,7 @@ router.post('/multi-team', fileUpload(), async (req, res, next) => {
         const processedMultiTeamHitters = processMultiTeamHittersInsertData(csvData, realTeams);
 
         const [data, error] = await Hitters.addMultiTeamHittersData(processedMultiTeamHitters);
-        data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!` }) : next(error);
+        data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);
     } catch (error) {
         next(error);
     }

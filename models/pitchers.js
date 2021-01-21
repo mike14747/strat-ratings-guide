@@ -35,7 +35,6 @@ const Pitchers = {
     },
     addMultiTeamPitchersData: async (pitcherArr = []) => {
         if (pitcherArr.length > 0) {
-            console.log(pitcherArr);
             const queryString = 'TRUNCATE TABLE multi_team_pitchers;INSERT INTO multi_team_pitchers (year, real_team_id, pitcher, throws, ip) VALUES ?;';
             const queryParams = [pitcherArr];
             return await pool.query(queryString, queryParams)

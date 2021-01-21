@@ -45,7 +45,7 @@ router.post('/', fileUpload(), async (req, res, next) => {
         const processedPitchers = processPitchersInsertData(csvData, realTeams);
 
         const [data, error] = await Pitchers.addNewPitchersData(processedPitchers);
-        data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new pitcher row(s) to the database!` }) : next(error);
+        data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new pitcher row(s) to the database!`, added: data[1].affectedRows }) : next(error);
     } catch (error) {
         next(error);
     }
@@ -65,10 +65,9 @@ router.post('/multi-team', fileUpload(), async (req, res, next) => {
         const csvData = await processMultiTeamPitchersCSV();
         await multiTeamPitchersSchema.validateAsync(csvData);
         const processedMultiTeamPitchers = processMultiTeamPitchersInsertData(csvData, realTeams);
-        // console.log(processedMultiTeamPitchers);
 
         const [data, error] = await Pitchers.addMultiTeamPitchersData(processedMultiTeamPitchers);
-        data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new pitcher row(s) to the database!` }) : next(error);
+        data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new pitcher row(s) to the database!`, added: data[1].affectedRows }) : next(error);
     } catch (error) {
         next(error);
     }

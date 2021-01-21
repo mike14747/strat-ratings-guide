@@ -18,7 +18,7 @@ const processMultiTeamPitchersInsertData = (csvData, realTeams) => {
     });
 };
 
-const processMultiTeamPitchersCSV = async () => {
+const processMultiTeamPitchersCSV = () => {
     const csvData = [];
     return new Promise((resolve, reject) => {
         fs.createReadStream(path.join(__dirname, '../uploads/multi_team_pitchers.csv'))

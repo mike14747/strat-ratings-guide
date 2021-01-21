@@ -96,7 +96,7 @@ const processHittersInsertData = (csvData, realTeams) => {
     });
 };
 
-const processHittersCSV = async () => {
+const processHittersCSV = () => {
     const csvData = [];
     return new Promise((resolve, reject) => {
         fs.createReadStream(path.join(__dirname, '../uploads/hitter_ratings.csv'))
