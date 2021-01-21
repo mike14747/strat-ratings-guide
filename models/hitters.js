@@ -33,13 +33,6 @@ const Hitters = {
             return [{ affectedRows: 0 }, null];
         }
     },
-    truncateHittersTable: async () => {
-        const queryString = 'TRUNCATE TABLE hitter_ratings;';
-        const queryParams = [];
-        return await pool.query(queryString, queryParams)
-            .then(([rows]) => [rows, null])
-            .catch(error => [null, error]);
-    },
     addMultiTeamHittersData: async (hitterArr = []) => {
         if (hitterArr.length > 0) {
             const queryString = 'TRUNCATE TABLE multi_team_hitters;INSERT INTO multi_team_hitters (year, real_team_id, hitter, bats, ab) VALUES ?;';
@@ -50,13 +43,6 @@ const Hitters = {
         } else {
             return [{ affectedRows: 0 }, null];
         }
-    },
-    truncateMultiTeamHittersTable: async () => {
-        const queryString = 'TRUNCATE TABLE multi_team_hitters;';
-        const queryParams = [];
-        return await pool.query(queryString, queryParams)
-            .then(([rows]) => [rows, null])
-            .catch(error => [null, error]);
     },
 };
 

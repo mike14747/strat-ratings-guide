@@ -1,8 +1,6 @@
 const parse = require('csv-parse');
 const fs = require('fs');
 const path = require('path');
-const Pitchers = require('../../models/pitchers');
-const RealTeam = require('../../models/realTeam');
 
 const convertNameToNameAndThrows = (name) => {
     return {
@@ -30,65 +28,56 @@ const convertBpToBpAndBpSi = (bp) => {
     };
 };
 
-const processInsertData = async (csvData) => {
-    try {
-        const [result] = await RealTeam.getAllRealTeams();
-        const realTeams = JSON.parse(JSON.stringify(result));
+const processPitchersInsertData = (csvData, realTeams) => {
+    const modifiedArray = csvData.map(row => {
+        const { pitcherName, throws } = convertNameToNameAndThrows(row.PITCHERS);
+        const { bp: bpVsL, bpsi: bpSiVsL } = convertBpToBpAndBpSi(`${row.BP_v_l}`);
+        const { bp: bpVsR, bpsi: bpSiVsR } = convertBpToBpAndBpSi(`${row.BP_v_r}`);
 
-        const modifiedArray = csvData.map(row => {
-            const { pitcherName, throws } = convertNameToNameAndThrows(row.PITCHERS);
-            const { bp: bpVsL, bpsi: bpSiVsL } = convertBpToBpAndBpSi(`${row.BP_v_l}`);
-            const { bp: bpVsR, bpsi: bpSiVsR } = convertBpToBpAndBpSi(`${row.BP_v_r}`);
-
-            const { real_team_abbrev: realTeam, real_team_id: realTeamId } = realTeams.find((team) => {
-                return team.strat_abbrev === row.TM;
-            });
-
-            const pitcherObj = {
-                year: parseInt(row.Year),
-                realTeam,
-                realTeamId,
-                pitcherName,
-                throws,
-                ip: parseInt(row.IP),
-                soVsL: parseInt(row.SO_v_l),
-                bbVsL: parseFloat(row.BB_v_l),
-                hitVsL: parseFloat(row.HIT_v_l),
-                obVsL: parseFloat(row.OB_v_l),
-                tbVsL: parseFloat(row.TB_v_l),
-                hrVsL: parseFloat(row.HR_v_l),
-                bpVsL,
-                bpSiVsL,
-                dpVsL: parseInt(row.DP_v_l),
-                soVsR: parseInt(row.SO_v_r),
-                bbVsR: parseFloat(row.BB_v_r),
-                hitVsR: parseFloat(row.HIT_v_r),
-                obVsR: parseFloat(row.OB_v_r),
-                tbVsR: parseFloat(row.TB_v_r),
-                hrVsR: parseFloat(row.HR_v_r),
-                bpVsR,
-                bpSiVsR,
-                dpVsR: parseInt(row.DP_v_r),
-                hold: parseInt(row.HO),
-                endurance: row.ENDURANCE,
-                field: row.FIELD.replace('\'', '').replace('-', 'e').replace(' ', ''),
-                balk: parseInt(row.BK),
-                wp: parseInt(row.WP),
-                batting: row.BAT_B,
-                stl: row.STL,
-                spd: parseInt(row.SPD),
-                rmlTeamId: row.rml_team_id ? parseInt(row.rml_team_id) : null,
-            };
-
-            return Object.values(pitcherObj);
+        const { real_team_abbrev: realTeam, real_team_id: realTeamId } = realTeams.find((team) => {
+            return team.strat_abbrev === row.TM;
         });
 
-        const [data, error] = await Pitchers.addNewPitchersData(modifiedArray);
-        if (error) console.log(error);
-        return (data && data.affectedRows) || 0;
-    } catch (error) {
-        console.log(error.message);
-    }
+        const pitcherObj = {
+            year: parseInt(row.Year),
+            realTeam,
+            realTeamId,
+            pitcherName,
+            throws,
+            ip: parseInt(row.IP),
+            soVsL: parseInt(row.SO_v_l),
+            bbVsL: parseFloat(row.BB_v_l),
+            hitVsL: parseFloat(row.HIT_v_l),
+            obVsL: parseFloat(row.OB_v_l),
+            tbVsL: parseFloat(row.TB_v_l),
+            hrVsL: parseFloat(row.HR_v_l),
+            bpVsL,
+            bpSiVsL,
+            dpVsL: parseInt(row.DP_v_l),
+            soVsR: parseInt(row.SO_v_r),
+            bbVsR: parseFloat(row.BB_v_r),
+            hitVsR: parseFloat(row.HIT_v_r),
+            obVsR: parseFloat(row.OB_v_r),
+            tbVsR: parseFloat(row.TB_v_r),
+            hrVsR: parseFloat(row.HR_v_r),
+            bpVsR,
+            bpSiVsR,
+            dpVsR: parseInt(row.DP_v_r),
+            hold: parseInt(row.HO),
+            endurance: row.ENDURANCE,
+            field: row.FIELD.replace('\'', '').replace('-', 'e').replace(' ', ''),
+            balk: parseInt(row.BK),
+            wp: parseInt(row.WP),
+            batting: row.BAT_B,
+            stl: row.STL,
+            spd: parseInt(row.SPD),
+            rmlTeamId: row.rml_team_id ? parseInt(row.rml_team_id) : null,
+        };
+
+        return Object.values(pitcherObj);
+    });
+
+    return modifiedArray;
 };
 
 const processPitchersCSV = async () => {
@@ -109,8 +98,7 @@ const processPitchersCSV = async () => {
             .on('end', async function () {
                 try {
                     await fs.promises.unlink(path.join(__dirname, '../uploads/pitcher_ratings.csv'));
-                    const numInserted = await processInsertData(csvData) || 0;
-                    resolve(numInserted);
+                    resolve(csvData);
                 } catch (error) {
                     console.log(error);
                     reject(error);
@@ -119,4 +107,7 @@ const processPitchersCSV = async () => {
     });
 };
 
-module.exports = processPitchersCSV;
+module.exports = {
+    processPitchersCSV,
+    processPitchersInsertData,
+};
