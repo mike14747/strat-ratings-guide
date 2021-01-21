@@ -11,7 +11,7 @@ chai.Assertion.addMethod('numberOrNull', function (prop = 'Unspecified property'
     typeof this._obj === 'number' || this._obj === null ? this.assert(true) : this.assert(false, `${prop} should be a number or null`);
 });
 
-describe('Users API (/api/pitchers/:year)', function () {
+describe('Users API (/api/pitchers)', function () {
     it('should FAIL to POST pitcher data from "/test/testData/pitcher_ratings.csv" because the Year field is missing', function (done) {
         requester
             .post('/api/pitchers')
@@ -55,7 +55,6 @@ describe('Users API (/api/pitchers/:year)', function () {
                 response.should.have.status(200);
                 response.body.should.be.a('array').and.have.lengthOf.at.least(1);
                 response.body.forEach(function (element) {
-                    // console.log(element);
                     element.should.be.an('object').and.have.all.keys(
                         'p_year',
                         'real_team',

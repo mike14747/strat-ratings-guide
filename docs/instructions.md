@@ -1,17 +1,17 @@
 ## Steps from receiving the new ratings guide to showing all the wOPS numbers
 
-Convert _Ballpark.txt_ team by team singles/homers data to _data/bp_ratings.xlsx_ where the formatted data column can be added to _data/bp_ratings.sql_, then imported to the _ratings_guide_ database in MySQL Workbench using copy/paste of the whole _data/bp_ratings.sql_ file..
+Convert _Ballpark.txt_ team by team singles/homers data to _data/bp_ratings.xlsx_ where the formatted data column can be added to _data/ratings_guide_db(seeds).sql_, then imported to the _ratings_guide_ database in MySQL Workbench using copy/paste of the whole _data/ratings_guide_db(seeds).sql_ file.
 
 Convert the hitter and pitcher data files into database ready data:
 
--   Open the _Hitters.xls_ and _Pitchers.xls_ files that come in the ratings disk
--   Save each to: _Hitters.xlsx_ and _Pitchers.xlsx_ (this will use Excel's latest format and protect the original data from alteration).
--   Rename the lone sheet in each file to _Original_, then copy it to the end and rename the name sheet to _Modified_.
--   Working from the _Modified_ sheet in each file, set the font to _Calibri_ and _12pt_.
+-   Open the _Hitters.xls_ and _Pitchers.xls_ files that come in the ratings disk.
+-   Save each to: _Hitters.xlsx_ and _Pitchers.xlsx_ in the same folder (this will use Excel's latest format and protect the original data from alteration).
+-   Rename the lone sheet in each file to _Original_, then copy it to the end and rename the name sheet to _Carded_.
+-   Working from the _Carded_ sheet in each file, set the font to _Calibri_ and _12pt_.
 -   Set the top row to a light gray background, then freeze the top row in each file.
 -   Set the row height for all rows to _18.00_.
 -   Remove all hitters and pitchers that don't have a blank **Location** cell (there will be many that have M or X). **However**, you might find that a couple low IP, carded pitchers might have been part of the X players group and have to be brough back in from the original file.
--   Remove all uncarded players. This will be easy to do for hitters (100+ AB)... harder for pitchers.
+-   Remove all uncarded players. This will be easy to do for hitters (100+ AB in full 162 game seasons)... harder for pitchers.
 -   Make sure Strat's and baseball-reference's real team abbreviations haven't changed from what they've been.
 
 Modifying the columns in _Hitters.xls_ and _Pitchers.xls_ files:
