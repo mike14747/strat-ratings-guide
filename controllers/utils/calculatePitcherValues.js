@@ -67,19 +67,19 @@ const multiBallparkCalculations = (pitcher, partials) => {
     let bpAdjVsR = 0;
     let bpSiAdjVsR = 0;
 
-    let bpSiVsR = 0;
-    let bpHrVsR = 0;
-    let bpHitVsR = 0;
-    let bpTbVsR = 0;
-    let tempbpHrVsR = 0;
-    let tempbpHitVsR = 0;
-
     let bpSiVsL = 0;
     let bpHrVsL = 0;
     let bpHitVsL = 0;
     let bpTbVsL = 0;
     let tempbpHrVsL = 0;
     let tempbpHitVsL = 0;
+
+    let bpSiVsR = 0;
+    let bpHrVsR = 0;
+    let bpHitVsR = 0;
+    let bpTbVsR = 0;
+    let tempbpHrVsR = 0;
+    let tempbpHitVsR = 0;
 
     partials.forEach(t => {
         // ballpark calculations vs Lefty hitters
