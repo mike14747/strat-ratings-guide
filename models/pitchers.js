@@ -44,6 +44,13 @@ const Pitchers = {
             return [[[], { affectedRows: 0 }], null];
         }
     },
+    getPitchersDataByYearAndId: async (year, id) => {
+        const queryString = 'SELECT p.*, b.st_si_l, b.st_si_r, b.st_hr_l, b.st_hr_r, r.rml_team_name FROM pitcher_ratings AS p LEFT JOIN bp_ratings AS b ON p.p_year=b.bp_year && p.real_team_id=b.real_team_id LEFT JOIN rml_teams AS r ON p.rml_team_id=r.rml_team_id WHERE p.p_year=? && p.pitcher_id=? ORDER BY pitcher_name ASC, p.real_team ASC, p.pitcher_name ASC;';
+        const queryParams = [year, id];
+        return await pool.query(queryString, queryParams)
+            .then(([rows]) => [rows, null])
+            .catch(error => [null, error]);
+    },
 };
 
 module.exports = Pitchers;

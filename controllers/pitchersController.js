@@ -19,6 +19,16 @@ router.get('/season-list', async (req, res, next) => {
     }
 });
 
+router.get('/:id/season/:year', async (req, res, next) => {
+    try {
+        const [data, error] = await Pitchers.getPitchersDataByYearAndId(req.params.year, req.params.id);
+        const [multiData, multiError] = await Pitchers.getMultiTeamPitchersPartialByYear(req.params.year);
+        data && multiData ? res.json(calculatePitcherValues(data, multiData)) : next(error || multiError);
+    } catch (error) {
+        next(error);
+    }
+});
+
 router.get('/:year', async (req, res, next) => {
     try {
         const [data, error] = await Pitchers.getPitchersDataByYear(req.params.year);

@@ -70,41 +70,46 @@ const multiBallparkCalculations = (pitcher, partials) => {
     let bpSiVsR = 0;
     let bpHrVsR = 0;
     let bpHitVsR = 0;
-    let bpObVsR = 0;
     let bpTbVsR = 0;
+    let tempbpHrVsR = 0;
+    let tempbpHitVsR = 0;
 
     let bpSiVsL = 0;
     let bpHrVsL = 0;
     let bpHitVsL = 0;
-    let bpObVsL = 0;
     let bpTbVsL = 0;
+    let tempbpHrVsL = 0;
+    let tempbpHitVsL = 0;
 
     partials.forEach(t => {
         // ballpark calculations vs Lefty hitters
         bpAdjVsL = ((t.st_hr_l / 20) + 0.45) / 2;
         bpSiAdjVsL = 5 * ((t.st_si_l + 8) / 40) - 2;
         if (pitcher.bp_si_v_l === 0) bpSiAdjVsL = 0;
-        bpSiVsL += (bpSiAdjVsL) * t.ip / parseFloat(pitcher.ip);
-        bpHrVsL += (bpAdjVsL * pitcher.bp_hr_v_l) * t.ip / parseFloat(pitcher.ip);
-        bpHitVsL += (bpHrVsL + pitcher.bp_si_v_l) * t.ip / parseFloat(pitcher.ip);
-        bpObVsL += (bpHrVsL + pitcher.bp_si_v_l) * t.ip / parseFloat(pitcher.ip);
-        bpTbVsL += ((4 * bpHrVsL) + pitcher.bp_si_v_l) * t.ip / parseFloat(pitcher.ip);
+        bpSiVsL += bpSiAdjVsL * t.ip / parseFloat(pitcher.ip);
+        tempbpHrVsL = bpAdjVsL * pitcher.bp_hr_v_l * t.ip / parseFloat(pitcher.ip);
+        bpHrVsL += tempbpHrVsL;
+        tempbpHitVsL = pitcher.bp_si_v_l * t.ip / parseFloat(pitcher.ip);
+        bpHitVsL += tempbpHrVsL + tempbpHitVsL;
+        bpTbVsL += (4 * tempbpHrVsL) + tempbpHitVsL;
 
         // ballpark calculations vs Righty hitters
         bpAdjVsR = ((t.st_hr_r / 20) + 0.45) / 2;
         bpSiAdjVsR = 5 * ((t.st_si_r + 8) / 40) - 2;
         if (pitcher.bp_si_v_r === 0) bpSiAdjVsR = 0;
-        bpSiVsR += (bpSiAdjVsR) * t.ip / parseFloat(pitcher.ip);
-        bpHrVsR += (bpAdjVsR * pitcher.bp_hr_v_r) * t.ip / parseFloat(pitcher.ip);
-        bpHitVsR += (bpHrVsR + pitcher.bp_si_v_r) * t.ip / parseFloat(pitcher.ip);
-        bpObVsR += (bpHrVsR + pitcher.bp_si_v_r) * t.ip / parseFloat(pitcher.ip);
-        bpTbVsR += ((4 * bpHrVsR) + pitcher.bp_si_v_r) * t.ip / parseFloat(pitcher.ip);
+        bpSiVsR += bpSiAdjVsR * t.ip / parseFloat(pitcher.ip);
+        tempbpHrVsR = bpAdjVsR * pitcher.bp_hr_v_r * t.ip / parseFloat(pitcher.ip);
+        bpHrVsR += tempbpHrVsR;
+        tempbpHitVsR = pitcher.bp_si_v_r * t.ip / parseFloat(pitcher.ip);
+        bpHitVsR += tempbpHrVsR + tempbpHitVsR;
+        bpTbVsR += (4 * tempbpHrVsR) + tempbpHitVsR;
         // end ballpark calculations
     });
 
-    const obVsL = parseFloat(pitcher.ob_v_l) + bpObVsL + bpSiVsL;
+    const obVsL = parseFloat(pitcher.ob_v_l) + bpHitVsL + bpSiVsL;
     const tbVsL = parseFloat(pitcher.tb_v_l) + bpTbVsL + bpSiVsL;
-    const obVsR = parseFloat(pitcher.ob_v_r) + bpObVsR + bpSiVsR;
+    const obVsR = parseFloat(pitcher.ob_v_r) + bpHitVsR + bpSiVsR;
+    console.log(obVsR);
     const tbVsR = parseFloat(pitcher.tb_v_r) + bpTbVsR + bpSiVsR;
 
     // start calculating fielding impact on wOPS
