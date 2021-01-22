@@ -51,7 +51,7 @@ const processHittersInsertData = (csvData, realTeams) => {
             realTeamId,
             hitterName,
             bats,
-            inj: row.INJ ? row.INJ : null,
+            inj: row.INJ || row.INJ === 0 ? row.INJ : null,
             ab: row.AB,
             soVsL: row.SO_v_lhp,
             bbVsL: Math.round(row.OB_v_lhp - row.HIT_v_lhp),
