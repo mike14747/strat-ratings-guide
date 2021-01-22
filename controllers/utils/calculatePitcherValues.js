@@ -1,3 +1,5 @@
+const roundTo = require('./roundTo');
+
 const processBpColumn = (bpsi) => bpsi === 0 ? '*' : '';
 
 const obValue = 1.2;
@@ -16,7 +18,6 @@ const ballparkCalculations = (pitcher) => {
     const bpSiVsL = bpSiAdjVsL;
     const bpHrVsL = bpAdjVsL * pitcher.bp_hr_v_l;
     const bpHitVsL = bpHrVsL + pitcher.bp_si_v_l;
-    const bpObVsL = bpHrVsL + pitcher.bp_si_v_l;
     const bpTbVsL = (4 * bpHrVsL) + pitcher.bp_si_v_l;
 
     // ballpark calculations vs Righty hitters
@@ -26,13 +27,12 @@ const ballparkCalculations = (pitcher) => {
     const bpSiVsR = bpSiAdjVsR;
     const bpHrVsR = bpAdjVsR * pitcher.bp_hr_v_r;
     const bpHitVsR = bpHrVsR + pitcher.bp_si_v_r;
-    const bpObVsR = bpHrVsR + pitcher.bp_si_v_r;
     const bpTbVsR = (4 * bpHrVsR) + pitcher.bp_si_v_r;
     // end ballpark calculations
 
-    const obVsL = parseFloat(pitcher.ob_v_l) + bpObVsL + bpSiVsL;
+    const obVsL = parseFloat(pitcher.ob_v_l) + bpHitVsL + bpSiVsL;
     const tbVsL = parseFloat(pitcher.tb_v_l) + bpTbVsL + bpSiVsL;
-    const obVsR = parseFloat(pitcher.ob_v_r) + bpObVsR + bpSiVsR;
+    const obVsR = parseFloat(pitcher.ob_v_r) + bpHitVsR + bpSiVsR;
     const tbVsR = parseFloat(pitcher.tb_v_r) + bpTbVsR + bpSiVsR;
 
     // start calculating fielding impact on wOPS
@@ -44,18 +44,18 @@ const ballparkCalculations = (pitcher) => {
     // end calculating fielding impact on wOPS
 
     // start wOPS calculations
-    const wopsVsL = ((obValue * obVsL) + (tbValue * tbVsL) - (obValue * 20 * pitcher.dp_v_l / 108) + gbpWops + (0.103 * pitcher.balk) + (0.205 * pitcher.wp)).toFixed(1);
-    const wopsVsR = ((obValue * obVsR) + (tbValue * tbVsR) - (obValue * 20 * pitcher.dp_v_r / 108) + gbpWops + (0.103 * pitcher.balk) + (0.205 * pitcher.wp)).toFixed(1);
+    const wopsVsL = roundTo((obValue * obVsL) + (tbValue * tbVsL) - (obValue * 20 * pitcher.dp_v_l / 108) + gbpWops + (0.103 * pitcher.balk) + (0.205 * pitcher.wp), 1);
+    const wopsVsR = roundTo((obValue * obVsR) + (tbValue * tbVsR) - (obValue * 20 * pitcher.dp_v_r / 108) + gbpWops + (0.103 * pitcher.balk) + (0.205 * pitcher.wp), 1);
 
     return {
-        hit_v_l: (parseFloat(pitcher.hit_v_l) + bpHitVsL + bpSiVsL).toFixed(1),
-        ob_v_l: obVsL.toFixed(1),
-        tb_v_l: tbVsL.toFixed(1),
-        hr_v_l: (parseFloat(pitcher.hr_v_l) + bpHrVsL).toFixed(1),
-        hit_v_r: (parseFloat(pitcher.hit_v_r) + bpHitVsR + bpSiVsR).toFixed(1),
-        ob_v_r: obVsR.toFixed(1),
-        tb_v_r: tbVsR.toFixed(1),
-        hr_v_r: (parseFloat(pitcher.hr_v_r) + bpHrVsR).toFixed(1),
+        hit_v_l: roundTo(parseFloat(pitcher.hit_v_l) + bpHitVsL + bpSiVsL, 1),
+        ob_v_l: roundTo(obVsL, 1),
+        tb_v_l: roundTo(tbVsL, 1),
+        hr_v_l: roundTo(parseFloat(pitcher.hr_v_l) + bpHrVsL, 1),
+        hit_v_r: roundTo(parseFloat(pitcher.hit_v_r) + bpHitVsR + bpSiVsR, 1),
+        ob_v_r: roundTo(obVsR, 1),
+        tb_v_r: roundTo(tbVsR, 1),
+        hr_v_r: roundTo(parseFloat(pitcher.hr_v_r) + bpHrVsR, 1),
         wopsVsL,
         wopsVsR,
     };
@@ -109,7 +109,6 @@ const multiBallparkCalculations = (pitcher, partials) => {
     const obVsL = parseFloat(pitcher.ob_v_l) + bpHitVsL + bpSiVsL;
     const tbVsL = parseFloat(pitcher.tb_v_l) + bpTbVsL + bpSiVsL;
     const obVsR = parseFloat(pitcher.ob_v_r) + bpHitVsR + bpSiVsR;
-    console.log(obVsR);
     const tbVsR = parseFloat(pitcher.tb_v_r) + bpTbVsR + bpSiVsR;
 
     // start calculating fielding impact on wOPS
@@ -121,18 +120,18 @@ const multiBallparkCalculations = (pitcher, partials) => {
     // end calculating fielding impact on wOPS
 
     // start wOPS calculations
-    const wopsVsL = ((obValue * obVsL) + (tbValue * tbVsL) - (obValue * 20 * pitcher.dp_v_l / 108) + gbpWops + (0.103 * pitcher.balk) + (0.205 * pitcher.wp)).toFixed(1);
-    const wopsVsR = ((obValue * obVsR) + (tbValue * tbVsR) - (obValue * 20 * pitcher.dp_v_r / 108) + gbpWops + (0.103 * pitcher.balk) + (0.205 * pitcher.wp)).toFixed(1);
+    const wopsVsL = roundTo((obValue * obVsL) + (tbValue * tbVsL) - (obValue * 20 * pitcher.dp_v_l / 108) + gbpWops + (0.103 * pitcher.balk) + (0.205 * pitcher.wp), 1);
+    const wopsVsR = roundTo((obValue * obVsR) + (tbValue * tbVsR) - (obValue * 20 * pitcher.dp_v_r / 108) + gbpWops + (0.103 * pitcher.balk) + (0.205 * pitcher.wp), 1);
 
     return {
-        hit_v_l: (parseFloat(pitcher.hit_v_l) + bpHitVsL + bpSiVsL).toFixed(1),
-        ob_v_l: obVsL.toFixed(1),
-        tb_v_l: tbVsL.toFixed(1),
-        hr_v_l: (parseFloat(pitcher.hr_v_l) + bpHrVsL).toFixed(1),
-        hit_v_r: (parseFloat(pitcher.hit_v_r) + bpHitVsR + bpSiVsR).toFixed(1),
-        ob_v_r: obVsR.toFixed(1),
-        tb_v_r: tbVsR.toFixed(1),
-        hr_v_r: (parseFloat(pitcher.hr_v_r) + bpHrVsR).toFixed(1),
+        hit_v_l: roundTo(parseFloat(pitcher.hit_v_l) + bpHitVsL + bpSiVsL, 1),
+        ob_v_l: roundTo(obVsL, 1),
+        tb_v_l: roundTo(tbVsL, 1),
+        hr_v_l: roundTo(parseFloat(pitcher.hr_v_l) + bpHrVsL, 1),
+        hit_v_r: roundTo(parseFloat(pitcher.hit_v_r) + bpHitVsR + bpSiVsR, 1),
+        ob_v_r: roundTo(obVsR, 1),
+        tb_v_r: roundTo(tbVsR, 1),
+        hr_v_r: roundTo(parseFloat(pitcher.hr_v_r) + bpHrVsR, 1),
         wopsVsL,
         wopsVsR,
     };
@@ -140,14 +139,14 @@ const multiBallparkCalculations = (pitcher, partials) => {
 
 const withoutBPCalculations = (pitcher) => {
     return {
-        hit_v_l: `~${(parseFloat(pitcher.hit_v_l) + pitcher.bp_si_v_l).toFixed(1)}`,
-        ob_v_l: `~${(parseFloat(pitcher.ob_v_l) + pitcher.bp_si_v_l).toFixed(1)}`,
-        tb_v_l: `~${(parseFloat(pitcher.tb_v_l) + pitcher.bp_si_v_l).toFixed(1)}`,
-        hr_v_l: `~${(parseFloat(pitcher.hr_v_l)).toFixed(1)}/${pitcher.bp_hr_v_l}`,
-        hit_v_r: `~${(parseFloat(pitcher.hit_v_r) + pitcher.bp_si_v_r).toFixed(1)}`,
-        ob_v_r: `~${(parseFloat(pitcher.ob_v_r) + pitcher.bp_si_v_r).toFixed(1)}`,
-        tb_v_r: `~${(parseFloat(pitcher.tb_v_r) + pitcher.bp_si_v_r).toFixed(1)}`,
-        hr_v_r: `~${(parseFloat(pitcher.hr_v_r)).toFixed(1)}/${pitcher.bp_hr_v_r}`,
+        hit_v_l: `~${roundTo(parseFloat(pitcher.hit_v_l) + pitcher.bp_si_v_l, 1)}`,
+        ob_v_l: `~${roundTo(parseFloat(pitcher.ob_v_l) + pitcher.bp_si_v_l, 1)}`,
+        tb_v_l: `~${roundTo(parseFloat(pitcher.tb_v_l) + pitcher.bp_si_v_l, 1)}`,
+        hr_v_l: `~${roundTo(parseFloat(pitcher.hr_v_l), 1)}/${pitcher.bp_hr_v_l}`,
+        hit_v_r: `~${roundTo(parseFloat(pitcher.hit_v_r) + pitcher.bp_si_v_r, 1)}`,
+        ob_v_r: `~${roundTo(parseFloat(pitcher.ob_v_r) + pitcher.bp_si_v_r, 1)}`,
+        tb_v_r: `~${roundTo(parseFloat(pitcher.tb_v_r) + pitcher.bp_si_v_r, 1)}`,
+        hr_v_r: `~${roundTo(parseFloat(pitcher.hr_v_r), 1)}/${pitcher.bp_hr_v_r}`,
         wopsVsL: '',
         wopsVsR: '',
     };
