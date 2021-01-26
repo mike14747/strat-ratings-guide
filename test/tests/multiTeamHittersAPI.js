@@ -10,10 +10,22 @@ const path = require('path');
 describe('Users API (/api/hitters/multi-team)', function () {
     it('should FAIL to POST multi-team hitter data from "/test/testData/multi_team_hitters.csv" because the Year field is missing', function (done) {
         requester
-            .post('/api/hitters')
+            .post('/api/hitters/multi-team')
             .attach('file', fs.readFileSync(path.join(__dirname, '../testData/multi_team_hitters.csv')))
             .then((response) => {
                 response.should.have.status(400);
+                response.body.should.be.an('object').and.have.all.keys('message');
+                done();
+            })
+            .catch((error) => done(error));
+    });
+
+    it('should FAIL to POST multi-team hitter data from "/test/testData2/multi_team_hitters.csv" because a Tm field is invalid', function (done) {
+        requester
+            .post('/api/hitters/multi-team')
+            .attach('file', fs.readFileSync(path.join(__dirname, '../testData2/multi_team_hitters.csv')))
+            .then((response) => {
+                response.should.have.status(500);
                 response.body.should.be.an('object').and.have.all.keys('message');
                 done();
             })

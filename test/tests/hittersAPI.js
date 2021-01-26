@@ -24,6 +24,18 @@ describe('Users API (/api/hitters)', function () {
             .catch((error) => done(error));
     });
 
+    it('should FAIL to POST hitter data from "/test/testData2/hitter_ratings.csv" because the TM field is invalid', function (done) {
+        requester
+            .post('/api/hitters')
+            .attach('file', fs.readFileSync(path.join(__dirname, '../testData2/hitter_ratings.csv')))
+            .then((response) => {
+                response.should.have.status(500);
+                response.body.should.be.an('object').and.have.all.keys('message');
+                done();
+            })
+            .catch((error) => done(error));
+    });
+
     it('should POST hitter data from "/data/hitter_ratings.csv"', function (done) {
         requester
             .post('/api/hitters')

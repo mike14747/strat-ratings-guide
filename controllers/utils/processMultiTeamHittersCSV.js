@@ -4,9 +4,9 @@ const path = require('path');
 
 const processMultiTeamHittersInsertData = (csvData, realTeams) => {
     return csvData.map(row => {
-        const { real_team_id: realTeamId } = realTeams.find((team) => {
-            return team.bbref_abbrev === row.Tm;
-        });
+        const foundTeam = realTeams.find(team => team.bbref_abbrev === row.Tm);
+        if (!foundTeam) throw new Error(`No match found for the bbref abbreviation (${row.Tm}) in the csv file!`);
+        const { real_team_id: realTeamId } = foundTeam;
 
         const hitterObj = {
             year: row.Year,
