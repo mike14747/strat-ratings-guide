@@ -29,7 +29,7 @@ describe('Users API (/api/pitchers)', function () {
             .post('/api/pitchers')
             .attach('file', fs.readFileSync(path.join(__dirname, '../testData2/pitcher_ratings.csv')))
             .then((response) => {
-                response.should.have.status(500);
+                response.should.have.status(400);
                 response.body.should.be.an('object').and.have.all.keys('message');
                 done();
             })

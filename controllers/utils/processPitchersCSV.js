@@ -35,7 +35,7 @@ const processPitchersInsertData = (csvData, realTeams) => {
         const { bp: bpVsR, bpsi: bpSiVsR } = convertBpToBpAndBpSi(`${row.BP_v_r}`);
 
         const foundTeam = realTeams.find(team => team.strat_abbrev === row.TM);
-        if (!foundTeam) throw new Error(`No match found for the strat abbreviation (${row.TM}) in the csv file!`);
+        if (!foundTeam) throw new RangeError(`No match found for the strat abbreviation (${row.TM}) in the csv file!`);
         const { real_team_abbrev: realTeam, real_team_id: realTeamId } = foundTeam;
 
         const pitcherObj = {

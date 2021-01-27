@@ -25,7 +25,7 @@ describe('Users API (/api/hitters/multi-team)', function () {
             .post('/api/hitters/multi-team')
             .attach('file', fs.readFileSync(path.join(__dirname, '../testData2/multi_team_hitters.csv')))
             .then((response) => {
-                response.should.have.status(500);
+                response.should.have.status(400);
                 response.body.should.be.an('object').and.have.all.keys('message');
                 done();
             })
