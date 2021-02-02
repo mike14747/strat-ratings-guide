@@ -30,7 +30,7 @@ const pitchersSchema = Joi.array().items({
     BAT_B: Joi.string().length(5).required(),
     STL: Joi.string().valid('AAA', 'AA', 'A', 'B', 'C', 'D', 'E').required(),
     SPD: Joi.number().integer().min(0).required(),
-    rml_team_id: Joi.optional(),
+    rml_team_id: Joi.string().allow('').required(),
 });
 
 module.exports = pitchersSchema;

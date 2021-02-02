@@ -109,9 +109,9 @@ const processHittersCSV = () => {
                     trim: true,
                     // cast: true,
                     cast: function (value, { header, index }) {
-                        const castInts = [0, 2, 5, 6, 7, 13, 14, 15, 16, 22, 23, 26];
+                        const castInts = [0, 5, 6, 7, 13, 14, 15, 16, 22, 23, 26];
                         const castFloats = [8, 9, 10, 11, 17, 18, 19, 20];
-                        const possibleNull = [4, 38];
+                        const possibleNull = [2, 4, 38];
                         if (header) {
                             return value;
                         } else {

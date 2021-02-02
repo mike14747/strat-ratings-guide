@@ -5,7 +5,7 @@ const hittersSchema = Joi.array().items({
     TM: Joi.string().length(3).required(),
     real_team_id: Joi.optional(),
     HITTERS: Joi.string().min(3).required(),
-    INJ: Joi.optional(),
+    INJ: Joi.number().integer().min(0).allow(null).required(),
     AB: Joi.number().integer().min(1).required(),
     SO_v_lhp: Joi.number().integer().min(0).required(),
     BB_v_lhp: Joi.number().integer().min(0).required(),
@@ -39,7 +39,7 @@ const hittersSchema = Joi.array().items({
     d_CF: Joi.string().length(3).allow('').required(),
     d_RF: Joi.string().length(3).allow('').required(),
     FIELDING: Joi.string().allow('').required(),
-    rml_team_id: Joi.optional(),
+    rml_team_id: Joi.number().integer().min(1).allow(null).required(),
 });
 
 module.exports = hittersSchema;
