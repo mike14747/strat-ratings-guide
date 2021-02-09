@@ -18,7 +18,7 @@ CREATE TABLE `bp_ratings` (
     `st_hr_l` int unsigned NOT NULL,
     `st_hr_r` int unsigned NOT NULL,
     PRIMARY KEY (`bp_rating_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
 
@@ -124,7 +124,7 @@ CREATE TABLE `multi_team_hitters` (
     `hitter` varchar(30) NOT NULL,
     `bats` varchar(1) NOT NULL,
     `ab` int unsigned NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -135,7 +135,7 @@ CREATE TABLE `multi_team_pitchers` (
     `pitcher` varchar(30) NOT NULL,
     `throws` varchar(1) NOT NULL,
     `ip` decimal(5,2) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
