@@ -15,13 +15,8 @@ router.use((req, res, next) => {
 });
 
 router.use((error, req, res, next) => {
-    if (error.isJoi) {
-        return res.status(400).json({ message: 'An error occurred! ' + error });
-    } else if (error instanceof RangeError) {
-        return res.status(400).json({ message: 'An error occurred! ' + error });
-    }
-    res.status(error.status || 500);
-    error.status === 404 ? res.send(error.message) : res.json({ message: 'An error occurred! ' + error.message });
+    if (error.isJoi || error instanceof RangeError) error.status = 400;
+    res.status(error.status || 500).json({ message: 'An error occurred! ' + error.message });
 });
 
 module.exports = router;
