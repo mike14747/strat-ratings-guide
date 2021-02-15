@@ -11,6 +11,11 @@ const processWColumn = (w, bpsi) => {
 
 const obValue = 1.2;
 const tbValue = 0.845;
+const clAdjValue = 0.12;
+
+const bpHRAdjCalculate = (bpHR) => ((bpHR / 20) + 0.45) / 2;
+const bpSiAdjCalculate = (bpSI) => 5 * ((bpSI + 8) / 40) - 2;
+const wOPSCalculate = (ob, tb, dp, wAdj) => ((obValue * ob) + (tbValue * tb) - (obValue * 20 * dp / 108)) - wAdj;
 
 const ballparkCalculations = (hitter) => {
     let bpAdjVsL = 0;
@@ -22,13 +27,13 @@ const ballparkCalculations = (hitter) => {
 
     // ballpark calculations vs Lefty pitchers
     if (hitter.bats === 'L') {
-        bpAdjVsL = ((hitter.st_hr_l / 20) + 0.45) / 2;
-        bpSiAdjVsL = 5 * ((hitter.st_si_l + 8) / 40) - 2;
-        clAdjVsL = 0.12 * hitter.cl_v_l;
+        bpAdjVsL = bpHRAdjCalculate(hitter.st_hr_l);
+        bpSiAdjVsL = bpSiAdjCalculate(hitter.st_si_l);
+        clAdjVsL = clAdjValue * hitter.cl_v_l;
     } else if (hitter.bats === 'R' || hitter.bats === 'S') {
-        bpAdjVsL = ((hitter.st_hr_r / 20) + 0.45) / 2;
-        bpSiAdjVsL = 5 * ((hitter.st_si_r + 8) / 40) - 2;
-        clAdjVsL = 0.12 * hitter.cl_v_l;
+        bpAdjVsL = bpHRAdjCalculate(hitter.st_hr_r);
+        bpSiAdjVsL = bpSiAdjCalculate(hitter.st_si_r);
+        clAdjVsL = clAdjValue * hitter.cl_v_l;
     }
     if (hitter.bp_si_v_l === 0) {
         bpSiAdjVsL = 0;
@@ -41,13 +46,13 @@ const ballparkCalculations = (hitter) => {
 
     // ballpark calculations vs Righty pitchers
     if (hitter.bats === 'L' || hitter.bats === 'S') {
-        bpAdjVsR = ((hitter.st_hr_l / 20) + 0.45) / 2;
-        bpSiAdjVsR = 5 * ((hitter.st_si_l + 8) / 40) - 2;
-        clAdjVsR = 0.12 * hitter.cl_v_r;
+        bpAdjVsR = bpHRAdjCalculate(hitter.st_hr_l);
+        bpSiAdjVsR = bpSiAdjCalculate(hitter.st_si_l);
+        clAdjVsR = clAdjValue * hitter.cl_v_r;
     } else if (hitter.bats === 'R') {
-        bpAdjVsR = ((hitter.st_hr_r / 20) + 0.45) / 2;
-        bpSiAdjVsR = 5 * ((hitter.st_si_r + 8) / 40) - 2;
-        clAdjVsR = 0.12 * hitter.cl_v_r;
+        bpAdjVsR = bpHRAdjCalculate(hitter.st_hr_r);
+        bpSiAdjVsR = bpSiAdjCalculate(hitter.st_si_r);
+        clAdjVsR = clAdjValue * hitter.cl_v_r;
     }
     if (hitter.bp_si_v_r === 0) {
         bpSiAdjVsR = 0;
@@ -66,9 +71,9 @@ const ballparkCalculations = (hitter) => {
 
     // start wOPS calculations
     const wAdjVsL = hitter.w_v_l === 'w' ? tbValue * 9 : 0;
-    const wopsVsL = roundTo(((obValue * obVsL) + (tbValue * tbVsL) - (obValue * 20 * hitter.dp_v_l / 108)) - wAdjVsL, 1);
+    const wopsVsL = roundTo(wOPSCalculate(obVsL, tbVsL, hitter.dp_v_l, wAdjVsL), 1);
     const wAdjVsR = hitter.w_v_r === 'w' ? tbValue * 9 : 0;
-    const wopsVsR = roundTo(((obValue * obVsR) + (tbValue * tbVsR) - (obValue * 20 * hitter.dp_v_r / 108)) - wAdjVsR, 1);
+    const wopsVsR = roundTo(wOPSCalculate(obVsR, tbVsR, hitter.dp_v_r, wAdjVsR), 1);
 
     return {
         hit_v_l: roundTo(parseFloat(hitter.hit_v_l) + bpHitVsL + bpSiVsL, 1),
@@ -109,13 +114,13 @@ const multiBallparkCalculations = (hitter, partials) => {
     partials.forEach(t => {
         // ballpark calculations vs Lefty pitchers
         if (hitter.bats === 'L') {
-            bpAdjVsL = ((t.st_hr_l / 20) + 0.45) / 2;
-            bpSiAdjVsL = 5 * ((t.st_si_l + 8) / 40) - 2;
-            clAdjVsL = 0.12 * hitter.cl_v_l;
+            bpAdjVsL = bpHRAdjCalculate(t.st_hr_l);
+            bpSiAdjVsL = bpSiAdjCalculate(t.st_si_l);
+            clAdjVsL = clAdjValue * hitter.cl_v_l;
         } else if (hitter.bats === 'R' || hitter.bats === 'S') {
-            bpAdjVsL = ((t.st_hr_r / 20) + 0.45) / 2;
-            bpSiAdjVsL = 5 * ((t.st_si_r + 8) / 40) - 2;
-            clAdjVsL = 0.12 * hitter.cl_v_l;
+            bpAdjVsL = bpHRAdjCalculate(t.st_hr_r);
+            bpSiAdjVsL = bpSiAdjCalculate(t.st_si_r);
+            clAdjVsL = clAdjValue * hitter.cl_v_l;
         }
         if (hitter.bp_si_v_l === 0) {
             bpSiAdjVsL = 0;
@@ -130,13 +135,13 @@ const multiBallparkCalculations = (hitter, partials) => {
 
         // ballpark calculations vs Righty pitchers
         if (hitter.bats === 'L' || hitter.bats === 'S') {
-            bpAdjVsR = ((t.st_hr_l / 20) + 0.45) / 2;
-            bpSiAdjVsR = 5 * ((t.st_si_l + 8) / 40) - 2;
-            clAdjVsR = 0.12 * hitter.cl_v_r;
+            bpAdjVsR = bpHRAdjCalculate(t.st_hr_l);
+            bpSiAdjVsR = bpSiAdjCalculate(t.st_si_l);
+            clAdjVsR = clAdjValue * hitter.cl_v_r;
         } else if (hitter.bats === 'R') {
-            bpAdjVsR = ((t.st_hr_r / 20) + 0.45) / 2;
-            bpSiAdjVsR = 5 * ((t.st_si_r + 8) / 40) - 2;
-            clAdjVsR = 0.12 * hitter.cl_v_r;
+            bpAdjVsR = bpHRAdjCalculate(t.st_hr_r);
+            bpSiAdjVsR = bpSiAdjCalculate(t.st_si_r);
+            clAdjVsR = clAdjValue * hitter.cl_v_r;
         }
         if (hitter.bp_si_v_r === 0) {
             bpSiAdjVsR = 0;
@@ -158,9 +163,9 @@ const multiBallparkCalculations = (hitter, partials) => {
 
     // start wOPS calculations
     const wAdjVsL = hitter.w_v_l === 'w' ? tbValue * 9 : 0;
-    const wopsVsL = roundTo(((obValue * obVsL) + (tbValue * tbVsL) - (obValue * 20 * hitter.dp_v_l / 108)) - wAdjVsL, 1);
+    const wopsVsL = roundTo(wOPSCalculate(obVsL, tbVsL, hitter.dp_v_l, wAdjVsL), 1);
     const wAdjVsR = hitter.w_v_r === 'w' ? tbValue * 9 : 0;
-    const wopsVsR = roundTo(((obValue * obVsR) + (tbValue * tbVsR) - (obValue * 20 * hitter.dp_v_r / 108)) - wAdjVsR, 1);
+    const wopsVsR = roundTo(wOPSCalculate(obVsR, tbVsR, hitter.dp_v_r, wAdjVsR), 1);
 
     return {
         hit_v_l: roundTo(parseFloat(hitter.hit_v_l) + bpHitVsL + bpSiVsL, 1),
