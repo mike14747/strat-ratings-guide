@@ -11,8 +11,17 @@ const bpHRAdjCalculate = (bpHR) => ((bpHR / 20) + 0.45) / 2;
 const bpSiAdjCalculate = (bpSI) => 5 * ((bpSI + 8) / 40) - 2;
 const gbpWopsCalculate = (fielding) => {
     const gbpHits = (parseInt(fielding.charAt(0)) - 1) * 0.1 * 2;
-    const gbpErrors = parseInt(fielding.substring(2, 4)) * 0.0172 * 2;
-    return (obValue * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2) + tbValue * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2)) + (obValue * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2) + tbValue * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2)) + (obValue * (((gbpHits / 2) * (gbpErrors / 2)) * 2) + 2 * tbValue * (((gbpHits / 2) * (gbpErrors / 2)) * 2));
+    // const gbpErrors = parseInt(fielding.substring(2, 4)) * 0.0172 * 2;
+    const gbpErrors = parseInt(fielding.substring(2, 4)) * 0.0180 * 2;
+    const gbpTwoBaseErrorTotalBaseAdj = tbValue * gbpErrors / 20;
+    const gbpWopsOnHitsOnly = obValue * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2) + tbValue * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2);
+    const gbpWopsOnErrorsOnly = obValue * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2) + tbValue * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2);
+    const gbpWopsOnHitAndError = obValue * (((gbpHits / 2) * (gbpErrors / 2)) * 2) + 2 * tbValue * (((gbpHits / 2) * (gbpErrors / 2)) * 2);
+    console.log(fielding, gbpWopsOnHitsOnly, gbpWopsOnErrorsOnly, gbpWopsOnHitAndError);
+    // console.log('old gbpWopsCalculate:', (obValue * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2) + tbValue * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2)) + (obValue * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2) + tbValue * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2)) + (obValue * (((gbpHits / 2) * (gbpErrors / 2)) * 2) + 2 * tbValue * (((gbpHits / 2) * (gbpErrors / 2)) * 2)));
+    // console.log('new gbpWopsCalculate:', gbpWopsOnHitsOnly + gbpWopsOnErrorsOnly + gbpWopsOnHitAndError + gbpTwoBaseErrorTotalBaseAdj);
+    // return (obValue * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2) + tbValue * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2)) + (obValue * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2) + tbValue * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2)) + (obValue * (((gbpHits / 2) * (gbpErrors / 2)) * 2) + 2 * tbValue * (((gbpHits / 2) * (gbpErrors / 2)) * 2));
+    return gbpWopsOnHitsOnly + gbpWopsOnErrorsOnly + gbpWopsOnHitAndError + gbpTwoBaseErrorTotalBaseAdj;
 };
 const wOPSCalculate = (ob, tb, dp, gbp, bk, wp) => (obValue * ob) + (tbValue * tb) - (obValue * 20 * dp / 108) + gbp + (bkValue * bk) + (wpValue * wp);
 
