@@ -21,17 +21,20 @@ I haven't yet figured out a way to incorporate their _Hold_ rating... partly bec
 Using the formulas and values I'm currently using, the maximum impact of each of the pitcher's _extras_ are:
 
 -   Fielding rating:
+
     -   The range of posssible values is 1e0 through 5e51.
     -   The best rating (1e0) is assumed as having zero impact on wOPS.
     -   The worst rating (5e51) adds (through a fairly complex calculation) 4.4 to their wOPS.
 
 -   BK rating:
+
     -   The range of posssible values is 0 through 20.
     -   The best rating (0) is assumed as having zero impact on wOPS.
     -   Each increment on their BK rating is calculated as being worth .103 wOPS points.
     -   The worst rating (20) adds 2.1 to their wOPS.
 
 -   WP rating:
+
     -   The range of posssible values is 0 through 20.
     -   The best rating (0) is assumed as having zero impact on wOPS.
     -   Each increment on their WP rating is calculated as being worth .205 wOPS points.
@@ -51,3 +54,13 @@ It should be noted that even though balk and wild pitches have the same effect o
 ---
 
 ### Clutch hitting
+
+---
+
+### Tired pitchers
+
+There are either 10 or 11 **dot chances** on each side of a pitcher's card.
+
+Assuming OB and TB values of 1.2 and .845, the impact of using a tired pitcher is between 23 and 25 wOPS points per side.
+
+---
