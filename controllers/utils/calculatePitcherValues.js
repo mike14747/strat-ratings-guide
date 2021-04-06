@@ -17,7 +17,7 @@ const gbpWopsCalculate = (fielding) => {
     const gbpWopsOnHitsOnly = obValue * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2) + tbValue * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2);
     const gbpWopsOnErrorsOnly = obValue * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2) + tbValue * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2);
     const gbpWopsOnHitAndError = obValue * (((gbpHits / 2) * (gbpErrors / 2)) * 2) + 2 * tbValue * (((gbpHits / 2) * (gbpErrors / 2)) * 2);
-    console.log(fielding, gbpWopsOnHitsOnly, gbpWopsOnErrorsOnly, gbpWopsOnHitAndError);
+    // console.log(fielding, gbpWopsOnHitsOnly, gbpWopsOnErrorsOnly, gbpWopsOnHitAndError);
     // console.log('old gbpWopsCalculate:', (obValue * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2) + tbValue * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2)) + (obValue * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2) + tbValue * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2)) + (obValue * (((gbpHits / 2) * (gbpErrors / 2)) * 2) + 2 * tbValue * (((gbpHits / 2) * (gbpErrors / 2)) * 2)));
     // console.log('new gbpWopsCalculate:', gbpWopsOnHitsOnly + gbpWopsOnErrorsOnly + gbpWopsOnHitAndError + gbpTwoBaseErrorTotalBaseAdj);
     // return (obValue * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2) + tbValue * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2)) + (obValue * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2) + tbValue * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2)) + (obValue * (((gbpHits / 2) * (gbpErrors / 2)) * 2) + 2 * tbValue * (((gbpHits / 2) * (gbpErrors / 2)) * 2));
