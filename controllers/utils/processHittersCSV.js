@@ -8,11 +8,9 @@ const convertPositionlFielding = (rating) => {
 
 const convertNameToNameAndBats = (name) => {
     return {
-        hitterName: name.slice(-1) === '*'
+        hitterName: (name.slice(-1) === '*' || name.slice(-1) === '+')
             ? name.slice(0, -1)
-            : name.slice(-1) === '+'
-                ? name.slice(0, -1)
-                : name,
+            : name,
         bats: name.slice(-1) === '*'
             ? 'L'
             : name.slice(-1) === '+'
@@ -126,6 +124,7 @@ const processHittersCSV = () => {
                             }
                         }
                     },
+                    skip_empty_lines: true,
                 }),
             )
             .on('data', row => csvData.push(row))

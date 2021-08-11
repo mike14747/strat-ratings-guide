@@ -4,11 +4,9 @@ const path = require('path');
 
 const convertNameToNameAndThrows = (name) => {
     return {
-        pitcherName: name.slice(-1) === '*'
+        pitcherName: (name.slice(-1) === '*' || name.slice(-1) === '+')
             ? name.slice(0, -1)
-            : name.slice(-1) === '+'
-                ? name.slice(0, -1)
-                : name,
+            : name,
         throws: name.slice(-1) === '*'
             ? 'L'
             : name.slice(-1) === '+'
@@ -89,6 +87,7 @@ const processPitchersCSV = () => {
                     // from_line: 1,
                     // to_line: 2,
                     trim: true,
+                    skip_empty_lines: true,
                 }),
             )
             .on('data', row => csvData.push(row))
