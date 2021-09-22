@@ -10,7 +10,7 @@ function Header() {
                     <img src="/images/analyze.png" alt="Strat Ratings Guide Analysis" width="30px" height="33px" className="mx-3" />
                 </div>
                 <div className="d-flex align-items-center">
-                    <h4 className="text-dark text-uppercase m-0 d-inline-block py-2 pr-4"><sup>Strat</sup> <Link to="/">Ratings Guide</Link> <sup>Analysis</sup></h4>
+                    <h1 className="heading text-dark text-uppercase m-0 d-inline-block py-2 pr-4"><sup>Strat</sup> <Link to="/">Ratings Guide</Link> <sup>Analysis</sup></h1>
                 </div>
             </div>
             <div className="col-md d-flex justify-content-center align-items-stretch border-bottom border-secondary">

@@ -26,7 +26,7 @@ function App() {
             <div id="app-wrapper">
                 <UserContext.Provider value={{ user, setUser }}>
                     <Header />
-                    <div className="container-fluid flex-fill bg-white">
+                    <main className="container-fluid flex-fill bg-white">
                         <Switch>
                             <Route exact path="/" component={Home} />
                             <Route exact path="/hitterAnalysis" component={HitterAnalysis} />
@@ -40,7 +40,7 @@ function App() {
                             </Route>
                             <Route component={NoMatch} />
                         </Switch>
-                    </div>
+                    </main>
                     <Footer />
                 </UserContext.Provider>
             </div>

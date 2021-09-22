@@ -66,3 +66,13 @@ sup {
     font-size: 120%;
     margin-bottom: 1rem;
 }
+
+h1.heading {
+    font-size: clamp(1.4rem, 1vw + 0.9rem, 2.1rem);
+}
+
+.page-heading {
+    font-size: clamp(1.4rem, 1vw + 0.9rem, 2.1rem);
+    text-align: center;
+    margin-bottom: 2rem;
+}

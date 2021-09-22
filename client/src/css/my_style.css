@@ -60,8 +60,8 @@ h6 {
 }
 
 p {
-    margin-top: 0;
-    margin-bottom: 1rem;
+    max-width: 80ch;
+    margin: 0 auto 1rem auto;
 }
 
 abbr[title],
