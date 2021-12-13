@@ -22,27 +22,27 @@ Using the formulas and values I'm currently using, the maximum impact of each of
 
 -   Fielding rating:
 
-    -   The range of posssible values is 1e0 through 5e51.
+    -   The range of possible values is 1e0 through 5e51.
     -   The best rating (1e0) is assumed as having zero impact on wOPS.
     -   The worst rating (5e51) adds (through a fairly complex calculation) 4.4 to their wOPS.
 
 -   BK rating:
 
-    -   The range of posssible values is 0 through 20.
+    -   The range of possible values is 0 through 20.
     -   The best rating (0) is assumed as having zero impact on wOPS.
     -   Each increment on their BK rating is calculated as being worth .103 wOPS points.
     -   The worst rating (20) adds 2.1 to their wOPS.
 
 -   WP rating:
 
-    -   The range of posssible values is 0 through 20.
+    -   The range of possible values is 0 through 20.
     -   The best rating (0) is assumed as having zero impact on wOPS.
     -   Each increment on their WP rating is calculated as being worth .205 wOPS points.
     -   The worst rating (20) adds 4.1 to their wOPS.
 
 -   DPs:
     -   This is the only of the pitcher's extras that has an inverse effect and can lower their wOPS.
-    -   The range of posssible values is 0 through 14.
+    -   The range of possible values is 0 through 14.
     -   The worst rating (0) is assumed as having zero impact on wOPS.
     -   Each increment on their DP rating is calculated as being worth deducting .2222 wOPS points.
     -   The best rating (14) subtracts 3.1 from their wOPS.

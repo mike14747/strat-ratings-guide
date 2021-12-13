@@ -13,13 +13,13 @@ Convert the hitter and pitcher data files into database ready data:
 -   Center and left-align the columns as needed.
 -   In the _Pitchers.xlsx_ file, remove all the **+** signs from the **Hold** column.
 -   In the _Hitters.xlsx_ file, remove all the **+** signs from the **CL v lhp** and **CL v rhp** columns.
--   Remove all hitters and pitchers that have an **M** in the _Location_ column. Most players with an **X** in the _Location_ column should be deleted too.  **However**, you might find that a couple low IP, carded pitchers might have been part of the X players group and have to be brough back in from the original file.
+-   Remove all hitters and pitchers that have an **M** in the _Location_ column. Most players with an **X** in the _Location_ column should be deleted too.  **However**, you might find that a couple low IP, carded pitchers might have been part of the X players group and have to be brought back in from the original file.
 -   Remove all uncarded players. This will be easy to do for hitters (100+ AB in full 162 game seasons)... harder for pitchers.
 -   Make sure Strat's and baseball-reference's real team abbreviations haven't changed from what they've been.
 
 Modifying the columns in _Hitters.xls_ and _Pitchers.xls_ files:
 
--   Insert a _Year_ column to the begining of each file (the MLB year).
+-   Insert a _Year_ column to the beginning of each file (the MLB year).
 -   Add an _rml_team_id_ column to the end of each file.
 -   **Notes:**
     -   It's no longer necessary to rename the _Location_ column to _real_team_id_, since that is now calculated by the app when uploading data.
@@ -91,7 +91,7 @@ It's going to take some data manipulation to get that info into _data/multi_team
 
 -   The _Bats_ column data can be extracted from the hitter's name from [Baseball Reference](baseball-reference.com). They use the following system:
 
-    -   '\*' aftre their name means L
+    -   '\*' after their name means L
     -   '#' after their name means S
     -   neither of the above after their name means R
 
@@ -123,7 +123,7 @@ It's going to take some data manipulation to get that info into _data/multi_team
 
 -   The _Throws_ column data can be extracted from the pitcher's name from [Baseball Reference](baseball-reference.com). They use the following system:
 
-    -   '\*' aftre their name means L
+    -   '\*' after their name means L
     -   '#' after their name means S
     -   neither of the above after their name means R
 
