@@ -1,3 +1,6 @@
+const { OB_VALUE, TB_VALUE, CLUTCH_ADJUST_VALUE } = require('./constants');
+const { bpHRAdjCalculate, bpSiAdjCalculate } = require('./bpCalculateFunctions');
+
 const roundTo = require('./roundTo');
 
 const processWColumn = (w, bpsi) => {
@@ -9,13 +12,7 @@ const processWColumn = (w, bpsi) => {
     return wCol;
 };
 
-const obValue = 1.2;
-const tbValue = 0.845;
-const clAdjValue = 0.12;
-
-const bpHRAdjCalculate = (bpHR) => ((bpHR / 20) + 0.45) / 2;
-const bpSiAdjCalculate = (bpSI) => 5 * ((bpSI + 8) / 40) - 2;
-const wOPSCalculate = (ob, tb, dp, wAdj) => ((obValue * ob) + (tbValue * tb) - (obValue * 20 * dp / 108)) - wAdj;
+const wOPSCalculate = (ob, tb, dp, wAdj) => ((OB_VALUE * ob) + (TB_VALUE * tb) - (OB_VALUE * 20 * dp / 108)) - wAdj;
 
 const ballparkCalculations = (hitter) => {
     let bpAdjVsL = 0;
@@ -29,11 +26,11 @@ const ballparkCalculations = (hitter) => {
     if (hitter.bats === 'L') {
         bpAdjVsL = bpHRAdjCalculate(hitter.st_hr_l);
         bpSiAdjVsL = bpSiAdjCalculate(hitter.st_si_l);
-        clAdjVsL = clAdjValue * hitter.cl_v_l;
+        clAdjVsL = CLUTCH_ADJUST_VALUE * hitter.cl_v_l;
     } else if (hitter.bats === 'R' || hitter.bats === 'S') {
         bpAdjVsL = bpHRAdjCalculate(hitter.st_hr_r);
         bpSiAdjVsL = bpSiAdjCalculate(hitter.st_si_r);
-        clAdjVsL = clAdjValue * hitter.cl_v_l;
+        clAdjVsL = CLUTCH_ADJUST_VALUE * hitter.cl_v_l;
     }
     if (hitter.bp_si_v_l === 0) {
         bpSiAdjVsL = 0;
@@ -48,11 +45,11 @@ const ballparkCalculations = (hitter) => {
     if (hitter.bats === 'L' || hitter.bats === 'S') {
         bpAdjVsR = bpHRAdjCalculate(hitter.st_hr_l);
         bpSiAdjVsR = bpSiAdjCalculate(hitter.st_si_l);
-        clAdjVsR = clAdjValue * hitter.cl_v_r;
+        clAdjVsR = CLUTCH_ADJUST_VALUE * hitter.cl_v_r;
     } else if (hitter.bats === 'R') {
         bpAdjVsR = bpHRAdjCalculate(hitter.st_hr_r);
         bpSiAdjVsR = bpSiAdjCalculate(hitter.st_si_r);
-        clAdjVsR = clAdjValue * hitter.cl_v_r;
+        clAdjVsR = CLUTCH_ADJUST_VALUE * hitter.cl_v_r;
     }
     if (hitter.bp_si_v_r === 0) {
         bpSiAdjVsR = 0;
@@ -70,9 +67,9 @@ const ballparkCalculations = (hitter) => {
     const tbVsR = parseFloat(hitter.tb_v_r) + bpTbVsR + bpSiVsR;
 
     // start wOPS calculations
-    const wAdjVsL = hitter.w_v_l === 'w' ? tbValue * 9 : 0;
+    const wAdjVsL = hitter.w_v_l === 'w' ? TB_VALUE * 9 : 0;
     const wopsVsL = roundTo(wOPSCalculate(obVsL, tbVsL, hitter.dp_v_l, wAdjVsL), 1);
-    const wAdjVsR = hitter.w_v_r === 'w' ? tbValue * 9 : 0;
+    const wAdjVsR = hitter.w_v_r === 'w' ? TB_VALUE * 9 : 0;
     const wopsVsR = roundTo(wOPSCalculate(obVsR, tbVsR, hitter.dp_v_r, wAdjVsR), 1);
 
     return {
@@ -116,11 +113,11 @@ const multiBallparkCalculations = (hitter, partials) => {
         if (hitter.bats === 'L') {
             bpAdjVsL = bpHRAdjCalculate(t.st_hr_l);
             bpSiAdjVsL = bpSiAdjCalculate(t.st_si_l);
-            clAdjVsL = clAdjValue * hitter.cl_v_l;
+            clAdjVsL = CLUTCH_ADJUST_VALUE * hitter.cl_v_l;
         } else if (hitter.bats === 'R' || hitter.bats === 'S') {
             bpAdjVsL = bpHRAdjCalculate(t.st_hr_r);
             bpSiAdjVsL = bpSiAdjCalculate(t.st_si_r);
-            clAdjVsL = clAdjValue * hitter.cl_v_l;
+            clAdjVsL = CLUTCH_ADJUST_VALUE * hitter.cl_v_l;
         }
         if (hitter.bp_si_v_l === 0) {
             bpSiAdjVsL = 0;
@@ -137,11 +134,11 @@ const multiBallparkCalculations = (hitter, partials) => {
         if (hitter.bats === 'L' || hitter.bats === 'S') {
             bpAdjVsR = bpHRAdjCalculate(t.st_hr_l);
             bpSiAdjVsR = bpSiAdjCalculate(t.st_si_l);
-            clAdjVsR = clAdjValue * hitter.cl_v_r;
+            clAdjVsR = CLUTCH_ADJUST_VALUE * hitter.cl_v_r;
         } else if (hitter.bats === 'R') {
             bpAdjVsR = bpHRAdjCalculate(t.st_hr_r);
             bpSiAdjVsR = bpSiAdjCalculate(t.st_si_r);
-            clAdjVsR = clAdjValue * hitter.cl_v_r;
+            clAdjVsR = CLUTCH_ADJUST_VALUE * hitter.cl_v_r;
         }
         if (hitter.bp_si_v_r === 0) {
             bpSiAdjVsR = 0;
@@ -162,9 +159,9 @@ const multiBallparkCalculations = (hitter, partials) => {
     const tbVsR = parseFloat(hitter.tb_v_r) + bpTbVsR + bpSiVsR;
 
     // start wOPS calculations
-    const wAdjVsL = hitter.w_v_l === 'w' ? tbValue * 9 : 0;
+    const wAdjVsL = hitter.w_v_l === 'w' ? TB_VALUE * 9 : 0;
     const wopsVsL = roundTo(wOPSCalculate(obVsL, tbVsL, hitter.dp_v_l, wAdjVsL), 1);
-    const wAdjVsR = hitter.w_v_r === 'w' ? tbValue * 9 : 0;
+    const wAdjVsR = hitter.w_v_r === 'w' ? TB_VALUE * 9 : 0;
     const wopsVsR = roundTo(wOPSCalculate(obVsR, tbVsR, hitter.dp_v_r, wAdjVsR), 1);
 
     return {
