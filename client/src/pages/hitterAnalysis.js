@@ -26,7 +26,7 @@ function HitterAnalysis() {
         axios.get('/api/hitters/season-list')
             .then(response => {
                 setErrorMessage(null);
-                if (response.data.length > 0) {
+                if (response.data?.length > 0) {
                     setLatestSeason(Math.max(...response.data.map(y => y.h_year)));
                     setSeasonList(response.data.map(s => s.h_year));
                 } else {
@@ -65,77 +65,79 @@ function HitterAnalysis() {
                     <SeasonDropdown currentSeason={querySeason} buttonText="View Analysis From" listItems={seasonList} handleSelectedSeason={handleSelectedSeason} />
                 </div>
             </div>
+
             {errorMessage &&
                 <h4 className="my-4 text-center text-danger">
                     {errorMessage}
                 </h4>
             }
-            {!isLoaded
-                ? <Loading />
-                : hitterData && hitterData.length > 0
-                    ? <>
-                        <table className="tables small-2 m-4">
-                            <thead>
-                                <tr>
-                                    {thLabels.map((th, index) => (
-                                        <th key={index} className="text-center p-0 bg-th sticky-th">
-                                            <div className="th-inner p-1">
-                                                {th}
-                                            </div>
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {hitterData.map((h, i) => (
-                                    <tr key={i}>
-                                        <td className="text-center p-1">{h.h_year}</td>
-                                        <td className="text-left p-1">{h.real_team}</td>
-                                        <td className="text-left p-1">{h.hitter_name}</td>
-                                        <td className="text-center p-1">{h.bats}</td>
-                                        <td className="text-center p-1">{h.injury}</td>
-                                        <td className="text-center p-1">{h.ab}</td>
-                                        <td className="text-center p-1">{h.so_v_l}</td>
-                                        <td className="text-center p-1">{h.bb_v_l}</td>
-                                        <td className="text-center p-1">{h.hit_v_l}</td>
-                                        <td className="text-center p-1">{h.ob_v_l}</td>
-                                        <td className="text-center p-1">{h.tb_v_l}</td>
-                                        <td className="text-center p-1">{h.hr_v_l}</td>
-                                        <td className="text-center p-1">{h.w_v_l}</td>
-                                        <td className="text-center p-1">{h.dp_v_l}</td>
-                                        <td className="text-center p-1 font-weight-bolder">{h.wops_v_l}</td>
-                                        <td className="text-center p-1">{h.so_v_r}</td>
-                                        <td className="text-center p-1">{h.bb_v_r}</td>
-                                        <td className="text-center p-1">{h.hit_v_r}</td>
-                                        <td className="text-center p-1">{h.ob_v_r}</td>
-                                        <td className="text-center p-1">{h.tb_v_r}</td>
-                                        <td className="text-center p-1">{h.hr_v_r}</td>
-                                        <td className="text-center p-1">{h.w_v_r}</td>
-                                        <td className="text-center p-1">{h.dp_v_r}</td>
-                                        <td className="text-center p-1 font-weight-bolder">{h.wops_v_r}</td>
-                                        <td className="text-left p-1">{h.stealing}</td>
-                                        <td className="text-center p-1">{h.spd}</td>
-                                        <td className="text-center p-1">{h.bunt}</td>
-                                        <td className="text-center p-1">{h.h_r}</td>
-                                        <td className="text-center p-1">{h.d_ca}</td>
-                                        <td className="text-center p-1">{h.d_1b}</td>
-                                        <td className="text-center p-1">{h.d_2b}</td>
-                                        <td className="text-center p-1">{h.d_3b}</td>
-                                        <td className="text-center p-1">{h.d_ss}</td>
-                                        <td className="text-center p-1">{h.d_lf}</td>
-                                        <td className="text-center p-1">{h.d_cf}</td>
-                                        <td className="text-center p-1">{h.d_rf}</td>
-                                        <td className="text-left p-1">{h.fielding}</td>
-                                        <td className="text-left p-1">{h.rml_team_name}</td>
-                                    </tr>
+
+            {!isLoaded && <Loading />}
+
+            {isLoaded && hitterData?.length === 0 && <span className="empty-result">There is no hitter data for the selected season!</span>}
+
+            {isLoaded && hitterData?.length > 0 &&
+                <article>
+                    <table className="tables small-2 m-4">
+                        <thead>
+                            <tr>
+                                {thLabels.map((th, index) => (
+                                    <th key={index} className="text-center p-0 bg-th sticky-th">
+                                        <div className="th-inner p-1">
+                                            {th}
+                                        </div>
+                                    </th>
                                 ))}
-                            </tbody>
-                        </table>
-                    </>
-                    : <span className="empty-result">There is no hitter data for the selected season!</span>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {hitterData.map((h, i) => (
+                                <tr key={i}>
+                                    <td className="text-center p-1">{h.h_year}</td>
+                                    <td className="text-left p-1">{h.real_team}</td>
+                                    <td className="text-left p-1">{h.hitter_name}</td>
+                                    <td className="text-center p-1">{h.bats}</td>
+                                    <td className="text-center p-1">{h.injury}</td>
+                                    <td className="text-center p-1">{h.ab}</td>
+                                    <td className="text-center p-1">{h.so_v_l}</td>
+                                    <td className="text-center p-1">{h.bb_v_l}</td>
+                                    <td className="text-center p-1">{h.hit_v_l}</td>
+                                    <td className="text-center p-1">{h.ob_v_l}</td>
+                                    <td className="text-center p-1">{h.tb_v_l}</td>
+                                    <td className="text-center p-1">{h.hr_v_l}</td>
+                                    <td className="text-center p-1">{h.w_v_l}</td>
+                                    <td className="text-center p-1">{h.dp_v_l}</td>
+                                    <td className="text-center p-1 font-weight-bolder">{h.wops_v_l}</td>
+                                    <td className="text-center p-1">{h.so_v_r}</td>
+                                    <td className="text-center p-1">{h.bb_v_r}</td>
+                                    <td className="text-center p-1">{h.hit_v_r}</td>
+                                    <td className="text-center p-1">{h.ob_v_r}</td>
+                                    <td className="text-center p-1">{h.tb_v_r}</td>
+                                    <td className="text-center p-1">{h.hr_v_r}</td>
+                                    <td className="text-center p-1">{h.w_v_r}</td>
+                                    <td className="text-center p-1">{h.dp_v_r}</td>
+                                    <td className="text-center p-1 font-weight-bolder">{h.wops_v_r}</td>
+                                    <td className="text-left p-1">{h.stealing}</td>
+                                    <td className="text-center p-1">{h.spd}</td>
+                                    <td className="text-center p-1">{h.bunt}</td>
+                                    <td className="text-center p-1">{h.h_r}</td>
+                                    <td className="text-center p-1">{h.d_ca}</td>
+                                    <td className="text-center p-1">{h.d_1b}</td>
+                                    <td className="text-center p-1">{h.d_2b}</td>
+                                    <td className="text-center p-1">{h.d_3b}</td>
+                                    <td className="text-center p-1">{h.d_ss}</td>
+                                    <td className="text-center p-1">{h.d_lf}</td>
+                                    <td className="text-center p-1">{h.d_cf}</td>
+                                    <td className="text-center p-1">{h.d_rf}</td>
+                                    <td className="text-left p-1">{h.fielding}</td>
+                                    <td className="text-left p-1">{h.rml_team_name}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </article>
             }
         </>
-
     );
 }
 

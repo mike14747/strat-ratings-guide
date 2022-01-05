@@ -23,8 +23,8 @@ const Login = () => {
     };
 
     return (
-        <div>
-            <h1>Login to Add, Edit or Delete Articles</h1>
+        <article>
+            <h2>Login to Add, Edit or Delete Articles</h2>
             <form onSubmit={handleSubmit}>
                 <div className="my-4">
                     <label htmlFor="username">Username</label>
@@ -41,7 +41,7 @@ const Login = () => {
             {message &&
                 <p className="text-danger">{message}</p>
             }
-        </div>
+        </article>
     );
 };
 

@@ -37,7 +37,7 @@ function UploadMultiTeamHitterData() {
     };
 
     return (
-        <div className="container my-4">
+        <article className="container my-4">
             <h4 className="mb-4">This is the page to upload multi-team hitter data!</h4>
 
             <div className="mb-2">Keep these things in mind when trying to upload the Hitter Data:</div>
@@ -60,7 +60,7 @@ function UploadMultiTeamHitterData() {
             <div className="text-danger">
                 {message}
             </div>
-        </div>
+        </article>
     );
 }
 

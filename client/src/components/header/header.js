@@ -4,7 +4,7 @@ import Navbar from './subcomponents/navbar';
 
 function Header() {
     return (
-        <div id="header" className="row no-gutters">
+        <header id="header" className="row no-gutters">
             <div className="col-md-auto d-flex justify-content-start align-items-stretch border-bottom border-secondary">
                 <div className="d-flex align-items-center">
                     <img src="/images/analyze.png" alt="Strat Ratings Guide Analysis" width="30px" height="33px" className="mx-3" />
@@ -13,10 +13,10 @@ function Header() {
                     <h1 className="heading text-dark text-uppercase m-0 d-inline-block py-2 pr-4"><sup>Strat</sup> <Link to="/">Ratings Guide</Link> <sup>Analysis</sup></h1>
                 </div>
             </div>
-            <div className="col-md d-flex justify-content-center align-items-stretch border-bottom border-secondary">
+            <nav className="col-md d-flex justify-content-center align-items-stretch border-bottom border-secondary">
                 <Navbar />
-            </div>
-        </div>
+            </nav>
+        </header>
     );
 }
 

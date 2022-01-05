@@ -2,7 +2,7 @@ import React from 'react';
 
 function Home() {
     return (
-        <div className="container my-4">
+        <article className="container my-4">
             <h2 className="page-heading">Welcome to my Strat-O-Matic Ratings Guide analysis!</h2>
 
             <p>If you play Strat-O-Matic baseball and purchase their annual Ratings Guide, many of the numbers you&apos;ll see aren&apos;t exactly what you&apos;ll see on their individual cards… depending upon the rules you and/or your league are implementing.</p>
@@ -26,7 +26,7 @@ function Home() {
             <p>Sometimes, I just can&apos;t understand how a player&apos;s card is so different from what I&apos;m expecting it to be. An extreme example of this would be that I expected a pitcher to have 3.5 homer chances vs lefties and they really have 3.8 on their card, even when the difference can&apos;t be accounted for by sheer rounding of the ballpark ratings alone. I just shrug my shoulders in those cases. All in all though, most players are very accurate.</p>
 
             <p>For now, I&apos;m only including the 2019 results for public viewing. You have to log in to see more than that... and for now, I&apos;m reserving the additional seasons only for myself.</p>
-        </div >
+        </article >
     );
 }
 
