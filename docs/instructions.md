@@ -15,7 +15,7 @@ Convert the hitter and pitcher data files into database ready data:
 -   In the _Hitters.xlsx_ file, remove all the **+** signs from the **CL v lhp** and **CL v rhp** columns.
 -   Remove all hitters and pitchers that have an **M** in the _Location_ column. Most players with an **X** in the _Location_ column should be deleted too.  **However**, you might find that a couple low IP, carded pitchers might have been part of the X players group and have to be brought back in from the original file.
 -   Remove all uncarded players. This will be easy to do for hitters (100+ AB in full 162 game seasons)... harder for pitchers.
--   Make sure Strat's and baseball-reference's real team abbreviations haven't changed from what they've been.
+-   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been.
 
 Modifying the columns in _Hitters.xls_ and _Pitchers.xls_ files:
 
