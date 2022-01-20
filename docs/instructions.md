@@ -11,8 +11,8 @@ Convert the hitter and pitcher data files into database ready data:
 -   Set the row height for all rows to _18.00_.
 -   Set _All Borders_ around the data.
 -   Center and left-align the columns as needed.
--   In the _Pitchers.xlsx_ file, remove all the **+** signs from the **Hold** column.
--   In the _Hitters.xlsx_ file, remove all the **+** signs from the **CL v lhp** and **CL v rhp** columns.
+-   In the _Pitchers.xlsx_ file, remove all the **+** signs from the **Hold** column (may no longer need to be done).
+-   In the _Hitters.xlsx_ file, remove all the **+** signs from the **CL v lhp** and **CL v rhp** columns (may no longer need to be done).
 -   Remove all hitters and pitchers that have an **M** in the _Location_ column. Most players with an **X** in the _Location_ column should be deleted too.  **However**, you might find that a couple low IP, carded pitchers might have been part of the X players group and have to be brought back in from the original file.
 -   Remove all uncarded players. This will be easy to do for hitters (100+ AB in full 162 game seasons)... harder for pitchers.
 -   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been.
@@ -21,6 +21,7 @@ Modifying the columns in _Hitters.xls_ and _Pitchers.xls_ files:
 
 -   Insert a _Year_ column to the beginning of each file (the MLB year).
 -   Add an _rml_team_id_ column to the end of each file.
+-   The _INJ_ column in _Hitters.xls_ might have to get moved to its correct place (immediately after the _HITTERS_ column).
 -   **Notes:**
     -   It's no longer necessary to rename the _Location_ column to _real_team_id_, since that is now calculated by the app when uploading data.
     -   It's also no longer necessary to change the _TM_ column to reflect my preferred team abbreviations (eg: ARIZ instead of ARN) since that is now converted by the app when uploading data.
