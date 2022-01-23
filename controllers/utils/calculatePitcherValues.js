@@ -1,4 +1,5 @@
 const { OB_VALUE, TB_VALUE, BALK_VALUE, WP_VALUE } = require('./constants');
+
 const { bpHRAdjCalculate, bpSiAdjCalculate } = require('./bpCalculateFunctions');
 
 const roundTo = require('./roundTo');
@@ -7,18 +8,16 @@ const processBpColumn = (bpsi) => bpsi === 0 ? '*' : '';
 
 const gbpWopsCalculate = (fielding) => {
     const gbpHits = (parseInt(fielding.charAt(0)) - 1) * 0.1 * 2;
-    // const gbpErrors = parseInt(fielding.substring(2, 4)) * 0.0172 * 2;
     const gbpErrors = parseInt(fielding.substring(2, 4)) * 0.0180 * 2;
     const gbpTwoBaseErrorTotalBaseAdj = TB_VALUE * gbpErrors / 20;
+
     const gbpWopsOnHitsOnly = OB_VALUE * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2) + TB_VALUE * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2);
     const gbpWopsOnErrorsOnly = OB_VALUE * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2) + TB_VALUE * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2);
     const gbpWopsOnHitAndError = OB_VALUE * (((gbpHits / 2) * (gbpErrors / 2)) * 2) + 2 * TB_VALUE * (((gbpHits / 2) * (gbpErrors / 2)) * 2);
-    // console.log(fielding, gbpWopsOnHitsOnly, gbpWopsOnErrorsOnly, gbpWopsOnHitAndError);
-    // console.log('old gbpWopsCalculate:', (OB_VALUE * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2) + TB_VALUE * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2)) + (OB_VALUE * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2) + TB_VALUE * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2)) + (OB_VALUE * (((gbpHits / 2) * (gbpErrors / 2)) * 2) + 2 * TB_VALUE * (((gbpHits / 2) * (gbpErrors / 2)) * 2)));
-    // console.log('new gbpWopsCalculate:', gbpWopsOnHitsOnly + gbpWopsOnErrorsOnly + gbpWopsOnHitAndError + gbpTwoBaseErrorTotalBaseAdj);
-    // return (OB_VALUE * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2) + TB_VALUE * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2)) + (OB_VALUE * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2) + TB_VALUE * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2)) + (OB_VALUE * (((gbpHits / 2) * (gbpErrors / 2)) * 2) + 2 * TB_VALUE * (((gbpHits / 2) * (gbpErrors / 2)) * 2));
+
     return gbpWopsOnHitsOnly + gbpWopsOnErrorsOnly + gbpWopsOnHitAndError + gbpTwoBaseErrorTotalBaseAdj;
 };
+
 const wOPSCalculate = (ob, tb, dp, gbp, bk, wp) => (OB_VALUE * ob) + (TB_VALUE * tb) - (OB_VALUE * 20 * dp / 108) + gbp + (BALK_VALUE * bk) + (WP_VALUE * wp);
 
 const ballparkCalculations = (pitcher) => {

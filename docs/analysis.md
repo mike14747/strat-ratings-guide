@@ -63,4 +63,47 @@ There are either 10 or 11 **dot chances** on each side of a pitcher's card.
 
 Assuming OB and TB values of 1.2 and .845, the impact of using a tired pitcher is between 23 and 25 wOPS points per side.
 
+Assuming OB and TB values of 1.259 and 0.7407, the impact of using a tired pitcher is between ? and ? wOPS points per side (probably very similar to the numbers using the old 1.2 and .845).
+
+---
+
+### Merging Defense into wOPS
+
+2021 PA: 181818
+2021 PA/Team: 6060.6
+2021 PA/Team/9 (PA/lineup_slot... eg: avg for #5 hitter): 673.4
+
+2021 AB: 161941
+2021 PA/Team/9 (AB/lineup_slot... eg: avg for #5 hitter): 599.8
+
+2021 IP: 42615
+2021 IP/Team: 1420.5
+
+2021 INN/PA (avg for #5 hitter): 2.11 INN per 1 PA
+2021 INN/AB (avg for #5 hitter): 2.37 INN per AB
+
+2021 PA/Team/INN: 4.2665
+2021 opponent's PA where their defense is on the field vs each offensive PA: 10.11
+
+Example of a 3B:
+
+-   They will get a GB(X)3B rolled 87.22 times per season (1458 INN and 6280 rolls per season as a base).
+-   A 3e21 will add 1.26 OB, 1.58 TB and 0.56 DP chances to each roll on the pitcher's card.
+-   A 3e21 will add (1.26 / 216) * 10.11 OB per each of their offensive PA.
+-   A 3e21 will add (1.58 / 216) * 10.11 TB per each of their offensive PA.
+-   A 3e21 will add (0.56 / 216) * 10.11 DP per each of their offensive PA.
+-   They are going to allow 39.69 base runners, 46.03 total bases and 2.82 DP per season (1458 INN and 6280 rolls per season as a base.
+
+The effect of pitcher's defense on their wOPS:
+
+-   5e51 will add 4.415 to their wOPS
+-   3e0 will add 0.800 to their wOPS
+-   4e0 will add 1.200 to their wOPS
+-   1e39 will add 2.860 to their wOPS
+-   2e0 will add 0.400 to their wOPS
+-   2e51 will add 3.908 to their wOPS
+-   2e20 will add 1.776 to their wOPS
+-   3e10 will add 1.442 to their wOPS
+-   1e0 will add 0 to their wOPS (this means I haven't incorporated DPs pitcher's defense into their wOPS)
+
 ---
