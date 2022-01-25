@@ -87,7 +87,7 @@ Assuming OB and TB values of 1.259 and 0.7407, the impact of using a tired pitch
 
 Example of a 3B:
 
--   They will get a GB(X)3B rolled 87.22 times per season (1458 INN and 6280 rolls per season as a base).
+-   They will get a GB(X)3B rolled 87.22 times per season (1458 INN and 6280 rolls per season as a base... which would give them 697.78 PA).
 -   A 3e21 will add 1.26 OB, 1.58 TB and 0.56 DP chances to each roll on the pitcher's card.
 -   A 3e21 will add (1.26 / 216) * 10.11 OB per each of their offensive PA.
 -   A 3e21 will add (1.58 / 216) * 10.11 TB per each of their offensive PA.
