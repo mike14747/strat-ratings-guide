@@ -74,7 +74,7 @@ There are some duplicate teams in the _rml_teams_ table (eg: _Twins-1_ and _Twin
 
 The first consideration is to make sure each multi-team hitter is listed in the regular _data/hitter_ratings.csv_ file as being on team **TOT**.
 
-Then it's time to move on to getting each multi-team hitter's _teams_ and _AB_ per team from [Baseball Reference](baseball-reference.com).
+Then it's time to move on to getting each multi-team hitter's _teams_ and _AB_ per team from [Baseball Reference](https://www.baseball-reference.com/).
 
 It's going to take some data manipulation to get that info into _data/multi_team_hitters.xlsx_. What this includes:
 
@@ -86,11 +86,11 @@ It's going to take some data manipulation to get that info into _data/multi_team
     -   Tm
     -   AB
 
--   Keep the [Baseball Reference](baseball-reference.com) team names as they are... they will be converted to _real_team_id_ by the app before getting loaded into the database.
+-   Keep the [Baseball Reference](https://www.baseball-reference.com/) team names as they are... they will be converted to _real_team_id_ by the app before getting loaded into the database.
 
 -   Each hitter's name will need to be changed to match the exact name Strat uses in the ratings guide (since that will be how the ratings guide links the multi-team hitters to this data). Strat's name format is _last name, comma, then first initial_... without a space after the comma... eg: _Doe,J_.
 
--   The _Bats_ column data can be extracted from the hitter's name from [Baseball Reference](baseball-reference.com). They use the following system:
+-   The _Bats_ column data can be extracted from the hitter's name from [Baseball Reference](https://www.baseball-reference.com/). They use the following system:
 
     -   '\*' after their name means L
     -   '#' after their name means S
@@ -106,7 +106,7 @@ Now the whole file can get uploaded from the _Upload Multi-Team Hitter Data_ pag
 
 The first consideration is to make sure each multi-team pitcher is listed in the regular _data/pitcher_ratings.csv_ file as being on team **TOT**.
 
-Then it's time to move on to getting each multi-team pitcher's _teams_ and _IP_ per team from [Baseball Reference](baseball-reference.com).
+Then it's time to move on to getting each multi-team pitcher's _teams_ and _IP_ per team from [Baseball Reference](https://www.baseball-reference.com/).
 
 It's going to take some data manipulation to get that info into _data/multi_team_pitchers.xlsx_. What this includes:
 
@@ -118,11 +118,11 @@ It's going to take some data manipulation to get that info into _data/multi_team
     -   Tm
     -   IP
 
--   Keep the [Baseball Reference](baseball-reference.com) team names as they are... they will be converted to _real_team_id_ by the app before getting loaded into the database.
+-   Keep the [Baseball Reference](https://www.baseball-reference.com/) team names as they are... they will be converted to _real_team_id_ by the app before getting loaded into the database.
 
 -   Each pitcher's name will need to be changed to match the exact name Strat uses in the ratings guide (since that will be how the ratings guide links the multi-team pitchers to this data). Strat's name format is _last name, comma, then first initial_... without a space after the comma... eg: _Doe,J_.
 
--   The _Throws_ column data can be extracted from the pitcher's name from [Baseball Reference](baseball-reference.com). They use the following system:
+-   The _Throws_ column data can be extracted from the pitcher's name from [Baseball Reference](https://www.baseball-reference.com/). They use the following system:
 
     -   '\*' after their name means L
     -   '#' after their name means S
