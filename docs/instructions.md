@@ -57,7 +57,7 @@ Column names for the _Pitchers.xls_, _data/pitcher_ratings.xlsx_ and especially 
 
 ### Keeping current with the database
 
-Keep an eye on _config/rml_teams.sql_ and _config/rml_teams.sql_... making sure they are current.
+Keep an eye on _data/rml_teams.xlsx_ and _config/rml_teams.sql_... making sure they are current.
 
 There are some duplicate teams in the _rml_teams_ table (eg: _Twins-1_ and _Twins-2_). As of December-2020, here's the rundown on the duplicates:
 
