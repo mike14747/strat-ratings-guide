@@ -3,7 +3,7 @@ const Joi = require('joi');
 const hittersSchema = Joi.array().items({
     Year: Joi.number().integer().min(1900).max(2050).required(),
     TM: Joi.string().length(3).required(),
-    real_team_id: Joi.optional(),
+    Location: Joi.optional(),
     HITTERS: Joi.string().min(3).required(),
     INJ: Joi.number().integer().min(0).allow(null).required(),
     AB: Joi.number().integer().min(1).required(),
