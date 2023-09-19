@@ -1,8 +1,10 @@
-### Steps from receiving the new ratings guide to showing all the wOPS numbers
+# Instructions
+
+## Steps from receiving the new ratings guide to showing all the wOPS numbers
 
 Convert _Ballpark.txt_ team by team singles/homers data to _data/bp_ratings.xlsx_ where the formatted data column can be added to _data/ratings_guide_db(seeds).sql_, then imported to the _ratings_guide_ database in MySQL Workbench using copy/paste of the whole _data/ratings_guide_db(seeds).sql_ file.
 
-Convert the hitter and pitcher data files into database ready data:
+### Convert the hitter and pitcher data files into database ready data:
 
 -   Open the _Hitters.xlsx_ and _Pitchers.xlsx_ files that come in the ratings disk.
 -   Rename the lone sheet in each file to _Original Hitters_ and _Original Pitchers_ respectively, then copy each to the end and rename the copied sheets to _Carded Hitters_ and _Carded Pitchers_ respectively.
@@ -13,11 +15,11 @@ Convert the hitter and pitcher data files into database ready data:
 -   Center and left-align the columns as needed.
 -   In the _Pitchers.xlsx_ file, remove all the **+** signs from the **Hold** column (may no longer need to be done).
 -   In the _Hitters.xlsx_ file, remove all the **+** signs from the **CL v lhp** and **CL v rhp** columns (may no longer need to be done).
--   Remove all hitters and pitchers that have an **M** in the _Location_ column. Most players with an **X** in the _Location_ column should be deleted too.  **However**, you might find that a couple low IP, carded pitchers might have been part of the X players group and have to be brought back in from the original file.
+-   Remove all hitters and pitchers that have an **M** in the _Location_ column. Most players with an **X** in the _Location_ column should be deleted too.  **HOWEVER**, you might find that a couple low IP, carded pitchers might have been part of the X players group and have to be brought back in from the original file.
 -   Remove all uncarded players. This will be easy to do for hitters (100+ AB in full 162 game seasons)... harder for pitchers.
--   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. eg: St Louis seems to have changed from **STN** to **SLN**.
+-   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. eg: St Louis seems to have changed from **STN** to **SLN**. **NOTE**: I've added a 2nd St Louis to: **/data/real_teams.xlsx**.
 
-Modifying the columns in _Hitters.xls_ and _Pitchers.xls_ files:
+### Modifying the columns in _Hitters.xls_ and _Pitchers.xls_ files:
 
 -   Insert a _Year_ column to the beginning of each file (the MLB year).
 -   Add an _rml_team_id_ column to the end of each file.
@@ -31,7 +33,7 @@ Modifying the columns in _Hitters.xls_ and _Pitchers.xls_ files:
 
 ---
 
-### Column names for the files
+## Column names for the files
 
 Column names for the _Hitters.xls_, _hitter_ratings.xlsx_ and especially **hitter_ratings.csv** files must use these exact column names (with no spaces and none of them beginning with a number) because of the csv parser that's being used:
 
@@ -43,7 +45,7 @@ Column names for the _Pitchers.xls_, _data/pitcher_ratings.xlsx_ and especially 
 
 ---
 
-### Uploading the data into the database.
+## Uploading the data into the database.
 
 -   The files that need to be uploaded are _data/hitter_ratings.csv_ and _data/pitcher_ratings.csv_.
 -   _data/hitter_ratings.csv_ must have the proper columns... as just described earlier.
@@ -56,7 +58,7 @@ Column names for the _Pitchers.xls_, _data/pitcher_ratings.xlsx_ and especially 
 
 ---
 
-### Keeping current with the database
+## Keeping current with the database
 
 Keep an eye on _data/rml_teams.xlsx_ and _config/rml_teams.sql_... making sure they are current.
 
@@ -71,7 +73,7 @@ There are some duplicate teams in the _rml_teams_ table (eg: _Twins-1_ and _Twin
 
 ---
 
-### Multi-team hitters
+## Multi-team hitters
 
 The first consideration is to make sure each multi-team hitter is listed in the regular _data/hitter_ratings.csv_ file as being on team **TOT**.
 
@@ -103,7 +105,7 @@ Now the whole file can get uploaded from the _Upload Multi-Team Hitter Data_ pag
 
 ---
 
-### Multi-team pitchers
+## Multi-team pitchers
 
 The first consideration is to make sure each multi-team pitcher is listed in the regular _data/pitcher_ratings.csv_ file as being on team **TOT**.
 
