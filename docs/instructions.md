@@ -17,7 +17,7 @@ Convert _Ballpark.txt_ team by team singles/homers data to _data/bp_ratings.xlsx
 -   In the _Hitters.xlsx_ file, remove all the **+** signs from the **CL v lhp** and **CL v rhp** columns (may no longer need to be done).
 -   Remove all hitters and pitchers that have an **M** in the _Location_ column. Most players with an **X** in the _Location_ column should be deleted too.  **HOWEVER**, you might find that a couple low IP, carded pitchers might have been part of the X players group and have to be brought back in from the original file.
 -   Remove all uncarded players. This will be easy to do for hitters (100+ AB in full 162 game seasons)... harder for pitchers.
--   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. eg: St Louis seems to have changed from **STN** to **SLN**. **NOTE**: I've added a 2nd St Louis to: **/data/real_teams.xlsx**.
+-   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. eg: I thought St Louis might have changed from **STN** to **SLN**... but I'm not sure about that. I'm in the process of changing all the data files that use this abbreviation to **SLN**. Also, I need to remove the extra St Louis row I've added to my home pc's **real_teams.xlsx** file and change the original St Louis to SLN.
 
 ### Modifying the columns in _Hitters.xls_ and _Pitchers.xls_ files:
 
