@@ -1,4 +1,6 @@
-### Impacts on wOPS of a pitcher extras
+# Analysis
+
+## Impacts on wOPS of a pitcher extras
 
 What are the difference between what I'm calling a pitcher's _extras_ (for the purposes on calculating their wOPS) from what I've traditionally called a pitcher's _top_?
 
@@ -53,11 +55,11 @@ It should be noted that even though balk and wild pitches have the same effect o
 
 ---
 
-### Clutch hitting
+## Clutch hitting
 
 ---
 
-### Tired pitchers
+## Tired pitchers
 
 There are either 10 or 11 **dot chances** on each side of a pitcher's card.
 
@@ -67,7 +69,7 @@ Assuming OB and TB values of 1.259 and 0.7407, the impact of using a tired pitch
 
 ---
 
-### Merging Defense into wOPS
+## Merging Defense into wOPS
 
 2021 PA: 181818
 2021 PA/Team: 6060.6
