@@ -1,8 +1,8 @@
 # Calculating multi-team AB and IP
 
-## Design flow chart
+## Redesign flow chart
 
-I want to have a page to upload hitter*stats and pitcher_stats as they were downloaded from baseball-reference as a \_csv* file... with multi-team data not hidden.
+I want to have a page to upload hitter stats and pitcher stats as they were downloaded from baseball-reference as a .csv file... with multi-team data not hidden.
 
 The files should be edited in these ways:
 
@@ -42,4 +42,12 @@ At this point, the resulting object should either be:
 -   Output as a _csv_ file,
 -   Displayed in a table that could be copied/pasted into a _csv_ file.
 -   Accessed as an output using Postman... without using a file upload.
--   
+
+## Old new flow
+
+-   Upload a .csv file with multi-team hitter data.
+-   Get real team names from the database.
+-   Parse the uploaded multi-team hitter data from uploaded file.
+-   Check that the data format matches the Joi schema.
+-   Send the parsed data and real team array to **processMultiTeamHittersInsertData()** where a match is made for a valid real team name, where the real_team_id is used. The data, if valid, is returned to the controller as an array of arrays.
+-   The controller then sends the data to the hitter model to be inserted into the database.

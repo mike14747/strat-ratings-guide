@@ -73,4 +73,26 @@ router.post('/multi-team', fileUpload(), async (req, res, next) => {
     }
 });
 
+router.post('/multi-team-new', fileUpload(), async (req, res, next) => {
+    try {
+        if (req.files === null) return res.status(400).json({ message: 'No file was uploaded!' });
+        const file = req.files.file;
+
+        await ensureUploadsExists();
+        await file.mv(path.join(__dirname, '/uploads/baseball_reference_multi_team_hitters.csv'), error => {
+            if (error) return next(error);
+        });
+
+        const [realTeams] = await RealTeam.getAllRealTeams();
+        const csvData = await processMultiTeamHittersCSV();
+        await multiTeamHittersSchema.validateAsync(csvData);
+        const processedMultiTeamHitters = processMultiTeamHittersInsertData(csvData, realTeams);
+
+        const [data, error] = await Hitters.addMultiTeamHittersData(processedMultiTeamHitters);
+        data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);
+    } catch (error) {
+        next(error);
+    }
+});
+
 module.exports = router;

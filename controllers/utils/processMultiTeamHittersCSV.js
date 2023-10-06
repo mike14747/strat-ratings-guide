@@ -48,7 +48,36 @@ const processMultiTeamHittersCSV = () => {
     });
 };
 
+const processMultiTeamHittersCSV2 = () => {
+    const csvData = [];
+    return new Promise((resolve, reject) => {
+        fs.createReadStream(path.join(__dirname, '../uploads/baseball_reference_multi_team_hitters.csv'))
+            .pipe(
+                parse({
+                    delimiter: ',',
+                    columns: true,
+                    // from_line: 1,
+                    // to_line: 2,
+                    trim: true,
+                    cast: true,
+                }),
+            )
+            .on('data', row => csvData.push(row))
+            .on('error', error => reject(error))
+            .on('end', async function () {
+                try {
+                    await fs.promises.unlink(path.join(__dirname, '../uploads/baseball_reference_multi_team_hitters.csv'));
+                    resolve(csvData);
+                } catch (error) {
+                    console.log(error);
+                    reject(error);
+                }
+            });
+    });
+};
+
 module.exports = {
     processMultiTeamHittersCSV,
     processMultiTeamHittersInsertData,
+    processMultiTeamHittersCSV2,
 };
