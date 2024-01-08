@@ -9,8 +9,7 @@ const path = require('path');
 const fileUpload = require('express-fileupload');
 const hittersSchema = require('./validation/schema/hittersSchema');
 const multiTeamHittersSchema = require('./validation/schema/multiTeamHittersSchema');
-const multiTeamHitters = require('./utils/multiHittersTotFormatted');
-const allHitters = require('./utils/multiHittersAllFormatted');
+const convertToCsv = require('./utils/convertMultiTeamHittersToCsv');
 const converter = require('json-2-csv');
 
 router.get('/season-list', async (req, res, next) => {
@@ -22,27 +21,12 @@ router.get('/season-list', async (req, res, next) => {
     }
 });
 
-router.get('/multi-team-new', async (req, res, next) => {
+router.get('/create-multi-team-csv', async (req, res, next) => {
     try {
-        const hittersOnIndividualTeams = [];
+        const hittersOnIndividualTeams = convertToCsv();
 
-        allHitters.forEach(indTeam => {
-            if (indTeam.team !== 'TOT' && multiTeamHitters[indTeam.id]) {
-                indTeam.year = 2023;
-                const nameParts = multiTeamHitters[indTeam.id].name.split(', ');
-                hittersOnIndividualTeams.push({
-                    year: 2023,
-                    name: nameParts[0] + ',' + nameParts[1][0],
-                    bats: multiTeamHitters[indTeam.id].bats,
-                    team: indTeam.team,
-                    ab: indTeam.ab,
-                });
-            }
-        });
-
-        const csv = await converter.json2csv(hittersOnIndividualTeams);
-        return res.send(csv);
-        // res.status(200).json(hittersOnIndividualTeams);
+        const csv = converter.json2csv(hittersOnIndividualTeams);
+        return res.status(200).send(csv);
     } catch (error) {
         next(error);
     }
