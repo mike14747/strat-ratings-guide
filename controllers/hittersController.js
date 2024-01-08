@@ -15,7 +15,7 @@ const converter = require('json-2-csv');
 router.get('/season-list', async (req, res, next) => {
     try {
         const [data, error] = await Hitters.getSeasonsListWithHitterData();
-        data ? res.json(data) : next(error);
+        return data ? res.json(data) : next(error);
     } catch (error) {
         next(error);
     }
@@ -26,7 +26,7 @@ router.get('/create-multi-team-csv', async (req, res, next) => {
         const hittersOnIndividualTeams = convertToCsv();
 
         const csv = converter.json2csv(hittersOnIndividualTeams);
-        return res.status(200).send(csv);
+        return csv ? res.status(200).send(csv) : res.status(500).end();
     } catch (error) {
         next(error);
     }
