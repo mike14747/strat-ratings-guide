@@ -89,6 +89,8 @@ It's going to take some data manipulation to get that info into _data/multi_team
     -   Tm
     -   AB
 
+**UPDATE**: On January 8, 2024 I finished a new route and function to generate the above multi-team hitter AB on their individual teams. To use this route/function, you'll first need to update the data objects in "_/controllers/utils/convertMultiTeamHittersToCsv.js_" using the current season's data. After that, you can run the server-only "_npm run server_", then access this route: "_http://localhost:3001/api/hitters/create-multi-team-csv_" and paste the data into the "_multi_team_hitters.xlsx_" file... followed by converting the text to columns.
+
 -   Keep the [Baseball Reference](https://www.baseball-reference.com/) team names as they are... they will be converted to _real_team_id_ by the app before getting loaded into the database.
 
 -   Each hitter's name will need to be changed to match the exact name Strat uses in the ratings guide (since that will be how the ratings guide links the multi-team hitters to this data). Strat's name format is _last name, comma, then first initial_... without a space after the comma... eg: _Doe,J_.
@@ -120,6 +122,8 @@ It's going to take some data manipulation to get that info into _data/multi_team
     -   Throws
     -   Tm
     -   IP
+
+**UPDATE**: On January 8, 2024 I finished a new route and function to generate the above multi-team pitchers AB on their individual teams. To use this route/function, you'll first need to update the data objects in "_/controllers/utils/convertMultiTeamPitchersToCsv.js_" using the current season's data. After that, you can run the server-only "_npm run server_", then access this route: "_http://localhost:3001/api/pitchers/create-multi-team-csv_" and paste the data into the "_multi_team_pitchers.xlsx_" file... followed by converting the text to columns.
 
 -   Keep the [Baseball Reference](https://www.baseball-reference.com/) team names as they are... they will be converted to _real_team_id_ by the app before getting loaded into the database.
 
