@@ -1,6 +1,8 @@
 const parse = require('csv-parse');
 const fs = require('fs');
 const path = require('path');
+const rmlTeams = require('./rmlTeams');
+const cardedPlayers = require('./cardedPlayers');
 
 const convertPositionlFielding = (rating) => {
     return rating !== '' ? `${rating.charAt(0)}e${parseInt(rating.slice(1, 3))}` : '';
@@ -87,7 +89,7 @@ const processHittersInsertData = (csvData, realTeams) => {
             dCF: convertPositionlFielding(row.d_CF),
             dRF: convertPositionlFielding(row.d_RF),
             fielding: row.FIELDING,
-            rmlTeamId: row.rml_team_id ? row.rml_team_id : null,
+            rmlTeamId: row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => item.name === hitterName)].team] || null,
         };
 
         return Object.values(hitterObj);

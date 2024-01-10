@@ -32,6 +32,17 @@ router.get('/create-multi-team-csv', async (req, res, next) => {
     }
 });
 
+router.get('/add-rml-team-csv', async (req, res, next) => {
+    try {
+        const hittersOnIndividualTeams = convertToCsv();
+
+        const csv = converter.json2csv(hittersOnIndividualTeams);
+        return csv ? res.status(200).send(csv) : res.status(500).end();
+    } catch (error) {
+        next(error);
+    }
+});
+
 router.get('/:year', async (req, res, next) => {
     try {
         const [data, error] = await Hitters.getHittersDataByYear(req.params.year);

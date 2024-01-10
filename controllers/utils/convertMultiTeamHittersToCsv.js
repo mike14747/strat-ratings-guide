@@ -929,7 +929,6 @@ const allHitters = [
     { id: 'zavalse01', name: 'Seby Zavala', team: 'CHW', ab: 161 },
     { id: 'zavalse01', name: 'Seby Zavala', team: 'ARI', ab: 10 },
     { id: 'zuninmi01', name: 'Mike Zunino', team: 'CLE', ab: 124 },
-
 ];
 
 function convertToCsv() {

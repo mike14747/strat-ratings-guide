@@ -1,6 +1,8 @@
 const parse = require('csv-parse');
 const fs = require('fs');
 const path = require('path');
+const rmlTeams = require('./rmlTeams');
+const cardedPlayers = require('./cardedPlayers');
 
 const convertNameToNameAndThrows = (name) => {
     return {
@@ -69,7 +71,7 @@ const processPitchersInsertData = (csvData, realTeams) => {
             batting: row.BAT_B,
             stl: row.STL,
             spd: parseInt(row.SPD),
-            rmlTeamId: row.rml_team_id ? parseInt(row.rml_team_id) : null,
+            rmlTeamId: row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => item.name === pitcherName)].team] || null,
         };
 
         return Object.values(pitcherObj);

@@ -45,6 +45,34 @@ Column names for the _Pitchers.xls_, _data/pitcher_ratings.xlsx_ and especially 
 
 ---
 
+## Get RML team ids into the ratings guide
+
+To convert carded player names from the master roster, I use Quokka in VSCode using this formula:
+
+```js
+const allPlayers = [
+    "Abbott, Andrew", // as an example
+    // the carded players from the Master Roster go here
+];
+
+allPlayers.forEach((player, index) => {
+    const nameParts = player.split(', ');
+    allPlayers[index] = nameParts[0] + ',' + nameParts[1][0];
+});
+
+console.log(allPlayers);
+```
+
+To get the carded player name list, I use the Master Roster file with this formula: **=""""&A2&""""** on the name column. I use double quotes because some names include single quotes.
+
+Once I get the abbreviated names, I add them and their RML teams to the "Carded Players Abbrev.xlsx" file which will get copied from the current season's RML folder. The "formatted" column data will become the data in "/controllers/utils/cardedPlayers.js" and will need to be refreshed each season.
+
+The data in "/controllers/utils/rmlTeams.js" will need to be checked for changes each year.
+
+Finally, use the "duplicates" column to flag the duplicate player name abbreviations. There will be several each year. For these players, you will need to manually add their rmlTeamId before uploading the file.
+
+---
+
 ## Uploading the data into the database.
 
 -   The files that need to be uploaded are _data/hitter_ratings.csv_ and _data/pitcher_ratings.csv_.
@@ -64,12 +92,12 @@ Keep an eye on _data/rml_teams.xlsx_ and _config/rml_teams.sql_... making sure t
 
 There are some duplicate teams in the _rml_teams_ table (eg: _Twins-1_ and _Twins-2_). As of December-2020, here's the rundown on the duplicates:
 
--   Dodgers-1: Roland Centrone's old team (is now the Monarchs).
--   Dodgers-2: Used to be Tom Phillips' Athletics... now run by Mark Berkoff.
+-   Dodgers-old: Roland Centrone's old team (is now the Monarchs).
+-   Dodgers: Used to be Tom Phillips' Athletics... now run by Mark Berkoff.
 -   Indians-1: Dave Scott's old team before changing to Twins-2 (Indians-1 is no longer in existence).
 -   Indians-2: The old Mudcats (not Chuck's old Mudcats). They became Indians-2 in the 2017 RML season, then later changed to the River Cats and Stogies (Indians-2 is no longer in existence).
--   Twins-1: Kurt Novak's old team (Twins-1 is no longer in existence).
--   Twins-2: Dave Scott's new team name.
+-   Twins-old: Kurt Novak's old team (Twins-1 is no longer in existence).
+-   Twins: Dave Scott's new team name.
 
 ---
 
