@@ -88,7 +88,7 @@ const processHittersInsertData = (csvData, realTeams, rmlTeams) => {
             dCF: convertPositionlFielding(row.d_CF),
             dRF: convertPositionlFielding(row.d_RF),
             fielding: row.FIELDING,
-            rmlTeamId: row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => item.name === hitterName)]?.team] || null,
+            rmlTeamId: row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.name.toLowerCase() === hitterName.toLowerCase() && item.year === row.Year))]?.team] || null,
         };
 
         return Object.values(hitterObj);
