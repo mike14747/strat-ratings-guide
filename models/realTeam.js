@@ -1,6 +1,6 @@
 const pool = require('../config/connectionPool.js').getDb();
 
-const Hitters = {
+const RealTeam = {
     getAllRealTeams: async () => {
         const queryString = 'SELECT real_team_id, real_team_abbrev, strat_abbrev, bbref_abbrev FROM real_teams';
         const queryParams = [];
@@ -24,4 +24,4 @@ const Hitters = {
     },
 };
 
-module.exports = Hitters;
+module.exports = RealTeam;

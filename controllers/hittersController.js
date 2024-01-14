@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Hitters = require('../models/hitters');
 const RealTeam = require('../models/realTeam');
+const RmlTeam = require('../models/rmlTeam');
 const { processHittersCSV, processHittersInsertData } = require('./utils/processHittersCSV');
 const { processMultiTeamHittersCSV, processMultiTeamHittersInsertData } = require('./utils/processMultiTeamHittersCSV');
 const calculateHitterValues = require('./utils/calculateHitterValues');
@@ -11,6 +12,7 @@ const hittersSchema = require('./validation/schema/hittersSchema');
 const multiTeamHittersSchema = require('./validation/schema/multiTeamHittersSchema');
 const convertToCsv = require('./utils/convertMultiTeamHittersToCsv');
 const converter = require('json-2-csv');
+const convertArrToObj = require('./utils/rmlTeamArrToObj');
 
 router.get('/season-list', async (req, res, next) => {
     try {
@@ -53,9 +55,11 @@ router.post('/', fileUpload(), async (req, res, next) => {
         });
 
         const [realTeams] = await RealTeam.getAllRealTeams();
+        const [rmlTeamsArr] = await RmlTeam.getAllRmlTeams();
+        const rmlTeams = convertArrToObj(rmlTeamsArr);
         const csvData = await processHittersCSV();
         await hittersSchema.validateAsync(csvData);
-        const processedHitters = processHittersInsertData(csvData, realTeams);
+        const processedHitters = processHittersInsertData(csvData, realTeams, rmlTeams);
 
         const [data, error] = await Hitters.addNewHittersData(processedHitters);
         data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);

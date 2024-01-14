@@ -19,6 +19,8 @@ Convert _Ballpark.txt_ team by team singles/homers data to _data/bp_ratings.xlsx
 -   Remove all uncarded players. This will be easy to do for hitters (100+ AB in full 162 game seasons)... harder for pitchers.
 -   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. eg: I thought St Louis might have changed from **STN** to **SLN**... but I'm not sure about that. I'm in the process of changing all the data files that use this abbreviation to **SLN**. Also, I need to remove the extra St Louis row I've added to my home pc's **real_teams.xlsx** file and change the original St Louis to SLN.
 
+---
+
 ## Modifying the columns in _Hitters.xls_ and _Pitchers.xls_ files:
 
 -   Insert a _Year_ column to the beginning of each file (the MLB year).

@@ -1,7 +1,6 @@
 const parse = require('csv-parse');
 const fs = require('fs');
 const path = require('path');
-const rmlTeams = require('./rmlTeams');
 const cardedPlayers = require('./cardedPlayers');
 
 const convertNameToNameAndThrows = (name) => {
@@ -28,7 +27,7 @@ const convertBpToBpAndBpSi = (bp) => {
     };
 };
 
-const processPitchersInsertData = (csvData, realTeams) => {
+const processPitchersInsertData = (csvData, realTeams, rmlTeams) => {
     return csvData.map(row => {
         const { pitcherName, throws } = convertNameToNameAndThrows(row.PITCHERS);
 
