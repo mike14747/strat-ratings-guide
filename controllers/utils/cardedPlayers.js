@@ -141,7 +141,7 @@ const cardedPlayers = [
     { name: 'Cease,D', team: 'Browns' },
     { name: 'Chafin,A', team: 'Reds' },
     { name: 'Chang,Y', team: 'Z-Unowned' },
-    { name: 'Chapman,A', team: 'Clown Princes' },
+    { name: 'Chapman,A', team: 'Grays' },
     { name: 'Chapman,M', team: 'Blaze' },
     { name: 'Chargois,J', team: 'Expos' },
     { name: 'Chavez,J', team: 'Z-Unowned' },

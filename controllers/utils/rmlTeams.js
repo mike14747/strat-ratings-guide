@@ -41,7 +41,6 @@ const rmlTeams = {
     Hornets: 40,
     Titans: 41,
     'Clown Princes': 42,
-
 };
 
 module.exports = rmlTeams;

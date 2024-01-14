@@ -31,6 +31,7 @@ const convertBpToBpAndBpSi = (bp) => {
 const processPitchersInsertData = (csvData, realTeams) => {
     return csvData.map(row => {
         const { pitcherName, throws } = convertNameToNameAndThrows(row.PITCHERS);
+
         const { bp: bpVsL, bpsi: bpSiVsL } = convertBpToBpAndBpSi(`${row.BP_v_l}`);
         const { bp: bpVsR, bpsi: bpSiVsR } = convertBpToBpAndBpSi(`${row.BP_v_r}`);
 
@@ -71,7 +72,7 @@ const processPitchersInsertData = (csvData, realTeams) => {
             batting: row.BAT_B,
             stl: row.STL,
             spd: parseInt(row.SPD),
-            rmlTeamId: row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => item.name === pitcherName)].team] || null,
+            rmlTeamId: row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => item.name === pitcherName)]?.team] || null,
         };
 
         return Object.values(pitcherObj);

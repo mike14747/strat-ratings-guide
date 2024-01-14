@@ -4,7 +4,7 @@
 
 Convert _Ballpark.txt_ team by team singles/homers data to _data/bp_ratings.xlsx_ where the formatted data column can be added to _data/ratings_guide_db(seeds).sql_, then imported to the _ratings_guide_ database in MySQL Workbench using copy/paste of the whole _data/ratings_guide_db(seeds).sql_ file.
 
-### Convert the hitter and pitcher data files into database ready data:
+## Convert the hitter and pitcher data files into database ready data:
 
 -   Open the _Hitters.xlsx_ and _Pitchers.xlsx_ files that come in the ratings disk.
 -   Rename the lone sheet in each file to _Original Hitters_ and _Original Pitchers_ respectively, then copy each to the end and rename the copied sheets to _Carded Hitters_ and _Carded Pitchers_ respectively.
@@ -19,7 +19,7 @@ Convert _Ballpark.txt_ team by team singles/homers data to _data/bp_ratings.xlsx
 -   Remove all uncarded players. This will be easy to do for hitters (100+ AB in full 162 game seasons)... harder for pitchers.
 -   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. eg: I thought St Louis might have changed from **STN** to **SLN**... but I'm not sure about that. I'm in the process of changing all the data files that use this abbreviation to **SLN**. Also, I need to remove the extra St Louis row I've added to my home pc's **real_teams.xlsx** file and change the original St Louis to SLN.
 
-### Modifying the columns in _Hitters.xls_ and _Pitchers.xls_ files:
+## Modifying the columns in _Hitters.xls_ and _Pitchers.xls_ files:
 
 -   Insert a _Year_ column to the beginning of each file (the MLB year).
 -   Add an _rml_team_id_ column to the end of each file.
@@ -47,11 +47,16 @@ Column names for the _Pitchers.xls_, _data/pitcher_ratings.xlsx_ and especially 
 
 ## Get RML team ids into the ratings guide
 
-To convert carded player names from the master roster, I use Quokka in VSCode using this formula:
+This process has multiple parts.
+
+### Update the Carded Players list
+
+-   Get a list of all carded player names from the Master Roster using this formula: **=""""&A2&""","** on the name column. I use double quotes because some names include single quotes.
+-   To convert carded player names from the Master Roster, I use Quokka in VSCode, paste the names list into the "allPlayers" array, then execute this array method:
 
 ```js
 const allPlayers = [
-    "Abbott, Andrew", // as an example
+    "Abbott, Andrew", // as an example... it will become "Abbot,A"
     // the carded players from the Master Roster go here
 ];
 
@@ -63,22 +68,37 @@ allPlayers.forEach((player, index) => {
 console.log(allPlayers);
 ```
 
-To get the carded player name list, I use the Master Roster file with this formula: **=""""&A2&""""** on the name column. I use double quotes because some names include single quotes.
+-   Copy the abbreviated names (the output of the above step) into the "/data/carded_players_abbrev.xlsx" file. The first and last player names can be trimmed manually to remove the single quote around the player names and the trailing comma. The rest of the players should be done using "Find/Replace". First do it using "2 spaces and a single quote" and then using "single quote and a comma"... both times replacing with nothing.
+-   Add the RML team (which will be in the same order as the player list from the Master Roster) for each carded player to the "/data/carded_players_abbrev.xlsx" file.
+-   The "formatted" column data will become the data in "/controllers/utils/cardedPlayers.js" and will need to be refreshed each season.
 
-Once I get the abbreviated names, I add them and their RML teams to the "Carded Players Abbrev.xlsx" file which will get copied from the current season's RML folder. The "formatted" column data will become the data in "/controllers/utils/cardedPlayers.js" and will need to be refreshed each season.
+>   **IMPORTANT**: Using the current system, any time you upload new **/data/hitter_ratings.csv** or **/data/pitcher_ratings.csv** data, you **MUST** make sure the carded player list in: **/controllers/utils/cardedPlayers.js** is for the same year as the hitter/pitcher data or else the RML teams associated with the players will be incorrect or blank. I hope to upload the carded player data to the database each year with a year field so this check will eventually become unnecessary in the future.
 
-The data in "/controllers/utils/rmlTeams.js" will need to be checked for changes each year.
+After viewing the processed rating guide data in a browser, you'll see that there will likely be 10-20 players with no RML teams assigned to them. This will be due to difference in names between the Ratings Guide and my abbreviations... eg:
 
-Finally, use the "duplicates" column to flag the duplicate player name abbreviations. There will be several each year. For these players, you will need to manually add their rmlTeamId before uploading the file.
+-   Dejong,P vs DeJong,P
+-   Bradley Jr,J vs Bradley,J
+-   D'Arnaud,T vs d'Arnaud,T
+-   and maybe even some with no apparent reason
+ 
+In these cases, just add their **rml_team_id** manually before reuploading the data.
+
+### Players with duplicate names
+
+The above mentioned "/data/carded_players_abbrev.xlsx" file, will also flag all duplicate players. These duplicate name players will need to have their rml_team_id entered manually before uploading the *hitter_ratings.csv* and *_*pitcher_ratings.csv* files. After that, all rml teams will be automatically assigned by the app using the data compiled in "/controllers/utils/cardedPlayers.js".
+
+### Update the RML Teams
+
+The data in "/controllers/utils/rmlTeams.js" will need to be checked for changes each year. In many years, there will be no changes or additions.
 
 ---
 
 ## Uploading the data into the database.
 
--   The files that need to be uploaded are _data/hitter_ratings.csv_ and _data/pitcher_ratings.csv_.
--   _data/hitter_ratings.csv_ must have the proper columns... as just described earlier.
+-   The files that need to be uploaded are /data/hitter_ratings.csv and /data/pitcher_ratings.csv.
+-   /data/hitter_ratings.csv must have the proper columns... as just described earlier.
 
-**IMPORTANT:** When uploading hitter and pitcher data (_data/hitter_ratings.csv_ and _data/pitcher_ratings.csv_):
+>   **IMPORTANT:** When uploading hitter and pitcher data (data/hitter_ratings.csv and data/pitcher_ratings.csv):
 
 -   Use the _data/pitcher_ratings.xlsx_ file first. Once that is populated with all the new season's data, save the file as _data/pitcher_ratings.csv_. Do the same thing for the hitters files.
 -   **NOTE:** This next step isn't necessary if you added an apostrophe as a prefix to each pitcher's fielding rating.
@@ -117,7 +137,7 @@ It's going to take some data manipulation to get that info into _data/multi_team
     -   Tm
     -   AB
 
-**UPDATE**: On January 8, 2024 I finished a new route and function to generate the above multi-team hitter AB on their individual teams. To use this route/function, you'll first need to update the data objects in "_/controllers/utils/convertMultiTeamHittersToCsv.js_" using the current season's data. After that, you can run the server-only "_npm run server_", then access this route: "_http://localhost:3001/api/hitters/create-multi-team-csv_" and paste the data into the "_multi_team_hitters.xlsx_" file... followed by converting the text to columns.
+>   **UPDATE**: On January 8, 2024 I finished a new route and function to generate the above multi-team hitter AB on their individual teams. To use this route/function, you'll first need to update the data objects in "_/controllers/utils/convertMultiTeamHittersToCsv.js_" using the current season's data. After that, you can run the server-only "_npm run server_", then access this route: "_http://localhost:3001/api/hitters/create-multi-team-csv_" and paste the data into the "_multi_team_hitters.xlsx_" file... followed by converting the text to columns.
 
 -   Keep the [Baseball Reference](https://www.baseball-reference.com/) team names as they are... they will be converted to _real_team_id_ by the app before getting loaded into the database.
 
@@ -151,7 +171,7 @@ It's going to take some data manipulation to get that info into _data/multi_team
     -   Tm
     -   IP
 
-**UPDATE**: On January 8, 2024 I finished a new route and function to generate the above multi-team pitchers AB on their individual teams. To use this route/function, you'll first need to update the data objects in "_/controllers/utils/convertMultiTeamPitchersToCsv.js_" using the current season's data. After that, you can run the server-only "_npm run server_", then access this route: "_http://localhost:3001/api/pitchers/create-multi-team-csv_" and paste the data into the "_multi_team_pitchers.xlsx_" file... followed by converting the text to columns.
+>   **UPDATE**: On January 8, 2024 I finished a new route and function to generate the above multi-team pitchers AB on their individual teams. To use this route/function, you'll first need to update the data objects in "_/controllers/utils/convertMultiTeamPitchersToCsv.js_" using the current season's data. After that, you can run the server-only "_npm run server_", then access this route: "_http://localhost:3001/api/pitchers/create-multi-team-csv_" and paste the data into the "_multi_team_pitchers.xlsx_" file... followed by converting the text to columns.
 
 -   Keep the [Baseball Reference](https://www.baseball-reference.com/) team names as they are... they will be converted to _real_team_id_ by the app before getting loaded into the database.
 
