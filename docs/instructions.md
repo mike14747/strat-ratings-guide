@@ -1,23 +1,27 @@
 # Instructions
 
-## Steps from receiving the new ratings guide to showing all the wOPS numbers
+## New ballpark data into the database
 
-Convert _Ballpark.txt_ team by team singles/homers data to _data/bp_ratings.xlsx_ where the formatted data column can be added to _data/ratings_guide_db(seeds).sql_, then imported to the _ratings_guide_ database in MySQL Workbench using copy/paste of the whole _data/ratings_guide_db(seeds).sql_ file.
+-   Convert **Ballpark.txt** team by team singles/homers data to **data/bp_ratings.xlsx**.
+-   The formatted data column needs to be added to **data/ratings_guide_db(seeds).sql**.
+-   Add the entire **data/ratings_guide_db(seeds).sql** file into the **ratings_guide_db** database with MySQL Workbench using copy/paste/execute.
+
+---
 
 ## Convert the hitter and pitcher data files into database ready data:
 
 -   Open the _Hitters.xlsx_ and _Pitchers.xlsx_ files that come in the ratings disk.
--   Rename the lone sheet in each file to _Original Hitters_ and _Original Pitchers_ respectively, then copy each to the end and rename the copied sheets to _Carded Hitters_ and _Carded Pitchers_ respectively.
--   Working from the _Carded_ sheets in each file, set the font to _Calibri_ and _12pt_.
+-   Rename the lone sheet in each file to **Original Hitters** and **Original Pitchers** respectively, then copy each to the end and rename the copied sheets to **Carded Hitters** and **Carded Pitchers** respectively.
+-   Working from the **Carded** sheets in each file, set the font to **Calibri** and **12pt**.
 -   Set the top row to a light gray background, then freeze the top row in each file.
--   Set the row height for all rows to _18.00_.
--   Set _All Borders_ around the data.
--   Center and left-align the columns as needed.
--   In the _Pitchers.xlsx_ file, remove all the **+** signs from the **Hold** column (may no longer need to be done).
--   In the _Hitters.xlsx_ file, remove all the **+** signs from the **CL v lhp** and **CL v rhp** columns (may no longer need to be done).
--   Remove all hitters and pitchers that have an **M** in the _Location_ column. Most players with an **X** in the _Location_ column should be deleted too.  **HOWEVER**, you might find that a couple low IP, carded pitchers might have been part of the X players group and have to be brought back in from the original file.
+-   Set the row height for all rows to **18.00**.
+-   Set **All Borders** around the data.
+-   "Center" and ""left-align" the columns as needed.
+-   In the **Pitchers.xlsx** file, remove all the **+** signs from the **Hold** column (may no longer need to be done).
+-   In the **Hitters.xlsx** file, remove all the **+** signs from the **CL v lhp** and **CL v rhp** columns (may no longer need to be done).
+-   Remove all hitters and pitchers that have an **M** in the _Location_ column. Most players with an **X** in the _Location_ column should be deleted too. **HOWEVER**, you might find that a couple low IP, carded pitchers might have been part of the X players group and have to be brought back in from the original file.
 -   Remove all uncarded players. This will be easy to do for hitters (100+ AB in full 162 game seasons)... harder for pitchers.
--   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. eg: I thought St Louis might have changed from **STN** to **SLN**... but I'm not sure about that. I'm in the process of changing all the data files that use this abbreviation to **SLN**. Also, I need to remove the extra St Louis row I've added to my home pc's **real_teams.xlsx** file and change the original St Louis to SLN.
+-   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. **eg**: I thought St Louis might have changed from **STN** to **SLN**... but I'm not sure about that. I'm in the process of changing all the data files that use this abbreviation to **SLN**. Also, I need to remove the extra St Louis row I've added to my home pc's **real_teams.xlsx** file and change the original St Louis to SLN.
 
 ---
 
@@ -26,22 +30,25 @@ Convert _Ballpark.txt_ team by team singles/homers data to _data/bp_ratings.xlsx
 -   Insert a _Year_ column to the beginning of each file (the MLB year).
 -   Add an _rml_team_id_ column to the end of each file.
 -   The _INJ_ column in _Hitters.xls_ might have to get moved to its correct place (immediately after the _HITTERS_ column).
--   **NOTES:**
-    -   It's no longer necessary to rename the _Location_ column to _real_team_id_, since that is now calculated by the app when uploading data. This is confirmed to be true. In fact, changing the name from _Location_ will now generate an error from the Joi schema validation.
-    -   It's also no longer necessary to change the _TM_ column to reflect my preferred team abbreviations (eg: ARIZ instead of ARN) since that is now converted by the app when uploading data.
--   To fix an issue with the with the _data/pitcher_ratings.csv_ where Excel formats the _FIELD_ column as dates once the file is closed, add an apostrophe as a prefix to each pitcher's fielding rating... eg: _'3e21_. The apostrophe will be removed as the data is getting uploaded and it will keep Excel from formatting the column as dates.
--   **IMPORTANT:** Every hitter and pitcher that played for multiple teams needs to have their _TM_ column set to _TOT_. In a normal season, there could be well over 100 players that need this team change. But, it's important for now because of the bp stadium ratings for each team have such an impact on the wOPS numbers. Multi-team players will not have wOPS ratings unless they also have their multi-team breakdowns added to _data/multi_team_hitters.xlsx_ and _data/multi_team_pitchers.xlsx_.
--   Delete the _W_ column in _Hitters.xls_ (starting with the 2022 season). This is actual walks and is not needed.
+
+**NOTES:**
+-   It's no longer necessary to rename the **Location** column to **real_team_id**_**, since that is now calculated by the app when uploading data. This is confirmed to be true. In fact, changing the name from **Location** will now generate an error from the Joi schema validation.
+-   It's also no longer necessary to change the **TM** column to reflect my preferred team abbreviations (eg: ARIZ instead of ARN) since that is now converted by the app when uploading data.
+-   To fix an issue with the with the **data/pitcher_ratings.cs** where Excel formats the **FIELD** column as dates once the file is closed, add an apostrophe as a prefix to each pitcher's fielding rating... **eg**: **'3e21**. The apostrophe will be removed as the data is getting uploaded and it will keep Excel from formatting the column as dates.
+
+>   **IMPORTANT:** Every hitter and pitcher that played for multiple teams needs to have their **TM** column set to **TOT**. In a normal season, there could be well over 100 players that need this team change. But, it's important for now because of the bp stadium ratings for each team have such an impact on the wOPS numbers. Multi-team players will not have wOPS ratings unless they also have their multi-team breakdowns added to **data/multi_team_hitters.xlsx** and **data/multi_team_pitchers.xlsx**.
+
+-   Delete the **W** column in **Hitters.xls** (starting with the 2022 season). This is actual walks and is not needed.
 
 ---
 
 ## Column names for the files
 
-Column names for the _Hitters.xls_, _hitter_ratings.xlsx_ and especially **hitter_ratings.csv** files must use these exact column names (with no spaces and none of them beginning with a number) because of the csv parser that's being used:
+Column names for the **Hitters.xls**, _hitter_ratings.xlsx_ and especially **hitter_ratings.csv** files must use these exact column names (with no spaces and none of them beginning with a number) because of the csv parser that's being used:
 
 -   Year, TM, Location, HITTERS, INJ, AB, SO_v_lhp, BB_v_lhp, HIT_v_lhp, OB_v_lhp, TB_v_lhp, HR_v_lhp, BP_v_lhp, CL_v_lhp, DP_v_lhp, SO_v_rhp, BB_v_rhp, HIT_v_rhp, OB_v_rhp, TB_v_rhp, HR_v_rhp, BP_v_rhp, CL_v_rhp, DP_v_rhp, STEALING, STL, SPD, B, H, d_CA, d_1B, d_2B, d_3B, d_SS, d_LF, d_CF, d_RF, FIELDING, rml_team_id
 
-Column names for the _Pitchers.xls_, _data/pitcher_ratings.xlsx_ and especially **pitcher_ratings.csv** files must use these exact column names (with no spaces and none of them beginning with a number) because of the csv parser that's being used:
+Column names for the **Pitchers.xls**, **data/pitcher_ratings.xlsx** and especially **pitcher_ratings.csv** files must use these exact column names (with no spaces and none of them beginning with a number) because of the csv parser that's being used:
 
 -   Year, TM, Location, PITCHERS, IP, SO_v_l, BB_v_l, HIT_v_l, OB_v_l, TB_v_l, HR_v_l, BP_v_l, DP_v_l, SO_v_r, BB_v_r, HIT_v_r, OB_v_r, TB_v_r, HR_v_r, BP_v_r, DP_v_r, HO, ENDURANCE, FIELD, BK, WP, BAT_B, STL, SPD, rml_team_id
 
@@ -54,7 +61,7 @@ This process has multiple parts.
 ### Update the Carded Players list
 
 -   Get a list of all carded player names from the Master Roster using this formula: **=""""&A2&""","** on the name column. I use double quotes because some names include single quotes.
--   To convert carded player names from the Master Roster, I use Quokka in VSCode, paste the names list into the "allPlayers" array, then execute this array method:
+-   To convert carded player names from the Master Roster, I use Quokka in VSCode, paste the names list into the **allPlayers** array, then execute this array method:
 
 ```js
 const allPlayers = [
@@ -70,7 +77,7 @@ allPlayers.forEach((player, index) => {
 console.log(allPlayers);
 ```
 
--   Copy the abbreviated names (the output of the above step) into the "/data/carded_players_abbrev.xlsx" file. The first and last player names can be trimmed manually to remove the single quote around the player names and the trailing comma. The rest of the players should be done using "Find/Replace". First do it using "2 spaces and a single quote" and then using "single quote and a comma"... both times replacing with nothing.
+-   Copy the abbreviated names (the output of the above step) into the **/data/carded_players_abbrev.xlsx** file. The first and last player names can be trimmed manually to remove the single quote around the player names and the trailing comma. The rest of the players should be done using **Find/Replace**. First do it using "2 spaces and a single quote" and then using "single quote and a comma"... both times replacing with nothing.
 -   Add the RML team (which will be in the same order as the player list from the Master Roster) for each carded player to the "/data/carded_players_abbrev.xlsx" file.
 -   The "formatted" column data will become the data in "/controllers/utils/cardedPlayers.js" and will need to be refreshed each season.
 
