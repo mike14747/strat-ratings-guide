@@ -3,8 +3,8 @@
 ## New ballpark data into the database
 
 -   Convert **Ballpark.txt** team by team singles/homers data to **data/bp_ratings.xlsx**.
--   The formatted data column needs to be added to **data/ratings_guide_db(seeds).sql**.
--   Add the entire **data/ratings_guide_db(seeds).sql** file into the **ratings_guide_db** database with MySQL Workbench using copy/paste/execute.
+-   The formatted data column needs to be added to **/config/ratings_guide_db(seeds).sql**.
+-   Add the entire **/config/ratings_guide_db(seeds).sql** file into the **ratings_guide_db** database with MySQL Workbench using copy/paste/execute.
 
 ---
 
@@ -126,7 +126,7 @@ The data in **/controllers/utils/rmlTeams.js** will need to be checked for chang
 
 Keep an eye on **/data/rml_teams.xlsx** and **/config/rml_teams.sql**... making sure they are current.
 
-There are some duplicate teams in the **rml_teams** table (eg: **Twins** and **Twins-old**). As of January-2024, comments by each of the duplicate teams have been added to **/data/ratings_guide_db(seeds).sql**.
+There are some duplicate teams in the **rml_teams** table (eg: **Twins** and **Twins-old**). As of January-2024, comments by each of the duplicate teams have been added to **/config/ratings_guide_db(seeds).sql**.
 
 ---
 
