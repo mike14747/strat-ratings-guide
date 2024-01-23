@@ -4,7 +4,7 @@
 
 ### Keeping RML team names current in the database
 
-Keep an eye on **/config/rml_teams.sql**... making sure it is current.
+Keep an eye on **/config/rml_teams.sql**... making sure it is current with RML team name changes from the previous season.
 
 There are some duplicate teams in the **rml_teams** table (eg: **Twins** and **Twins-old**). As of January-2024, comments by each of the duplicate teams have been added to **/config/ratings_guide_db(seeds).sql**.
 
@@ -71,9 +71,14 @@ The output of this will get pasted into **/controllers/utils/cardedPlayers.js** 
 
 **NOTE**: If you have a few players who have blank RML teams, here are some things to watch look for:
 
--   Space after the comma in Strat's ratings disk.
+-   An erroneous space after the comma in a player's name in Strat's ratings disk.
+-   Spaces between last name segments don't match between the Master Roster and the Ratings Disk.
 -   "Jr" or "II" suffixes don't match between the Master Roster and the Ratings Disk.
--   AB or IP from the original "Hitters Stats" or "Pitchers Stats" files from Baseball-Reference might be 1 different from what is in the Ratings Disk.
+-   AB or IP from the original "Hitters Stats" or "Pitchers Stats" files from the preliminary Baseball-Reference data might be 1 different from what is in the Ratings Disk.
+
+> Try to update the Ratings Disk data in **/data/hitter_ratings.xlsx** and **/data/pitcher_ratings.xlsx** when the issues are with names not matching.
+>
+> Usually, you'll be updating the **Master Roster** (and thus **/controllers/utils/cardedPlayers.js**) when the issues are with AB or IP not matching.
 
 ---
 
@@ -96,7 +101,13 @@ Those files will include the following sheets:
 -   Carded
 -   TOT (this will just be a list of hitters and pitchers whose team is TOT, with their Name, Tm and AB/IP)
 
-> **UPDATE**: On January 8, 2024 I finished a new route and function to generate the above multi-team hitter AB/IP (respectively) on their individual teams. To use this route/function, you'll first need to update the data objects in **/controllers/utils/convertMultiTeamHittersToCsv.js** and **/controllers/utils/convertMultiTeamPitchersToCsv.js** using the current season's data from the **Original_with_Ind_Teams** and **Carded** sheets of **Hitter_Stats_202x.xlsx** and **Pitcher_Stats_202x.xlsx**. After that, you can run the server-only **npm run server**, then access these routes: **http://localhost:3001/api/hitters/create-multi-team-csv** and **http://localhost:3001/api/pitchers/create-multi-team-csv** using Postman to get the generated csv data for each. Paste the data into **/data/multi_team_hitters.xlsx** and **/data/multi_team_pitchers.xlsx**... followed by converting the text to columns with each.
+> **UPDATE**: On January 8, 2024 I finished a new route and function to generate the above multi-team hitter AB/IP (respectively) on their individual teams.
+> 
+> To use this route/function, you'll first need to update the data objects in **/controllers/utils/convertMultiTeamHittersToCsv.js** and **/controllers/utils/convertMultiTeamPitchersToCsv.js** using the current season's data from the **Original_with_Ind_Teams** and **Carded** sheets of **Hitter_Stats_202x.xlsx** and **Pitcher_Stats_202x.xlsx**.
+> 
+> After that, you can run the server-only **npm run server**, then access these routes: **http://localhost:3001/api/hitters/create-multi-team-csv** and **http://localhost:3001/api/pitchers/create-multi-team-csv** using Postman to get the generated csv data for each.
+> 
+> Paste the data into **/data/multi_team_hitters.xlsx** and **/data/multi_team_pitchers.xlsx**... followed by converting the text to columns with each.
 
 Each hitter/pitcher name will need to be changed to match the exact name Strat uses in the ratings guide (since that will be how the ratings guide links the multi-team hitters to this data). Strat's name format is **last name, comma, then first initial**... without a space after the comma... eg: **Doe,J**. Strat does include spaces in last names for some players (eg: De Los Santos,E).
 
@@ -170,6 +181,19 @@ Now the whole file can get uploaded from the **Upload Multi-Team Pitcher Data** 
 
 ---
 
+### NOTES for both Hitters.xlsx and Pitchers.xlsx
+
+-   It's no longer necessary to rename the **Location** column to **real_team_id**, since that is now calculated by the app when uploading data. This is confirmed to be true. In fact, changing the name from **Location** will now generate an error from the Joi schema validation.
+-   It's also no longer necessary to change the **TM** column to reflect my preferred team abbreviations (eg: ARIZ instead of ARN) since that is now converted by the app when uploading data.
+
+> **IMPORTANT** (for both **Hitters.xlsx** and **Pitchers.xlsx**): Every hitter and pitcher that played for multiple teams needs to have their **TM** column set to **TOT**.
+> 
+> In a normal season, there could be well over 100 players that need this team change. But, it's important to do because of the bp stadium ratings for each team have such an impact on the wOPS numbers.
+> 
+> Multi-team players will not have wOPS ratings unless they also have their multi-team breakdowns added to **data/multi_team_hitters.xlsx** and **data/multi_team_pitchers.xlsx**.
+
+---
+
 ### Getting "Hitters.xlsx" ready
 
 -   Open the **Hitters.xlsx** file that came in the ratings disk.
@@ -181,7 +205,7 @@ Now the whole file can get uploaded from the **Upload Multi-Team Pitcher Data** 
 -   Set **All Borders** around the data.
 -   "Center" and ""left-align" the columns as needed.
 -   Remove all the **+** signs from the **CL v lhp** and **CL v rhp** columns (may no longer need to be done).
--   Remove all hitters that have an **M** in the **Location** column. Most players with an **X** in the **Location** column should be deleted too.
+-   Remove all hitters that have an **M** in the **Location** column. All hitters with an **X** in the **Location** column should be deleted too, but double-check that one or two don't have 100+ ABs.
 -   Remove all uncarded hitters (those without 100+ AB in full 162 game seasons).
 -   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. **eg**: I thought St Louis might have changed from **STN** to **SLN**... but I'm not sure about that. I'm in the process of changing all the data files that use this abbreviation to **SLN**. Also, I need to remove the extra St Louis row I've added to my home pc's **real_teams.xlsx** file and change the original St Louis to SLN.
 -   Insert a **Year** column to the beginning of each file (the MLB year).
@@ -193,8 +217,6 @@ Now the whole file can get uploaded from the **Upload Multi-Team Pitcher Data** 
 Column names for the **Hitters.xls**, **hitter_ratings.xlsx** and especially **hitter_ratings.csv** files must use these exact column names (with no spaces and none of them beginning with a number) because of the csv parser that's being used:
 
 -   Year, TM, Location, HITTERS, INJ, AB, SO_v_lhp, BB_v_lhp, HIT_v_lhp, OB_v_lhp, TB_v_lhp, HR_v_lhp, BP_v_lhp, CL_v_lhp, DP_v_lhp, SO_v_rhp, BB_v_rhp, HIT_v_rhp, OB_v_rhp, TB_v_rhp, HR_v_rhp, BP_v_rhp, CL_v_rhp, DP_v_rhp, STEALING, STL, SPD, B, H, d_CA, d_1B, d_2B, d_3B, d_SS, d_LF, d_CF, d_RF, FIELDING, rml_team_id
-
-> **DUPLICATE NAMES**: follow the instructions below under the heading **Players with duplicate names** to manually enter their **rml_team_id**.
 
 ---
 
@@ -220,15 +242,6 @@ Column names for the **Hitters.xls**, **hitter_ratings.xlsx** and especially **h
 Column names for the **Pitchers.xls**, **data/pitcher_ratings.xlsx** and especially **pitcher_ratings.csv** files must use these exact column names (with no spaces and none of them beginning with a number) because of the csv parser that's being used:
 
 -   Year, TM, Location, PITCHERS, IP, SO_v_l, BB_v_l, HIT_v_l, OB_v_l, TB_v_l, HR_v_l, BP_v_l, DP_v_l, SO_v_r, BB_v_r, HIT_v_r, OB_v_r, TB_v_r, HR_v_r, BP_v_r, DP_v_r, HO, ENDURANCE, FIELD, BK, WP, BAT_B, STL, SPD, rml_team_id
-
-> **DUPLICATE NAMES**: follow the instructions below under the heading **Players with duplicate names** to manually enter their **rml_team_id**.
-
-**NOTES** (for both **Hitters.xlsx** and **Pitchers.xlsx**):
-
--   It's no longer necessary to rename the **Location** column to **real_team_id\***, since that is now calculated by the app when uploading data. This is confirmed to be true. In fact, changing the name from **Location** will now generate an error from the Joi schema validation.
--   It's also no longer necessary to change the **TM** column to reflect my preferred team abbreviations (eg: ARIZ instead of ARN) since that is now converted by the app when uploading data.
-
-> **IMPORTANT** (for both **Hitters.xlsx** and **Pitchers.xlsx**): Every hitter and pitcher that played for multiple teams needs to have their **TM** column set to **TOT**. In a normal season, there could be well over 100 players that need this team change. But, it's important for now because of the bp stadium ratings for each team have such an impact on the wOPS numbers. Multi-team players will not have wOPS ratings unless they also have their multi-team breakdowns added to **data/multi_team_hitters.xlsx** and **data/multi_team_pitchers.xlsx**.
 
 ---
 
