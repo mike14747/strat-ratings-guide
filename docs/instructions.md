@@ -14,32 +14,72 @@ The **/config/ratings_guide_db(seeds).sql** file will get imported into the data
 
 ### Update the Carded Player lists
 
--   Get a list of all carded player names from the Master Roster using this formula: **=""""&A2&""","** on the name column. I use double quotes because some names include single quotes.
--   To convert carded player names from the Master Roster, I use Quokka in VSCode, pasting the names list into the **allPlayers** array, then execute this array method:
+**NEW** (as of 2024-01-22):
+
+Use this formula for all the carded players from the Master Roster (in a temporary "formatted" column at the end):
+
+```text
+="{ year: 2023, fullName: """&A2&""", rmlTeam: '"&C2&"', ip: '"&S2&"', ab: '"&Y2&"' },"
+```
+
+Use Quokka in VSCode, pasting the above player objects list into the **allPlayers** array, then execute this "forEach" array method:
 
 ```js
 const allPlayers = [
-    'Abbott, Andrew', // as an example... it will become "Abbot,A"
-    // the carded players from the Master Roster go here
+    // ...
+    { year: 2023, fullName: "Nootbaar, Lars", rmlTeam: 'Blaze', ip: '', ab: '426' },
+    { year: 2023, fullName: "Ober, Bailey", rmlTeam: 'Clown Princes', ip: '144.1', ab: '' },
+    { year: 2023, fullName: "Odor, Rougned", rmlTeam: 'Z-Unowned', ip: '', ab: '138' },
+    { year: 2023, fullName: "O'Hearn, Ryan", rmlTeam: 'RockHounds', ip: '', ab: '346' },
+    { year: 2023, fullName: "O'Hoppe, Logan", rmlTeam: 'Pilgrims', ip: '', ab: '182' },
+    { year: 2023, fullName: "Ohtani, Shohei", rmlTeam: 'Titans', ip: '132', ab: '497' },
+    { year: 2023, fullName: "Okert, Steven", rmlTeam: 'Dodgers', ip: '58.2', ab: '' },
+    { year: 2023, fullName: "Olivares, Edward", rmlTeam: 'Reds', ip: '', ab: '354' },
+    { year: 2023, fullName: "Olson, Matt", rmlTeam: 'Reds', ip: '', ab: '608' },
+    { year: 2023, fullName: "Olson, Reese", rmlTeam: 'Gypsies', ip: '103.2', ab: '' },
+    { year: 2023, fullName: "O'Neill, Tyler", rmlTeam: 'Titans', ip: '', ab: '238' },
+    { year: 2023, fullName: "Ortega, Rafael", rmlTeam: 'Z-Unowned', ip: '', ab: '114' },
+    { year: 2023, fullName: "Ortiz, Luis", rmlTeam: 'Hornets', ip: '86.2', ab: '' },
+    { year: 2023, fullName: "Ottavino, Adam", rmlTeam: 'Captains', ip: '61.2', ab: '' },
+    { year: 2023, fullName: "Outman, James", rmlTeam: 'Pilots', ip: '', ab: '483' },
+    { year: 2023, fullName: "Oviedo, Johan", rmlTeam: 'River Dogs', ip: '177.2', ab: '' },
+    { year: 2023, fullName: "Ozuna, Marcell", rmlTeam: 'Pilgrims', ip: '', ab: '530' },
+    { year: 2023, fullName: "Pagan, Emilio", rmlTeam: 'Titans', ip: '69.1', ab: '' },
+    // ...
 ];
 
+function roundInnings(ip) {
+    if (!ip) return null;
+    if (ip.endsWith('.2')) {
+        return Math.ceil(ip)
+    } else {
+        return Math.floor(ip);
+    }
+}
+
 allPlayers.forEach((player, index) => {
-    const nameParts = player.split(', ');
-    allPlayers[index] = nameParts[0] + ',' + nameParts[1][0];
+    const nameParts = player.fullName.split(', ');
+    allPlayers[index].abbrevName = nameParts[0] + ',' + nameParts[1][0];
+    allPlayers[index].ip = roundInnings(player.ip);
+    allPlayers[index].ab = parseInt(player.ab) || null;
 });
 
 console.log(allPlayers);
 ```
 
--   Copy the abbreviated names (the output of the above step) into the **/data/carded_players_abbrev.xlsx** file. The first and last player names can be trimmed manually to remove the single quote around the player names and the trailing comma. The rest of the players should be done using **Find/Replace**. First do it using "2 spaces and a single quote" and then using "single quote and a comma"... both times replacing with nothing.
--   Add the RML team (which will be in the same order as the player list from the Master Roster) for each carded player to the **/data/carded_players_abbrev.xlsx** file.
--   The "formatted" column data will become the data in **/controllers/utils/cardedPlayers.js** and will need to be refreshed each season.
+The output of this will get pasted into **/controllers/utils/cardedPlayers.js** each time a significant number of RML team changes occur (eg: after drafts).
+
+**NOTE**: If you have a few players who have blank RML teams, here are some things to watch look for:
+
+-   Space after the comma in Strat's ratings disk.
+-   "Jr" or "II" suffixes don't match between the Master Roster and the Ratings Disk.
+-   AB or IP from the original "Hitters Stats" or "Pitchers Stats" files from Baseball-Reference might be 1 different from what is in the Ratings Disk.
 
 ---
 
 ### Players with duplicate names
 
-The **/data/carded_players_abbrev.xlsx** file, will flag all duplicate players. These duplicate name players will need to have their **rml_team_id** entered manually before uploading the **hitter_ratings.csv** and **pitcher_ratings.csv** files. After that, all rml teams will be automatically assigned by the app using the data compiled in **/controllers/utils/cardedPlayers.js**.
+**UPDATE**: As of 2024-01-22, you no longer need to be concerned with this. It is handled automatically by the hitter and pitcher controllers.
 
 ---
 
@@ -185,7 +225,7 @@ Column names for the **Pitchers.xls**, **data/pitcher_ratings.xlsx** and especia
 
 **NOTES** (for both **Hitters.xlsx** and **Pitchers.xlsx**):
 
--   It's no longer necessary to rename the **Location** column to **real_team_id***, since that is now calculated by the app when uploading data. This is confirmed to be true. In fact, changing the name from **Location** will now generate an error from the Joi schema validation.
+-   It's no longer necessary to rename the **Location** column to **real_team_id\***, since that is now calculated by the app when uploading data. This is confirmed to be true. In fact, changing the name from **Location** will now generate an error from the Joi schema validation.
 -   It's also no longer necessary to change the **TM** column to reflect my preferred team abbreviations (eg: ARIZ instead of ARN) since that is now converted by the app when uploading data.
 
 > **IMPORTANT** (for both **Hitters.xlsx** and **Pitchers.xlsx**): Every hitter and pitcher that played for multiple teams needs to have their **TM** column set to **TOT**. In a normal season, there could be well over 100 players that need this team change. But, it's important for now because of the bp stadium ratings for each team have such an impact on the wOPS numbers. Multi-team players will not have wOPS ratings unless they also have their multi-team breakdowns added to **data/multi_team_hitters.xlsx** and **data/multi_team_pitchers.xlsx**.

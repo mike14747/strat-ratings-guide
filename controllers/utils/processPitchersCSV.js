@@ -71,7 +71,7 @@ const processPitchersInsertData = (csvData, realTeams, rmlTeams) => {
             batting: row.BAT_B,
             stl: row.STL,
             spd: parseInt(row.SPD),
-            rmlTeamId: row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.name.toLowerCase() === pitcherName.toLowerCase() && item.year === parseInt(row.Year)))]?.team] || null,
+            rmlTeamId: row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.abbrevName.toLowerCase() === pitcherName.toLowerCase() && item.year === parseInt(row.Year) && item.ip === parseInt(row.IP)))]?.rmlTeam] || null,
         };
 
         return Object.values(pitcherObj);
