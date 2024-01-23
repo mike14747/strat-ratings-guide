@@ -7,7 +7,7 @@ That way I won't need to keep the file in both formats. All I'll need is the .xl
 
 These seem to be the npm packages I could use (in no special order):
 
-1. exceljs (seems to be the leading candidate)
+1. exceljs
 2. node-xlsx
 3. xlsx
 */

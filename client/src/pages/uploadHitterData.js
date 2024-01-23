@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
 function UploadHitterData() {
@@ -51,7 +51,7 @@ function UploadHitterData() {
                 <div className="mb-2">
                     <label htmlFor="file-input">Select file for upload:</label>
                 </div>
-                <input id="file-input" className="" type="file" onChange={selectFile} />
+                <input id="file-input" className="" type="file" onChange={selectFile} accept=".xlsx, .xls" />
                 <button className="ml-4" onClick={uploadFile}>
                     Upload
                 </button>
