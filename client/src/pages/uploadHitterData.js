@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
 
+const UPLOAD_FILENAME = 'hitter_stats.xlsx';
+
 function UploadHitterData() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [message, setMessage] = useState(null);
@@ -13,7 +15,7 @@ function UploadHitterData() {
         if (!selectedFile) {
             setMessage('No file was selected.');
         } else {
-            if (selectedFile.name === 'hitter_ratings.csv') {
+            if (selectedFile.name === UPLOAD_FILENAME) {
                 const formData = new FormData();
                 formData.append('file', selectedFile);
                 axios.post('/api/hitters', formData, {
@@ -31,7 +33,7 @@ function UploadHitterData() {
                         }
                     });
             } else {
-                setMessage('The only uploaded file allowed is: "hitter_ratings.csv".');
+                setMessage('The only uploaded file allowed is: "' + UPLOAD_FILENAME + '".');
             }
         }
     };
@@ -42,7 +44,7 @@ function UploadHitterData() {
 
             <div className="mb-2">Keep these things in mind when trying to upload the Hitter Data:</div>
             <ul>
-                <li>The only file allowed for upload is &quot;<span className="font-weight-bolder">hitter_ratings.csv</span>&quot;.</li>
+                <li>The only file allowed for upload is &quot;<span className="font-weight-bolder">{UPLOAD_FILENAME}</span>&quot;.</li>
                 <li>The file must have the proper columns (ie: Year as the first column, INJ after HITTERS and RML Team at the end).</li>
                 <li>This process will truncate the hitter_ratings table and replace it with the data in the uploaded file.</li>
             </ul>
@@ -51,7 +53,7 @@ function UploadHitterData() {
                 <div className="mb-2">
                     <label htmlFor="file-input">Select file for upload:</label>
                 </div>
-                <input id="file-input" className="" type="file" onChange={selectFile} accept=".xlsx, .xls" />
+                <input id="file-input" className="" type="file" onChange={selectFile} accept=".xlsx" />
                 <button className="ml-4" onClick={uploadFile}>
                     Upload
                 </button>
