@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import SeasonDropdown from '../components/seasonDropdown/seasonDropdown';
-import PageHeading from '../components/pageHeading';
-import Loading from '../components/loading/loading';
+// import SeasonDropdown from '../components/seasonDropdown/seasonDropdown';
+// import PageHeading from '../components/pageHeading';
+// import Loading from '../components/loading/loading';
 
 function PitcherAnalysis() {
     const [season, setSeason] = useState(null);

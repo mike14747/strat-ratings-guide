@@ -1,5 +1,3 @@
-import React from 'react';
-
 function Home() {
     return (
         <article className="container my-4">
