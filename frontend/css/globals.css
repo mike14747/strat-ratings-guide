@@ -1,0 +1,224 @@
+:root {
+    --theme-color-1: #8fbc8f;
+    --theme-color-2: #8cbed6;
+    --theme-color-3: #fdd5b1;
+}
+
+/*
+::selection {
+    background-color: var(--mg-dark);
+    color: var(--mg-light);
+}
+*/
+
+/* for semi-full height websites with next.js use #__next and with react use #root */
+/* in next.js version 13, I've been using #appWrapper inside the <body> tag... <body id="appWrapper"> */
+
+#__next,
+#root,
+#appWrapper {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* sometimes I make the following changes to the default <a> tags */
+
+/* a:visited {
+    color: var(--mg-blue);
+} */
+
+/* a:hover {
+    text-decoration: none;
+} */
+
+/* a:active {
+    text-decoration: none;
+} */
+
+/* the following is the animated underline effect... disabled by default */
+/* if you enable it, change the above "a:hover" and "a:active" to "text-decoration: none;" and use the ".relative" class in <a> tags */
+
+/*
+a[href]::after {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    height: 1px;
+    content: "";
+    background-color: transparent;
+    -webkit-transition: width 0.3s, left 0.3s, background-color 1s;
+    -o-transition: width 0.3s, left 0.3s, background-color 1s;
+    transition: width 0.3s, left 0.3s, background-color 1s;
+}
+
+a[href]:hover::after {
+    width: 100%;
+    left: 0;
+    background-color: var(--mg-orange-dark);
+    -webkit-transition: width 0.3s, left 0.3s, background-color 1s;
+    -o-transition: width 0.3s, left 0.3s, background-color 1s;
+    transition: width 0.3s, left 0.3s, background-color 1s;
+}
+
+a[href]:active::after {
+    background-color: var(--mg-orange-dark);
+    -webkit-transition: background-color 1s;
+    -o-transition: background-color 1s;
+    transition: background-color 1s;
+}
+*/
+
+/* you could alternatively only use the .link pseudo-elements on select links and not all of them by default by applying the .link class to just those links */
+
+/*
+.link {
+    position: relative;
+    padding-top: 0.25rem;
+    display: inline-block;
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+    color: var(--mg-blue);
+}
+
+.link::after {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    height: 1px;
+    content: '';
+    background-color: transparent;
+    -webkit-transition: width 0.3s, left 0.3s, background-color 1s;
+    -o-transition: width 0.3s, left 0.3s, background-color 1s;
+    transition: width 0.3s, left 0.3s, background-color 1s;
+}
+
+.link:hover {
+    color: var(--mg-orange-dark);
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+    text-decoration: none;
+}
+
+.link:hover::after {
+    width: 100%;
+    left: 0;
+    background-color: var(--mg-orange-dark);
+    -webkit-transition: width 0.3s, left 0.3s, background-color 1s;
+    -o-transition: width 0.3s, left 0.3s, background-color 1s;
+    transition: width 0.3s, left 0.3s, background-color 1s;
+}
+*/
+
+/* end link classes */
+
+/* use with the main <div> element in layout components or with the the outer wrapper in the page content element */
+.page-container {
+    /* enable flex: 1; on the next 3 lines for full or semi-full height websites or comment them out to disable them */
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+   
+    width: 100%;
+    min-width: var(--container-min-width);
+    max-width: var(--container-max-width);
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--mg-light);
+    padding: 1rem;
+}
+
+/* use with elements like <header>, <nav> and <footer> */
+.container {
+    width: 100%;
+    min-width: var(--container-min-width);
+    max-width: var(--container-max-width);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.container-fluid {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h2.page-heading {
+    text-align: left;
+    border-bottom: 2px var(--mg-gray-2) solid;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+
+.skip-to-main {
+    position: absolute;
+    left: 1rem;
+    background-color: var(--mg-light);
+    font-size: 1rem;
+    font-size: var(--step-0);
+    margin: 0;
+    padding: 0.5rem 1rem;
+    border-radius: 0 0 0.5rem 0.5rem;
+    transform: translateY(-120%);
+    transition: transform 0.3s ease-in;
+}
+
+.skip-to-main:focus {
+    transform: translateY(0);
+    outline: 2px var(--mg-gray-4) dotted;
+    outline-offset: 0rem;
+}
+
+.error {
+    font-size: 1rem;
+    font-size: var(--step-0);
+    color: var(--mg-red);
+    text-align: center;
+}
+
+.error::before {
+    content: '\26D4';
+    padding-right: 0.5rem;
+}
+
+.error-container {
+    text-align: center;
+}
+
+.error-container > h1 {
+    margin: 2rem 0;
+    color: var(--mg-red);
+}
+
+.error-container > p:last-child {
+    margin-bottom: 2rem;
+}
+
+.success {
+    font-size: 1rem;
+    font-size: var(--step-0);
+    color: var(--mg-green);
+    text-align: center;
+    max-width: 60ch;
+    margin: 0 auto;
+}
+
+.success-large {
+    font-size: 1.2rem;
+    font-size: var(--step-1);
+    color: var(--mg-green);
+    text-align: center;
+    max-width: 60ch;
+    margin: 0 auto;
+}
+
+/* add site specific code here */

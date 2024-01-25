@@ -1,25 +1,55 @@
 require('dotenv').config();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 const express = require('express');
 const app = express();
 const path = require('path');
+const helmet = require('helmet');
+
+app.use(helmet());
+app.use(
+    helmet.contentSecurityPolicy({
+        useDefaults: false,
+        directives: {
+            /* eslint-disable quotes */
+            'default-src': ["'self'"],
+            'script-src': ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
+            'style-src': ["'self'", "'unsafe-inline'"],
+            'img-src': ["'self'", 'data:'],
+            'font-src': ["'self'"],
+            /* eslint-enable quotes */
+        },
+    }),
+);
 
 const jwt = require('jsonwebtoken');
 
 app.use(express.urlencoded({ limit: '20mb', parameterLimit: 100000, extended: true }));
 app.use(express.json({ limit: '20mb' }));
 
-function authenticateToken(req, res, next) {
-    // const authHeader = req.headers.authorization;
-    // const token = authHeader && authHeader.split(' ')[1];
-    // if (token == null) return res.sendStatus(401);
+// app.use(express.static('frontend'));
+app.use(express.static(path.join(__dirname, 'frontend/css')));
+app.use(express.static(path.join(__dirname, 'frontend/images')));
 
-    // jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    //     if (err) return res.sendStatus(403);
-    //     req.user = user;
-    //     next();
-    // });
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/index.html')));
+app.get('/hitter-analysis', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/hitter-analysis.html')));
+app.get('/upload-hitter-data', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/upload-hitter-data.html')));
+app.get('/upload-multi-team-hitter-data', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/upload-multi-team-hitter-data.html')));
+app.get('/pitcher-analysis', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/pitcher-analysis.html')));
+app.get('/upload-pitcher-data', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/upload-pitcher-data.html')));
+app.get('/upload-multi-team-pitcher-data', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/upload-multi-team-pitcher-data.html')));
+app.get('/login', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/login.html')));
+
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) return res.sendStatus(401);
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
     next();
 }
 
@@ -39,12 +69,7 @@ dbTest()
         });
     })
     .finally(() => {
-        if (process.env.NODE_ENV === 'production') {
-            app.use(express.static('./client/build'));
-            app.get('*', (req, res) => {
-                res.sendFile(path.join(__dirname, './client/build/index.html'));
-            });
-        }
+        app.get('*', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/404.html')));
     });
 
 app.listen(PORT, () => console.log('Server is listening on port ' + PORT));

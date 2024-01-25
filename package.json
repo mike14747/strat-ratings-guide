@@ -4,10 +4,9 @@
     "description": "Converts Strat-O-Matic Baseball Ratings Guide to wOPS for hitters and pitchers",
     "main": "server.js",
     "scripts": {
-        "start": "node server.js",
-        "dev": "concurrently --kill-others-on-fail \"npm run server\" \"cd client && npm run start\"",
+        "start": "nodemon server.js",
+        "dev": "nodemon server.js",
         "server": "nodemon server.js",
-        "build": "cd client && npm install && npm run build",
         "test": "mocha --exit"
     },
     "repository": {
@@ -31,8 +30,8 @@
         "eslint-plugin-n": "^16.6.1",
         "eslint-plugin-promise": "^6.1.1",
         "eslint-plugin-react": "^7.33.2",
-        "mocha": "^8.2.1",
-        "nodemon": "^2.0.6"
+        "mocha": "^10.2.0",
+        "nodemon": "^3.0.3"
     },
     "dependencies": {
         "bcryptjs": "^2.4.3",
@@ -41,9 +40,10 @@
         "exceljs": "^4.4.0",
         "express": "^4.17.1",
         "express-fileupload": "^1.2.0",
+        "helmet": "^7.1.0",
         "joi": "^17.3.0",
         "json-2-csv": "^5.0.1",
-        "jsonwebtoken": "^8.5.1",
+        "jsonwebtoken": "^9.0.2",
         "mysql2": "^2.2.5"
     }
 }
