@@ -30,6 +30,7 @@ app.use(express.json({ limit: '20mb' }));
 // app.use(express.static('frontend'));
 app.use(express.static(path.join(__dirname, 'frontend/css')));
 app.use(express.static(path.join(__dirname, 'frontend/images')));
+app.use(express.static(path.join(__dirname, 'frontend/components')));
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/index.html')));
 app.get('/hitter-analysis', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/hitter-analysis.html')));
