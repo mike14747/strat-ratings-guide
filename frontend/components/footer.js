@@ -9,14 +9,4 @@ class MyFooter extends HTMLElement {
     }
 }
 
-// <style>
-//     .footer {
-//         width: 100%;
-//         background-color: #d3d3d3;
-//         text-align: center;
-//         padding: 1rem;
-//         margin-top: 2rem;
-//     }
-// </style>
-
 customElements.define('my-footer', MyFooter);

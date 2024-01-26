@@ -121,13 +121,22 @@ a[href]:active::after {
 
 /* end link classes */
 
+/* this is the equivilant of my usual #__next, #root or #appWrapper in react or nextjs */
+/* It should be added to the <body> tag of each page */
+#app-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
 /* use with the main <div> element in layout components or with the the outer wrapper in the page content element */
+/* in this app, this should be used on the <main> tag of each page */
 .page-container {
     /* enable flex: 1; on the next 3 lines for full or semi-full height websites or comment them out to disable them */
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
-   
+
     width: 100%;
     min-width: var(--container-min-width);
     max-width: var(--container-max-width);
@@ -152,7 +161,9 @@ a[href]:active::after {
     margin-right: auto;
 }
 
-h2.page-heading {
+h1.page-heading {
+    font-size: var(--step-3-base);
+    font-size: var(--step-3);
     text-align: left;
     border-bottom: 2px var(--mg-gray-2) solid;
     padding-bottom: 1rem;
@@ -223,12 +234,124 @@ h2.page-heading {
 
 /* add site specific code here */
 
+/* start web component css */
+
+.header {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    width: 100%;
+    background-color: var(--mg-gray-2);
+    border-bottom: 2px var(--mg-gray-4) solid;
+    text-align: left;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.header-left {
+    display: flex;
+    align-items: stretch;
+    justify-content: start;
+}
+
+.header-right {
+}
+
+.logo-container {
+    display: flex;
+}
+
+.heading-container {
+}
+
+.heading-container > p {
+    font-size: var(--step-3-base);
+    font-size: var(--step-3);
+}
+
 .footer {
     width: 100%;
-    background-color: var(--mg-dark);
-    border-top: 4px var(--mg-light) solid;
-    box-shadow: 0 -1px 0 1px var(--mg-green);
+    background-color: var(--mg-gray-2);
+    border-top: 2px var(--mg-gray-4) solid;
     text-align: center;
-    padding: 0;
+    padding: 1rem;
     margin-top: 2rem;
 }
+
+.navdropbtn {
+    background-color: #ddeeee;
+    color: #006699;
+    padding: 1rem 0.5rem;
+    margin: 0;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: center;
+    /* text-transform: uppercase; */
+}
+
+.navdropbtn:hover {
+    background-color: #f8eed1;
+    color: #cc0000;
+}
+
+.navdropdown {
+    margin: 0;
+    position: relative;
+    display: inline-block;
+    min-width: 150px;
+}
+
+.navdropdown-content {
+    position: absolute;
+    right: 0;
+    text-align: left;
+    display: none;
+    background-color: #f3f3f3;
+    min-width: 250px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;;
+    margin: 0 0 0 -50px;
+}
+
+.navdropdown-content a {
+    color: #cc0000;
+    padding: 1rem 0.5rem;
+    text-decoration: none;
+    display: block;
+}
+
+.navdropdown-content a:hover {
+    background-color: #dddddd;
+    color: #006699;
+    text-decoration: none;
+}
+
+.navdropdown:hover .navdropdown-content {
+    display: block;
+}
+
+.navdropdown:hover .navdropbtn {
+    background-color: #f8eed1;
+    color: #cc0000;
+}
+
+.item {
+    border-top: 1px #cccccc solid;
+    border-right: 1px #cccccc solid;
+    border-left: 1px #cccccc solid;
+}
+
+.arrow {
+    border: solid #6c757d;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 3px;
+    margin-left: 0.50rem;
+}
+
+.down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+}
+
+/* end web component css */
