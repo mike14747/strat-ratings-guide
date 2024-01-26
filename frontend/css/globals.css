@@ -254,17 +254,7 @@ h1.page-heading {
     justify-content: start;
 }
 
-.header-right {
-}
-
-.logo-container {
-    display: flex;
-}
-
-.heading-container {
-}
-
-.heading-container > p {
+.heading-text {
     font-size: var(--step-3-base);
     font-size: var(--step-3);
 }

@@ -1,4 +1,4 @@
-class MyFooter extends HTMLElement {
+class FooterComponent extends HTMLElement {
     constructor() {
         super();
         this.innerHTML = `
@@ -9,4 +9,4 @@ class MyFooter extends HTMLElement {
     }
 }
 
-customElements.define('my-footer', MyFooter);
+customElements.define('footer-component', FooterComponent);

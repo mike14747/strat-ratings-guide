@@ -4,12 +4,12 @@ class HeaderComponent extends HTMLElement {
         this.innerHTML = `
         <header class="header">
             <div class="header-left">
-                <div class="logo-container">
+                <div>
                     <img src="analyze.png" />
                 </div>
                     
-                <div class="heading-container">
-                    <p>
+                <div>
+                    <p class="heading-text">
                         <sup>Strat</sup> <a href="/">Ratings Guide</a> <sup>Analysis</sup>
                     </p>
                 </div>
