@@ -22,7 +22,7 @@ app.use(
     }),
 );
 
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 
 app.use(express.urlencoded({ limit: '20mb', parameterLimit: 100000, extended: true }));
 app.use(express.json({ limit: '20mb' }));
@@ -42,15 +42,15 @@ app.get('/upload-multi-team-pitcher-data', (req, res) => res.sendFile(path.join(
 app.get('/login', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/login.html')));
 
 function authenticateToken(req, res, next) {
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1];
-    if (token == null) return res.sendStatus(401);
+    // const authHeader = req.headers.authorization;
+    // const token = authHeader && authHeader.split(' ')[1];
+    // if (token == null) return res.sendStatus(401);
 
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
-        next();
-    });
+    // jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    //     if (err) return res.sendStatus(403);
+    //     req.user = user;
+    //     next();
+    // });
     next();
 }
 
