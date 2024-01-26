@@ -27,10 +27,10 @@ const jwt = require('jsonwebtoken');
 app.use(express.urlencoded({ limit: '20mb', parameterLimit: 100000, extended: true }));
 app.use(express.json({ limit: '20mb' }));
 
-// app.use(express.static('frontend'));
+app.use(express.static(path.join(__dirname, 'frontend/components')));
 app.use(express.static(path.join(__dirname, 'frontend/css')));
 app.use(express.static(path.join(__dirname, 'frontend/images')));
-app.use(express.static(path.join(__dirname, 'frontend/components')));
+app.use(express.static(path.join(__dirname, 'frontend/js')));
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/index.html')));
 app.get('/hitter-analysis', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/hitter-analysis.html')));
