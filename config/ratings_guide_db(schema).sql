@@ -165,7 +165,8 @@ CREATE TABLE `rml_teams` (
 CREATE TABLE `users` (
     `user_id` int unsigned NOT NULL AUTO_INCREMENT,
     `username` varchar(20) NOT NULL,
-    `password` varchar(100) NOT NULL,
+    `password` varchar(255) NOT NULL,
+    `salt` varchar(100) NOT NULL,
     `email` varchar(100) NOT NULL,
     `admin` int unsigned DEFAULT 0,
     PRIMARY KEY (`user_id`)

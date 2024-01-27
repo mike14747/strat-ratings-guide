@@ -13,3 +13,7 @@ Figure out how to have a button to copy all hitter and pitcher data. UPDATE: it'
 Figure out how to upload/process .xlsx files instead of .csv files.
 
 ~~Style the buttons.~~
+
+Remove bcryptjs and implement node functions instead.
+
+Convert the whole project to ES6 modules.
