@@ -3,6 +3,29 @@ function displayError() {
     errorMessage.textContent = 'An error occurred fetching data!';
 }
 
+// eslint-disable-next-line no-unused-vars
+async function copyContent() {
+    const tableRows = document.getElementById('data-rows');
+    const tableText = tableToText(tableRows);
+
+    await navigator.clipboard.writeText(tableText);
+}
+
+function tableToText(tableRows) {
+    let tableText = '';
+    const rows = tableRows.querySelectorAll('tr');
+
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        cells.forEach(cell => {
+            tableText += cell.innerText + '\t'; // Use tab as a delimiter
+        });
+        tableText += '\n';
+    });
+
+    return tableText;
+}
+
 async function getData() {
     const url = '/api/hitters/season-list';
     const seasonListJSON = await fetch(url).then((res) => res.json().catch((error) => console.log(error)));
@@ -39,6 +62,9 @@ async function getData() {
         errorMessage.textContent = 'An error occurred fetching data!';
         return;
     }
+
+    const copyButtonContainer = document.getElementById('copy-button-container');
+    copyButtonContainer.innerHTML = '<button onclick="copyContent()">Copy Data</button>';
 
     const thLabels = ['Year', 'Team', 'Hitter', 'Bats', 'INJ', 'AB', 'SO v L', 'BB v L', 'Hit v L', 'OB v L', 'TB v L', 'HR v L', 'wSI v L', 'DP v L', 'wOPS v L', 'SO v R', 'BB v R', 'Hit v R', 'OB v R', 'TB v R', 'HR v R', 'wSI v R', 'DP v R', 'wOPS v R', 'Stealing', 'Speed', 'Bunt', 'H&R', 'CA', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'Fielding', 'RML Team'];
     const thHTMLArr = thLabels.map(th => {
@@ -90,7 +116,7 @@ async function getData() {
     ));
     const tableData = tableDataArr.join('');
 
-    const tableContent = `<table class="table small"><thead><tr>${thHTML}</tr></thead><tbody>${tableData}</tbody></table>`;
+    const tableContent = `<table class="table small"><thead><tr>${thHTML}</tr></thead><tbody id="data-rows">${tableData}</tbody></table>`;
 
     const tableContainer = document.getElementById('table-container');
     tableContainer.innerHTML = tableContent;
