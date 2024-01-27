@@ -170,6 +170,15 @@ h1.page-heading {
     margin-bottom: 2rem;
 }
 
+h1.page-heading {
+    font-size: var(--step-3-base);
+    font-size: var(--step-3);
+    text-align: left;
+    border-bottom: 2px var(--mg-gray-2) solid;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+
 .skip-to-main {
     position: absolute;
     left: 1rem;
@@ -240,7 +249,6 @@ h1.page-heading {
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
-
     max-width: 100%;
     min-width: var(--container-min-width);
     /* max-width: var(--container-max-width); */
@@ -254,22 +262,38 @@ h1.page-heading {
     margin: 0.25rem;
 }
 
+.heading-analysis {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px var(--mg-gray-2) solid;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+
+.heading-analysis > h1 {
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+/* end table styles */
+
 .table {
     /* display: block;
     overflow-x: auto; */
     white-space: nowrap;
-    border: 1px solid #6c757d;
+    border: 1px solid var(--mg-gray-6);
     border-collapse: collapse;
     margin: 1rem 0 1rem 0;
 }
 
 .table tbody tr:nth-of-type(odd) {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: var(--mg-gray-1);
 }
 
 .table tbody tr:hover {
-    color: #000000;
-    background-color: rgba(47, 95, 153, 0.2);
+    color: var(--mg-dark);
+    background-color: var(--mg-gray-2);
 }
 
 .table th,
@@ -287,13 +311,15 @@ h1.page-heading {
 }
 
 .table th {
-    background-color: #ffddaa;
+    background-color: var(--mg-orange-soft);
     position: sticky;
     overflow: hidden;
     top: 0;
     border: 1px solid var(--mg-gray-5);
     border-bottom: 2px solid var(--mg-gray-6);
 }
+
+/* end table styles */
 
 /* start web component css */
 
@@ -393,7 +419,7 @@ h1.page-heading {
 }
 
 .arrow {
-    border: solid #6c757d;
+    border: solid var(--mg-gray-6);
     border-width: 0 2px 2px 0;
     display: inline-block;
     padding: 3px;
@@ -406,3 +432,28 @@ h1.page-heading {
 }
 
 /* end web component css */
+
+/* start button styles */
+
+button.btn {
+    font-size: clamp(0.83rem, 0.78rem + 0.19vw, 1rem);
+    padding: 0.25rem 0.5rem;
+    color: var(--mg-dark);
+    background-color: var(--mg-gray-1);
+    cursor: pointer;
+    border: 1;
+    border-radius: 0.1rem;
+    transition: 0.3s;
+}
+
+button.btn:hover {
+    box-shadow: 0 0 0 1px #ffffff, 0 0 0 2px var(--mg-dark), 3px 3px 6px 2px var(--mg-gray-5);
+    background-image: var(--bg-img-darken);
+}
+
+button.btn:focus {
+    outline: 1px var(--mg-gray-4) dashed;
+    outline-offset: 0.5rem;
+}
+
+/* start button styles */
