@@ -1,25 +1,40 @@
+function displayError() {
+    const errorMessage = document.getElementById('error-message');
+    errorMessage.textContent = 'An error occurred fetching data!';
+}
+
 async function getData() {
     const url = '/api/hitters/season-list';
     const seasonListJSON = await fetch(url).then((res) => res.json().catch((error) => console.log(error)));
 
     if (!seasonListJSON) {
-        const errorMessage = document.getElementById('error-message');
-        errorMessage.textContent = 'An error occurred fetching data!';
+        displayError();
         return;
     }
 
     const latestSeason = Math.max(...seasonListJSON.map(y => y.h_year));
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedSeason = urlParams.get('season') || latestSeason;
+
+    if (!selectedSeason) {
+        displayError();
+        return;
+    }
+
     const pageHeading = document.getElementById('page-heading');
-    pageHeading.innerHTML = `Hitter Analysis (${latestSeason})`;
+    pageHeading.innerHTML = `Hitter Analysis (${selectedSeason})`;
 
-    // const seasonList = seasonListJSON.map(s => s.h_year);
-    // console.log(seasonList);
+    const seasonList = seasonListJSON.map(s => s.h_year);
+    console.log(seasonList);
 
-    const url2 = `/api/hitters/${latestSeason}`;
+    const url2 = `/api/hitters/${parseInt(selectedSeason)}`;
     const dataJSON = await fetch(url2).then((res) => res.json().catch((error) => console.log(error)));
 
     if (!dataJSON) {
+        displayError();
+        return;
+    } else if (dataJSON.length === 0) {
         const errorMessage = document.getElementById('error-message');
         errorMessage.textContent = 'An error occurred fetching data!';
         return;

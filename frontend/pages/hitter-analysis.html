@@ -33,26 +33,6 @@
     </main>
 
     <footer-component></footer-component>
-
-    <script>
-        // Get the URLSearchParams object from the current URL
-        var urlParams = new URLSearchParams(window.location.search);
-    
-        // Get a specific parameter value by name
-        var parameterValue = urlParams.get('paramName');
-    
-        // Check if the parameter exists
-        if (parameterValue !== null) {
-            // Use the parameter value
-            console.log('Parameter value:', parameterValue);
-    
-            // For example, you can update a div with the parameter value
-            var resultContainer = document.getElementById('result-container');
-            resultContainer.innerHTML = 'Parameter value: ' + parameterValue;
-        } else {
-            console.log('Parameter not found');
-        }
-    </script>
 </body>
 
 </html>
