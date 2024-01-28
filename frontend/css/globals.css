@@ -341,6 +341,10 @@ h1.page-heading {
     justify-content: start;
 }
 
+.heading-right {
+    display: flex;
+}
+
 .heading-text {
     font-size: var(--step-3-base);
     font-size: var(--step-3);
@@ -386,7 +390,7 @@ h1.page-heading {
     background-color: var(--mg-gray-1);
     min-width: 250px;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    z-index: 1;;
+    z-index: 1;
     margin: 0 0 0 -50px;
 }
 
@@ -423,7 +427,7 @@ h1.page-heading {
     border-width: 0 2px 2px 0;
     display: inline-block;
     padding: 3px;
-    margin-left: 0.50rem;
+    margin-left: 0.5rem;
 }
 
 .down {
@@ -456,4 +460,89 @@ button.btn:focus {
     outline-offset: 0.5rem;
 }
 
-/* start button styles */
+/* end button styles */
+
+/* start season dropdown styles */
+
+.sd {
+    flex: 0 0 auto;
+    position: relative;
+    padding: 0.5rem 0.5rem 0.5rem 0;
+    background-color: transparent;
+    z-index: 3;
+}
+
+.button-container {
+    display: block;
+}
+
+.menu-button {
+    color: var(--mg-dark);
+    font-weight: normal;
+    font-size: 2.074rem;
+    font-size: var(--step-4);
+    display: inline-block;
+    min-width: 3rem;
+    text-align: 'center';
+}
+
+ul.sd-dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0.5rem;
+    padding: 0;
+    margin: 0;
+    background-color: var(--mg-light);
+    list-style-type: none;
+    width: auto;
+    min-width: 200px;
+    max-width: 300px;
+    text-align: left;
+    overflow: hi-den;
+    box-shadow: 4px 8px 8px 0px var(--mg-gray-2);
+    transition: background-color 0.3s;
+}
+
+ul.sd-dropdown-content > li > a {
+    font-size: 1rem;
+    font-size: var(--step-0);
+    margin: 0;
+    padding: 1rem 0.5rem;
+    text-decoration: none;
+    display: block;
+    white-space: nowrap;
+    border-bottom: 1px var(--mg-gray-2) solid;
+    line-height: 1; /* since this text is not allowed to wrap, setting the line-height to 1 gives more control over the vertical padding */
+    transition: color 0.3s;
+}
+
+ul.sd-dropdown-content > li:last-child > a {
+    border-bottom: 0;
+}
+
+ul.sd-dropdown-content > li > a:hover {
+    background-color: rgba(27, 82, 120, 0.75);
+    color: var(--mg-light);
+    text-decoration: none;
+    transition: color 0.3s, background-color 0.3s;
+}
+
+ul.sd-dropdown-content > li > a.disabled {
+    pointer-events: none;
+    color: var(--mg-gray-6);
+}
+
+ul.sd-dropdown-content > li > a.disabled::before {
+    content: '';
+    margin-left: 1rem;
+}
+
+/* .sd:hover > ul.navDropdownContent {
+    display: block;
+} */
+
+ul.show-menu {
+    display: block;
+}
+
+/* start season dropdown styles */
