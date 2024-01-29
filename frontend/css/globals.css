@@ -460,89 +460,99 @@ button.btn:focus {
     outline-offset: 0.5rem;
 }
 
+#copy-button-container {
+    margin: auto 0;
+}
+
 /* end button styles */
 
 /* start season dropdown styles */
 
-.sd {
-    flex: 0 0 auto;
+.dropbtn {
+    font-size: var(--step-0-base);
+    font-size: var(--step-0);
+    background-color: var(--mg-gray-1);
+    color: var(--mg-blue);
+    padding: 0.5rem 0.75rem;
+    margin: 0 0 0.2rem 0;
+    border: none;
+    cursor: pointer;
+}
+
+.dropbtn:hover {
+    background-color: var(--mg-yellow-pale);
+    color: var(--mg-red);
+}
+
+.dropdown {
     position: relative;
-    padding: 0.5rem 0.5rem 0.5rem 0;
-    background-color: transparent;
-    z-index: 3;
-}
-
-.button-container {
-    display: block;
-}
-
-.menu-button {
-    color: var(--mg-dark);
-    font-weight: normal;
-    font-size: 2.074rem;
-    font-size: var(--step-4);
     display: inline-block;
-    min-width: 3rem;
-    text-align: 'center';
+    margin-left: 2rem;
+    text-align: center;
 }
 
-ul.sd-dropdown-content {
+.dropdown-content {
     display: none;
     position: absolute;
-    right: 0.5rem;
+    right: 0;
+    background-color: var(--mg-gray-1);
+    min-width: 150px;
+    box-shadow: 0px 8px 16px 0px var(--mg-gray-2);
+    z-index: 1;
+    margin: 0;
     padding: 0;
-    margin: 0;
-    background-color: var(--mg-light);
-    list-style-type: none;
-    width: auto;
-    min-width: 200px;
-    max-width: 300px;
-    text-align: left;
-    overflow: hi-den;
-    box-shadow: 4px 8px 8px 0px var(--mg-gray-2);
-    transition: background-color 0.3s;
+    cursor: pointer;
 }
 
-ul.sd-dropdown-content > li > a {
-    font-size: 1rem;
-    font-size: var(--step-0);
-    margin: 0;
-    padding: 1rem 0.5rem;
-    text-decoration: none;
+.dropdown-content li {
+    color: var(--mg-red);
+    padding: 1rem 0.75rem;
     display: block;
-    white-space: nowrap;
-    border-bottom: 1px var(--mg-gray-2) solid;
-    line-height: 1; /* since this text is not allowed to wrap, setting the line-height to 1 gives more control over the vertical padding */
-    transition: color 0.3s;
+    border: 1px solid var(--mg-gray-3);
 }
 
-ul.sd-dropdown-content > li:last-child > a {
+.dropdown-content li:last-of-type {
     border-bottom: 0;
 }
 
-ul.sd-dropdown-content > li > a:hover {
-    background-color: rgba(27, 82, 120, 0.75);
-    color: var(--mg-light);
+.dropdown-content li:hover {
+    background-color: var(--mg-gray-2);
+    color: var(--mg-blue);
+}
+
+.dropdown-content a {
     text-decoration: none;
-    transition: color 0.3s, background-color 0.3s;
 }
 
-ul.sd-dropdown-content > li > a.disabled {
-    pointer-events: none;
-    color: var(--mg-gray-6);
-}
-
-ul.sd-dropdown-content > li > a.disabled::before {
-    content: '';
-    margin-left: 1rem;
-}
-
-/* .sd:hover > ul.navDropdownContent {
+.dropdown:hover .dropdown-content {
     display: block;
-} */
+}
 
-ul.show-menu {
-    display: block;
+.dropdown:hover .dropbtn {
+    background-color: var(--mg-yellow-pale);
+    color: var(--mg-red);
+}
+
+.viewing {
+    cursor: default;
+    color: var(--mg-gray-4) !important;
+}
+
+.viewing:hover {
+    background-color: var(--mg-yellow-pale) !important;
+}
+
+i {
+    border: solid var(--mg-gray-6);
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 3px;
+    margin: 0 0 3px 4px;
+}
+
+.down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
 }
 
 /* start season dropdown styles */

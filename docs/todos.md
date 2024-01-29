@@ -2,7 +2,7 @@
 
 Get the pitcher analysis page working as the hitter analysis page is.
 
-Add season list dropdowns to the hitter and pitcher analysis pages.
+Add season list dropdowns to the ~~hitter~~ and pitcher analysis pages.
 
 ~~Convert all colors in globals.css to css variables.~~
 
@@ -15,3 +15,5 @@ Figure out how to upload/process .xlsx files instead of .csv files.
 ~~Remove bcryptjs and implement node functions instead.~~
 
 Convert the nav dropdown to my new type.
+
+Change the "Copy Data" button to some sort of icon.
