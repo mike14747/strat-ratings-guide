@@ -1,6 +1,5 @@
 function displayError() {
-    const errorMessage = document.getElementById('error-message');
-    errorMessage.textContent = 'An error occurred fetching data!';
+    document.getElementById('error-message').textContent = 'An error occurred fetching data!';
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -35,7 +34,10 @@ async function getData() {
         return;
     }
 
-    const latestSeason = Math.max(...seasonListJSON.map(y => y.h_year));
+    const seasonList = seasonListJSON.map(s => s.h_year);
+    document.getElementById('season-dropdown').innerHTML = '<season-dropdown-component></season-dropdown-component>';
+
+    const latestSeason = Math.max(...seasonList);
 
     const urlParams = new URLSearchParams(window.location.search);
     const selectedSeason = urlParams.get('season') || latestSeason;
@@ -45,11 +47,7 @@ async function getData() {
         return;
     }
 
-    const pageHeading = document.getElementById('page-heading');
-    pageHeading.innerHTML = `Hitter Analysis (${selectedSeason})`;
-
-    const seasonList = seasonListJSON.map(s => s.h_year);
-    console.log(seasonList);
+    document.getElementById('page-heading').innerHTML = `Hitter Analysis (${selectedSeason})`;
 
     const url2 = `/api/hitters/${parseInt(selectedSeason)}`;
     const dataJSON = await fetch(url2).then((res) => res.json().catch((error) => console.log(error)));
@@ -58,13 +56,11 @@ async function getData() {
         displayError();
         return;
     } else if (dataJSON.length === 0) {
-        const errorMessage = document.getElementById('error-message');
-        errorMessage.textContent = 'An error occurred fetching data!';
+        document.getElementById('error-message').textContent = 'An error occurred fetching data!';
         return;
     }
 
-    const copyButtonContainer = document.getElementById('copy-button-container');
-    copyButtonContainer.innerHTML = '<button class="btn" onclick="copyContent()">Copy Data</button>';
+    document.getElementById('copy-button-container').innerHTML = `<copy-button></copy-button>`;
 
     const thLabels = ['Year', 'Team', 'Hitter', 'Bats', 'INJ', 'AB', 'SO v L', 'BB v L', 'Hit v L', 'OB v L', 'TB v L', 'HR v L', 'wSI v L', 'DP v L', 'wOPS v L', 'SO v R', 'BB v R', 'Hit v R', 'OB v R', 'TB v R', 'HR v R', 'wSI v R', 'DP v R', 'wOPS v R', 'Stealing', 'Speed', 'Bunt', 'H&R', 'CA', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'Fielding', 'RML Team'];
     const thHTMLArr = thLabels.map(th => {
