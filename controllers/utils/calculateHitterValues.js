@@ -210,16 +210,16 @@ const calculateHitterValues = (hittersArr, multiData) => {
     const hittersCalculated = hittersArr.map(h => {
         let result;
         if (h.real_team_id === 1) {
-            const partialTeams = hittersTeamsAndABPerTeam.filter(hp => hp.hitter === h.hitter_name);
+            const partialTeams = hittersTeamsAndABPerTeam.filter(hp => hp.hitter === h.name);
             result = mainCalculations(h, partialTeams);
         } else {
             result = mainCalculations(h);
         }
 
         return {
-            h_year: h.h_year,
+            year: h.year,
             real_team: h.real_team,
-            hitter_name: h.hitter_name,
+            name: h.name,
             bats: h.bats,
             injury: h.injury,
             ab: h.ab,

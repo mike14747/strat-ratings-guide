@@ -17,3 +17,5 @@ Figure out how to upload/process .xlsx files instead of .csv files.
 Convert the nav dropdown to my new type.
 
 ~~Change the "Copy Data" button to some sort of icon.~~
+
+Convert all h_year and p_year references to just "year". Also convert all hitter_name and pitcher_name references to just "name".

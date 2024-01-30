@@ -34,7 +34,7 @@ async function getData() {
         return;
     }
 
-    const seasonList = seasonListJSON.map(s => s.h_year);
+    const seasonList = seasonListJSON.map(s => s.year);
     document.getElementById('season-dropdown').innerHTML = '<season-dropdown-component></season-dropdown-component>';
 
     const latestSeason = Math.max(...seasonList);
@@ -73,9 +73,9 @@ async function getData() {
 
     const tableDataArr = dataJSON.map(player => (
         `<tr>
-            <td>${player.h_year}</td>
+            <td>${player.year}</td>
             <td class="text-left">${player.real_team}</td>
-            <td class="text-left">${player.hitter_name}</td>
+            <td class="text-left">${player.name}</td>
             <td>${player.bats}</td>
             <td>${player.injury}</td>
             <td>${player.ab}</td>
