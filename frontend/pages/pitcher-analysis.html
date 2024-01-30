@@ -13,6 +13,7 @@
     <script defer src="header.js"></script>
     <script defer src="footer.js"></script>
     <script defer src="pitcher-analysis.js"></script>
+    <script defer src="seasonDropdown.js"></script>
     <title>Strat Ratings Guide Analysis</title>
 </head>
 
@@ -22,8 +23,21 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <main class="page-container-analysis">
         <article>
-            <h1 id="page-heading" class="page-heading">View Pitcher Analysis</h1>
+            <div class="heading-analysis">
+                <h1 id="page-heading" class="page-heading">Pitcher Analysis</h1>
+
+                <div class="heading-right">
+                    <div id="copy-button-container"></div>
+                    <div id="season-dropdown"></div>
+                </div>
+            </div>
+
+            <div id="error-message"></div>
+
+            <div id="table-container"></div>
         </article>
+
+        <div id="error-message"></div>
     </main>
 
     <footer-component></footer-component>

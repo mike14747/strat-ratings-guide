@@ -1,8 +1,8 @@
 # Todos
 
-Get the pitcher analysis page working as the hitter analysis page is.
+~~Get the pitcher analysis page working as the hitter analysis page is.~~
 
-Add season list dropdowns to the ~~hitter~~ and pitcher analysis pages.
+Add season list dropdowns to the ~~hitter~~ and ~~pitcher~~ analysis pages. But, I need to figure out how to send data to the season list dropdown component.
 
 ~~Convert all colors in globals.css to css variables.~~
 
@@ -16,6 +16,4 @@ Figure out how to upload/process .xlsx files instead of .csv files.
 
 Convert the nav dropdown to my new type.
 
-Change the "Copy Data" button to some sort of icon.
-
-Figure out how to send data to the season list dropdown component.
+~~Change the "Copy Data" button to some sort of icon.~~
