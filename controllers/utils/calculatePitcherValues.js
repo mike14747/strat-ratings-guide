@@ -173,16 +173,16 @@ const calculatePitcherValues = (pitchersArr, multiData) => {
     const PitchersCalculated = pitchersArr.map(p => {
         let result;
         if (p.real_team_id === 1) {
-            const partialTeams = pitchersTeamsAndIPPerTeam.filter(pp => pp.pitcher === p.pitcher_name);
+            const partialTeams = pitchersTeamsAndIPPerTeam.filter(pp => pp.pitcher === p.name);
             result = mainCalculations(p, partialTeams);
         } else {
             result = mainCalculations(p);
         }
 
         return {
-            p_year: p.p_year,
+            year: p.year,
             real_team: p.real_team,
-            pitcher_name: p.pitcher_name,
+            name: p.name,
             throws: p.throws,
             ip: p.ip,
             so_v_l: p.so_v_l,

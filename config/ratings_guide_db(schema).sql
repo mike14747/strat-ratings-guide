@@ -7,28 +7,28 @@ set foreign_key_checks=0;
 -- --------------------------------------------------------
 
 CREATE TABLE `bp_ratings` (
-    `bp_rating_id` int unsigned NOT NULL AUTO_INCREMENT,
-    `bp_year` int NOT NULL,
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `year` int NOT NULL,
     `real_team_id` int unsigned NOT NULL,
-    FOREIGN KEY (`real_team_id`) REFERENCES `real_teams`(`real_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (`real_team_id`) REFERENCES `real_teams`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     `real_team_league` varchar(2) NOT NULL,
     `real_team_abbrev` varchar(10) NOT NULL,
     `st_si_l` int unsigned NOT NULL,
     `st_si_r` int unsigned NOT NULL,
     `st_hr_l` int unsigned NOT NULL,
     `st_hr_r` int unsigned NOT NULL,
-    PRIMARY KEY (`bp_rating_id`)
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
 
 CREATE TABLE `hitter_ratings` (
-    `hitter_id` int unsigned NOT NULL AUTO_INCREMENT,
-    `h_year` int NOT NULL,
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `year` int NOT NULL,
     `real_team` varchar(10) NOT NULL,
     `real_team_id` int unsigned DEFAULT NULL,
-    FOREIGN KEY (`real_team_id`) REFERENCES `real_teams`(`real_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    `hitter_name` varchar(30) NOT NULL,
+    FOREIGN KEY (`real_team_id`) REFERENCES `real_teams`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    `name` varchar(30) NOT NULL,
     `bats` varchar(1) NOT NULL,
     `injury` int unsigned DEFAULT NULL,
     `ab` int unsigned NOT NULL,
@@ -69,19 +69,19 @@ CREATE TABLE `hitter_ratings` (
     `d_rf` varchar(4) NOT NULL,
     `fielding` varchar(100) NOT NULL,
     `rml_team_id` int unsigned DEFAULT NULL,
-    FOREIGN KEY (`rml_team_id`) REFERENCES `rml_teams`(`rml_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    PRIMARY KEY (`hitter_id`)
+    FOREIGN KEY (`rml_team_id`) REFERENCES `rml_teams`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    PRIMARY KEY (`id`)
 ) AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
 
 CREATE TABLE `pitcher_ratings` (
-    `pitcher_id` int unsigned NOT NULL AUTO_INCREMENT,
-    `p_year` int NOT NULL,
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `year` int NOT NULL,
     `real_team` varchar(10) NOT NULL,
     `real_team_id` int unsigned DEFAULT NULL,
-    FOREIGN KEY (`real_team_id`) REFERENCES `real_teams`(`real_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    `pitcher_name` varchar(30) NOT NULL,
+    FOREIGN KEY (`real_team_id`) REFERENCES `real_teams`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    `name` varchar(30) NOT NULL,
     `throws` varchar(1) NOT NULL,
     `ip` int unsigned NOT NULL,
     `so_v_l` int unsigned NOT NULL,
@@ -111,8 +111,8 @@ CREATE TABLE `pitcher_ratings` (
     `stl` varchar(1) NOT NULL,
     `spd` int unsigned NOT NULL,
     `rml_team_id` int unsigned DEFAULT NULL,
-    FOREIGN KEY (`rml_team_id`) REFERENCES `rml_teams`(`rml_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    PRIMARY KEY (`pitcher_id`)
+    FOREIGN KEY (`rml_team_id`) REFERENCES `rml_teams`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    PRIMARY KEY (`id`)
 ) AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
@@ -120,7 +120,7 @@ CREATE TABLE `pitcher_ratings` (
 CREATE TABLE `multi_team_hitters` (
     `year` int unsigned NOT NULL,
     `real_team_id` int unsigned NOT NULL,
-    FOREIGN KEY (`real_team_id`) REFERENCES `real_teams`(`real_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (`real_team_id`) REFERENCES `real_teams`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     `hitter` varchar(30) NOT NULL,
     `bats` varchar(1) NOT NULL,
     `ab` int unsigned NOT NULL
@@ -131,7 +131,7 @@ CREATE TABLE `multi_team_hitters` (
 CREATE TABLE `multi_team_pitchers` (
     `year` int unsigned NOT NULL,
     `real_team_id` int unsigned NOT NULL,
-    FOREIGN KEY (`real_team_id`) REFERENCES `real_teams`(`real_team_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (`real_team_id`) REFERENCES `real_teams`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     `pitcher` varchar(30) NOT NULL,
     `throws` varchar(1) NOT NULL,
     `ip` decimal(5,2) NOT NULL
@@ -140,35 +140,36 @@ CREATE TABLE `multi_team_pitchers` (
 -- --------------------------------------------------------
 
 CREATE TABLE `real_teams` (
-    `real_team_id` int unsigned NOT NULL AUTO_INCREMENT,
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
     `real_team_city` varchar(20) NOT NULL,
     `real_team_name` varchar(20) NOT NULL,
     `real_team_abbrev` varchar(10) NOT NULL,
     `strat_abbrev` varchar(10) NOT NULL,
     `bbref_abbrev` varchar(10) NOT NULL,
     `real_team_league` varchar(2) NOT NULL,
-    PRIMARY KEY (`real_team_id`)
+    PRIMARY KEY (`id`)
 ) AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
 
 CREATE TABLE `rml_teams` (
-    `rml_team_id` int unsigned NOT NULL AUTO_INCREMENT,
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
     `rml_team_name` varchar(20) NOT NULL,
     `rml_team_abbrev` varchar(10) NOT NULL,
     `rml_team_league` varchar(2) NOT NULL,
-    PRIMARY KEY (`rml_team_id`)
+    PRIMARY KEY (`id`)
 ) AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
 
 CREATE TABLE `users` (
-    `user_id` int unsigned NOT NULL AUTO_INCREMENT,
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
     `username` varchar(20) NOT NULL,
-    `password` varchar(100) NOT NULL,
+    `password` varchar(255) NOT NULL,
+    `salt` varchar(100) NOT NULL,
     `email` varchar(100) NOT NULL,
     `admin` int unsigned DEFAULT 0,
-    PRIMARY KEY (`user_id`)
+    PRIMARY KEY (`id`)
 ) AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------

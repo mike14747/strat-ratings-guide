@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="data:,">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Strat Ratings Guide Analysis" />
+    <link rel="stylesheet" type="text/css" href="mg_base.css" />
+    <link rel="stylesheet" type="text/css" href="globals.css" />
+
+    <script defer src="header.js"></script>
+    <script defer src="footer.js"></script>
+    <script defer src="upload-hitter-data"></script>
+    <title>Strat Ratings Guide Analysis</title>
+</head>
+
+<body id="app-wrapper">
+    <header-component></header-component>
+
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <main class="page-container">
+        <article class="mw-90ch">
+            <h1 class="page-heading">Upload Hitter Data</h1>
+
+            <p>Keep these things in mind when trying to upload the Hitter Data:</p>
+            <ul>
+                <li>The only file allowed for upload is: <b>hitter_ratings.csv</b>.</li>
+                <li>The file must have the proper columns (ie: Year as the first column, INJ after HITTERS and RML Team at the end).</li>
+                <li>This process will truncate the hitter_ratings table and replace it with the data in the uploaded file.</li>
+            </ul>
+
+            <div class="my-4">
+                <div class="mb-2">
+                    <label for="file-input">Select file for upload:</label>
+                </div>
+                <input id="file-input" class="" type="file" onChange={selectFile} accept=".csv" />
+                <button class="ml-4" onClick={uploadFile}>
+                    Upload
+                </button>
+            </div>
+
+            <div id="error-message"></div>
+        </article>
+    </main>
+
+    <footer-component></footer-component>
+</body>
+
+</html>

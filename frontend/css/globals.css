@@ -1,0 +1,579 @@
+:root {
+    --theme-color-1: #8fbc8f;
+    --theme-color-2: #8cbed6;
+    --theme-color-3: #fdd5b1;
+}
+
+/*
+::selection {
+    background-color: var(--mg-dark);
+    color: var(--mg-light);
+}
+*/
+
+/* for semi-full height websites with next.js use #__next and with react use #root */
+/* in next.js version 13, I've been using #appWrapper inside the <body> tag... <body id="appWrapper"> */
+
+#__next,
+#root,
+#appWrapper {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* sometimes I make the following changes to the default <a> tags */
+
+/* a:visited {
+    color: var(--mg-blue);
+} */
+
+/* a:hover {
+    text-decoration: none;
+} */
+
+/* a:active {
+    text-decoration: none;
+} */
+
+/* the following is the animated underline effect... disabled by default */
+/* if you enable it, change the above "a:hover" and "a:active" to "text-decoration: none;" and use the ".relative" class in <a> tags */
+
+/*
+a[href]::after {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    height: 1px;
+    content: "";
+    background-color: transparent;
+    -webkit-transition: width 0.3s, left 0.3s, background-color 1s;
+    -o-transition: width 0.3s, left 0.3s, background-color 1s;
+    transition: width 0.3s, left 0.3s, background-color 1s;
+}
+
+a[href]:hover::after {
+    width: 100%;
+    left: 0;
+    background-color: var(--mg-orange-dark);
+    -webkit-transition: width 0.3s, left 0.3s, background-color 1s;
+    -o-transition: width 0.3s, left 0.3s, background-color 1s;
+    transition: width 0.3s, left 0.3s, background-color 1s;
+}
+
+a[href]:active::after {
+    background-color: var(--mg-orange-dark);
+    -webkit-transition: background-color 1s;
+    -o-transition: background-color 1s;
+    transition: background-color 1s;
+}
+*/
+
+/* you could alternatively only use the .link pseudo-elements on select links and not all of them by default by applying the .link class to just those links */
+
+/*
+.link {
+    position: relative;
+    padding-top: 0.25rem;
+    display: inline-block;
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+    color: var(--mg-blue);
+}
+
+.link::after {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    height: 1px;
+    content: '';
+    background-color: transparent;
+    -webkit-transition: width 0.3s, left 0.3s, background-color 1s;
+    -o-transition: width 0.3s, left 0.3s, background-color 1s;
+    transition: width 0.3s, left 0.3s, background-color 1s;
+}
+
+.link:hover {
+    color: var(--mg-orange-dark);
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+    text-decoration: none;
+}
+
+.link:hover::after {
+    width: 100%;
+    left: 0;
+    background-color: var(--mg-orange-dark);
+    -webkit-transition: width 0.3s, left 0.3s, background-color 1s;
+    -o-transition: width 0.3s, left 0.3s, background-color 1s;
+    transition: width 0.3s, left 0.3s, background-color 1s;
+}
+*/
+
+/* end link classes */
+
+/* this is the equivilant of my usual #__next, #root or #appWrapper in react or nextjs */
+/* It should be added to the <body> tag of each page */
+#app-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* use with the main <div> element in layout components or with the the outer wrapper in the page content element */
+/* in this app, this should be used on the <main> tag of each page */
+.page-container {
+    /* enable flex: 1; on the next 3 lines for full or semi-full height websites or comment them out to disable them */
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+
+    width: 100%;
+    min-width: var(--container-min-width);
+    max-width: var(--container-max-width);
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--mg-light);
+    padding: 1rem;
+}
+
+/* use with elements like <header>, <nav> and <footer> */
+.container {
+    width: 100%;
+    min-width: var(--container-min-width);
+    max-width: var(--container-max-width);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.container-fluid {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1.page-heading {
+    font-size: var(--step-3-base);
+    font-size: var(--step-3);
+    text-align: left;
+    border-bottom: 2px var(--mg-gray-2) solid;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+
+h1.page-heading {
+    font-size: var(--step-3-base);
+    font-size: var(--step-3);
+    text-align: left;
+    border-bottom: 2px var(--mg-gray-2) solid;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+
+.skip-to-main {
+    position: absolute;
+    left: 1rem;
+    background-color: var(--mg-light);
+    font-size: 1rem;
+    font-size: var(--step-0);
+    margin: 0;
+    padding: 0.5rem 1rem;
+    border-radius: 0 0 0.5rem 0.5rem;
+    transform: translateY(-120%);
+    transition: transform 0.3s ease-in;
+}
+
+.skip-to-main:focus {
+    transform: translateY(0);
+    outline: 2px var(--mg-gray-4) dotted;
+    outline-offset: 0rem;
+}
+
+#error-message,
+.error {
+    font-size: 1rem;
+    font-size: var(--step-0);
+    color: var(--mg-red);
+    text-align: center;
+}
+
+.error::before {
+    content: '\26D4';
+    padding-right: 0.5rem;
+}
+
+.error-container {
+    text-align: center;
+}
+
+.error-container > h1 {
+    margin: 2rem 0;
+    color: var(--mg-red);
+}
+
+.error-container > p:last-child {
+    margin-bottom: 2rem;
+}
+
+.success {
+    font-size: 1rem;
+    font-size: var(--step-0);
+    color: var(--mg-green);
+    text-align: center;
+    max-width: 60ch;
+    margin: 0 auto;
+}
+
+.success-large {
+    font-size: 1.2rem;
+    font-size: var(--step-1);
+    color: var(--mg-green);
+    text-align: center;
+    max-width: 60ch;
+    margin: 0 auto;
+}
+
+/* add site specific code here */
+
+.page-container-analysis {
+    /* enable flex: 1; on the next 3 lines for full or semi-full height websites or comment them out to disable them */
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    max-width: 100%;
+    min-width: var(--container-min-width);
+    /* max-width: var(--container-max-width); */
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--mg-light);
+    padding: 1rem;
+}
+
+.p-1 {
+    margin: 0.25rem;
+}
+
+.heading-analysis {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px var(--mg-gray-2) solid;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+
+.heading-analysis > h1 {
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+/* end table styles */
+
+.table {
+    /* display: block;
+    overflow-x: auto; */
+    white-space: nowrap;
+    border: 1px solid var(--mg-gray-6);
+    border-collapse: collapse;
+    margin: 1rem 0 1rem 0;
+}
+
+.table tbody tr:nth-of-type(odd) {
+    background-color: var(--mg-gray-1);
+}
+
+.table tbody tr:hover {
+    color: var(--mg-dark);
+    background-color: var(--mg-gray-2);
+}
+
+.table th,
+.table td {
+    text-align: center;
+    padding: 0.25rem;
+}
+
+.table td.text-left {
+    text-align: left;
+}
+
+.table td {
+    border: 1px solid var(--mg-gray-5);
+}
+
+.table th {
+    background-color: var(--mg-orange-soft);
+    position: sticky;
+    overflow: hidden;
+    top: 0;
+    border: 1px solid var(--mg-gray-5);
+    border-bottom: 2px solid var(--mg-gray-6);
+}
+
+/* end table styles */
+
+/* start web component css */
+
+.header {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    width: 100%;
+    background-color: var(--mg-gray-2);
+    border-bottom: 2px var(--mg-gray-4) solid;
+    text-align: left;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.header-left {
+    display: flex;
+    align-items: stretch;
+    justify-content: start;
+}
+
+.heading-right {
+    display: flex;
+}
+
+.heading-text {
+    font-size: var(--step-3-base);
+    font-size: var(--step-3);
+}
+
+.footer {
+    width: 100%;
+    background-color: var(--mg-gray-2);
+    border-top: 2px var(--mg-gray-4) solid;
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+.navdropbtn {
+    background-color: var(--mg-gray-1);
+    color: var(--mg-blue);
+    padding: 1rem 0.5rem;
+    margin: 0;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: center;
+    /* text-transform: uppercase; */
+}
+
+.navdropbtn:hover {
+    background-color: var(--mg-yellow-pale);
+    color: var(--mg-red);
+}
+
+.navdropdown {
+    margin: 0;
+    position: relative;
+    display: inline-block;
+    min-width: 150px;
+}
+
+.navdropdown-content {
+    position: absolute;
+    right: 0;
+    text-align: left;
+    display: none;
+    background-color: var(--mg-gray-1);
+    min-width: 250px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    margin: 0 0 0 -50px;
+}
+
+.navdropdown-content a {
+    color: var(--mg-red);
+    padding: 1rem 0.5rem;
+    text-decoration: none;
+    display: block;
+}
+
+.navdropdown-content a:hover {
+    background-color: var(--mg-gray-2);
+    color: var(--mg-blue);
+    text-decoration: none;
+}
+
+.navdropdown:hover .navdropdown-content {
+    display: block;
+}
+
+.navdropdown:hover .navdropbtn {
+    background-color: var(--mg-yellow-pale);
+    color: var(--mg-red);
+}
+
+.item {
+    border-top: 1px var(--mg-gray-3) solid;
+    border-right: 1px var(--mg-gray-3) solid;
+    border-left: 1px var(--mg-gray-3) solid;
+}
+
+.arrow {
+    border: solid var(--mg-gray-6);
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 3px;
+    margin-left: 0.5rem;
+}
+
+.down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+}
+
+/* end web component css */
+
+/* start button styles */
+
+button.btn {
+    font-size: clamp(0.83rem, 0.78rem + 0.19vw, 1rem);
+    padding: 0.25rem 0.5rem;
+    color: var(--mg-dark);
+    background-color: var(--mg-gray-1);
+    cursor: pointer;
+    border: 1;
+    border-radius: 0.1rem;
+    transition: 0.3s;
+}
+
+button.btn:hover {
+    box-shadow: 0 0 0 1px #ffffff, 0 0 0 2px var(--mg-dark), 3px 3px 6px 2px var(--mg-gray-5);
+    background-image: var(--bg-img-darken);
+}
+
+button.btn:focus {
+    outline: 1px var(--mg-gray-4) dashed;
+    outline-offset: 0.5rem;
+}
+
+button.btn-copy {
+    padding: 0.50rem 0.75rem;
+    background-color: var(--mg-light);
+    cursor: pointer;
+    border: 1px solid var(--mg-gray-4);
+    box-shadow: 0;
+    border-radius: 0.25rem;
+    transition: 0.2s;
+}
+
+button.btn-copy:hover {
+    border-color: var(--mg-gray-3);
+    box-shadow: 0 0 0 1px #ffffff, 0 0 0 2px var(--mg-gray-5), 3px 3px 6px 2px var(--mg-gray-5);
+    background-image: var(--bg-img-darken);
+}
+
+button.btn-copy:focus {
+    outline: 1px var(--mg-gray-4) dashed;
+    outline-offset: 0.5rem;
+}
+
+#copy-button-container {
+    margin: auto 0;
+}
+
+/* end button styles */
+
+/* start season dropdown styles */
+
+.dropbtn {
+    font-size: var(--step-0-base);
+    font-size: var(--step-0);
+    background-color: var(--mg-gray-1);
+    color: var(--mg-blue);
+    padding: 0.5rem 0.75rem;
+    margin: 0 0 0.2rem 0;
+    border: none;
+    cursor: pointer;
+}
+
+.dropbtn:hover {
+    background-color: var(--mg-yellow-pale);
+    color: var(--mg-red);
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    margin-left: 2rem;
+    text-align: center;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: var(--mg-gray-1);
+    min-width: 150px;
+    box-shadow: 0px 8px 16px 0px var(--mg-gray-2);
+    z-index: 1;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.dropdown-content li {
+    color: var(--mg-red);
+    padding: 1rem 0.75rem;
+    display: block;
+    border: 1px solid var(--mg-gray-3);
+}
+
+.dropdown-content li:last-of-type {
+    border-bottom: 0;
+}
+
+.dropdown-content li:hover {
+    background-color: var(--mg-gray-2);
+    color: var(--mg-blue);
+}
+
+.dropdown-content a {
+    text-decoration: none;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: var(--mg-yellow-pale);
+    color: var(--mg-red);
+}
+
+.viewing {
+    cursor: default;
+    color: var(--mg-gray-4) !important;
+}
+
+.viewing:hover {
+    background-color: var(--mg-yellow-pale) !important;
+}
+
+i {
+    border: solid var(--mg-gray-6);
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 3px;
+    margin: 0 0 3px 4px;
+}
+
+.down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+}
+
+/* start season dropdown styles */
