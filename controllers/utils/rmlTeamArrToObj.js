@@ -2,7 +2,7 @@ function convertArrToObj(arr) {
     const obj = {};
 
     arr.forEach((elem, i) => {
-        obj[elem.rml_team_name] = elem.rml_team_id;
+        obj[elem.rml_team_name] = elem.id;
     });
 
     return obj;

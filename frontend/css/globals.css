@@ -276,7 +276,11 @@ h1.page-heading {
     margin: 0;
 }
 
-/* end table styles */
+.form-upload {
+    margin-bottom: 2rem;
+}
+
+/* start table styles */
 
 .table {
     /* display: block;
