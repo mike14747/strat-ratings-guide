@@ -13,7 +13,7 @@
     <script defer src="header.js"></script>
     <script defer src="footer.js"></script>
     <script defer src="upload-multi-team-pitcher-data.js"></script>
-    <title>Strat Ratings Guide Analysis</title>
+    <title>Upload Multi-Team Pitcher Data</title>
 </head>
 
 <body id="app-wrapper">
@@ -23,6 +23,25 @@
     <main class="page-container">
         <article class="mw-90ch">
             <h1 class="page-heading">Upload Multi-Team Pitcher Data</h1>
+
+            <p>Keep these things in mind when trying to upload the Multi-Team Pitcher Data:</p>
+            <ul>
+                <li>This is the upload page for <b>multi-team pitchers only.</b></li>
+                <li>The only file allowed for upload is: <b><span id="filename"></span></b>.</li>
+                <li>The file must have the proper columns (eg: Year, Name, Throws, Tm, IP).</li>
+                <li>This process will truncate the multi_team_pitchers table and replace it with the data in the uploaded
+                    file.</li>
+            </ul>
+
+            <form id="file-upload-form" class="form-upload">
+                <label for="file-input">Select file for upload:</label>
+                <input id="file-input" type="file" accept=".csv" />
+                <button type="submit">
+                    Upload
+                </button>
+            </form>
+
+            <div id="message"></div>
         </article>
     </main>
 

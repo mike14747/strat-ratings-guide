@@ -6,7 +6,7 @@ const processMultiTeamPitchersInsertData = (csvData, realTeams) => {
     return csvData.map(row => {
         const foundTeam = realTeams.find(team => team.bbref_abbrev === row.Tm);
         if (!foundTeam) throw new RangeError(`No match found for the bbref abbreviation (${row.Tm}) in the csv file!`);
-        const { real_team_id: realTeamId } = foundTeam;
+        const { id: realTeamId } = foundTeam;
 
         const pitcherObj = {
             year: row.Year,

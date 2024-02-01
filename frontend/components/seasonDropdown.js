@@ -1,16 +1,41 @@
 class SeasonDropdownComponent extends HTMLElement {
     constructor() {
         super();
+        this._data = {};
+    }
+
+    static get observedAttributes() {
+        return ['data'];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === 'data' && oldValue !== newValue) {
+            this._data = JSON.parse(newValue);
+            this._listItems = this._data.seasonList.map(season => {
+                if (season === parseInt(this._data.selectedSeason)) {
+                    return `<li class="viewing">${season}</li>`;
+                } else {
+                    return `<a href="/${this._data.type}-analysis?season=${season}"><li>${season}</li></a>`;
+                }
+            }).join('');
+            this.render();
+        }
+    }
+
+    get data() {
+        return this._data;
+    }
+
+    set data(value) {
+        this.setAttribute('data', JSON.stringify(value));
+    }
+
+    render() {
         this.innerHTML = `
         <div class="dropdown">
             <button class="dropbtn">Season<i class="down"></i></button>
             <ul class="dropdown-content">
-                <a href="/hitter-analysis?season=2023"><li>2023</li></a>
-                <a href="/hitter-analysis?season=2022"><li>2022</li></a>
-                <a href="/hitter-analysis?season=2021"><li>2021</li></a>
-                <a href="/hitter-analysis?season=2020"><li>2020</li></a>
-                <a href="/hitter-analysis?season=2019"><li>2019</li></a>
-                <a href="/hitter-analysis?season=2018"><li>2018</li></a>
+                ${this._listItems}
             </ul>
         </div>
         `;

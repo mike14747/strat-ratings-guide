@@ -79,6 +79,8 @@ router.post('/multi-team', fileUpload(), async (req, res, next) => {
         });
 
         const [realTeams] = await RealTeam.getAllRealTeams();
+
+        console.log({ realTeams });
         const csvData = await processMultiTeamHittersCSV();
         await multiTeamHittersSchema.validateAsync(csvData);
         const processedMultiTeamHitters = processMultiTeamHittersInsertData(csvData, realTeams);

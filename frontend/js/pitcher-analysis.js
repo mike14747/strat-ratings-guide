@@ -27,7 +27,7 @@ function tableToText(tableRows) {
 
 async function getData() {
     const url = '/api/pitchers/season-list';
-    const seasonListJSON = await fetch(url).then((res) => res.json().catch((error) => console.log(error)));
+    const seasonListJSON = await fetch(url).then((res) => res.json().catch((error) => console.error(error)));
 
     if (!seasonListJSON) {
         displayError();
@@ -35,7 +35,6 @@ async function getData() {
     }
 
     const seasonList = seasonListJSON.map(s => s.year);
-    document.getElementById('season-dropdown').innerHTML = '<season-dropdown-component></season-dropdown-component>';
 
     const latestSeason = Math.max(...seasonList);
 
@@ -49,8 +48,21 @@ async function getData() {
 
     document.getElementById('page-heading').innerHTML = `Pitcher Analysis (${selectedSeason})`;
 
+    // start season-dropdown properties
+    document.getElementById('season-dropdown').innerHTML = '<season-dropdown-component id="seasonDropdown"></season-dropdown-component>';
+
+    const data = {
+        type: 'pitcher',
+        seasonList,
+        selectedSeason,
+    };
+
+    const seasonDropdown = document.getElementById('seasonDropdown');
+    seasonDropdown.data = data;
+    // end season-dropdown properties
+
     const url2 = `/api/pitchers/${parseInt(selectedSeason)}`;
-    const dataJSON = await fetch(url2).then((res) => res.json().catch((error) => console.log(error)));
+    const dataJSON = await fetch(url2).then((res) => res.json().catch((error) => console.error(error)));
 
     if (!dataJSON) {
         displayError();
