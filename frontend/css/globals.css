@@ -547,6 +547,11 @@ button.btn-copy:focus {
     cursor: pointer;
 }
 
+.dropdown-content-nav {
+    text-align: left;
+    min-width: 300px;
+}
+
 .dropdown-content li {
     color: var(--mg-red);
     padding: 1rem 0.75rem;

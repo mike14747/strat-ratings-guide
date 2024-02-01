@@ -14,7 +14,7 @@ Figure out how to upload/process .xlsx files instead of .csv files.
 
 ~~Remove bcryptjs and implement node functions instead.~~
 
-Convert the nav dropdown to my new type.
+~~Convert the nav dropdown to the same as the season dropdown.~~
 
 ~~Change the "Copy Data" button to some sort of icon.~~
 
