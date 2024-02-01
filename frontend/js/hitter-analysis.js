@@ -52,6 +52,8 @@ async function getData() {
     const url2 = `/api/hitters/${parseInt(selectedSeason)}`;
     const dataJSON = await fetch(url2).then((res) => res.json().catch((error) => console.log(error)));
 
+    console.log(dataJSON);
+
     if (!dataJSON) {
         displayError();
         return;

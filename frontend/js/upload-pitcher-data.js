@@ -1,5 +1,7 @@
 const UPLOAD_FILENAME = 'pitcher_ratings.csv';
 
+document.getElementById('filename').textContent = UPLOAD_FILENAME;
+
 async function handleFormSubmit(event) {
     event.preventDefault();
 
@@ -40,7 +42,7 @@ async function handleFormSubmit(event) {
         messageElemenet.className = 'error';
     }
 
-    messageElemenet.textContent = dataJSON?.message || 'An unknown error occurred.';
+    messageElemenet.textContent = dataJSON?.message || 'An error occurred.';
 
     document.getElementById('file-upload-form').reset();
 }

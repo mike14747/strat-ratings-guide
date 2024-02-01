@@ -2,14 +2,14 @@ const pool = require('../config/connectionPool.js').getDb();
 
 const Hitters = {
     getHittersDataByYear: async (year) => {
-        const queryString = 'SELECT h.*, b.st_si_l, b.st_si_r, b.st_hr_l, b.st_hr_r, r.rml_team_name FROM hitter_ratings AS h LEFT JOIN bp_ratings AS b ON h.year=b.year && h.real_team_id=b.real_team_id LEFT JOIN rml_teams AS r ON h.rml_team_id=r.rml_team_id WHERE h.year=? ORDER BY h.name ASC, h.real_team ASC;';
+        const queryString = 'SELECT h.*, b.st_si_l, b.st_si_r, b.st_hr_l, b.st_hr_r, r.rml_team_name FROM hitter_ratings AS h LEFT JOIN bp_ratings AS b ON h.year=b.year && h.real_team_id=b.real_team_id LEFT JOIN rml_teams AS r ON h.rml_team_id=r.id WHERE h.year=? ORDER BY h.name ASC, h.real_team ASC;';
         const queryParams = [year];
         return await pool.query(queryString, queryParams)
             .then(([rows]) => [rows, null])
             .catch(error => [null, error]);
     },
     getMultiTeamHittersPartialByYear: async (year) => {
-        const queryString = 'SELECT m.real_team_id, m.hitter, m.ab, b.st_si_l, b.st_si_r, b.st_hr_l, b.st_hr_r FROM multi_team_hitters AS m LEFT JOIN bp_ratings AS b ON m.year=b.year && m.real_team_id=b.real_team_id WHERE year=?;';
+        const queryString = 'SELECT m.real_team_id, m.hitter, m.ab, b.st_si_l, b.st_si_r, b.st_hr_l, b.st_hr_r FROM multi_team_hitters AS m LEFT JOIN bp_ratings AS b ON m.year=b.year && m.real_team_id=b.real_team_id WHERE m.year=?;';
         const queryParams = [year];
         return await pool.query(queryString, queryParams)
             .then(([rows]) => [rows, null])

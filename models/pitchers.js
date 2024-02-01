@@ -2,14 +2,14 @@ const pool = require('../config/connectionPool.js').getDb();
 
 const Pitchers = {
     getPitchersDataByYear: async (year) => {
-        const queryString = 'SELECT p.*, b.st_si_l, b.st_si_r, b.st_hr_l, b.st_hr_r, r.rml_team_name FROM pitcher_ratings AS p LEFT JOIN bp_ratings AS b ON p.year=b.year && p.real_team_id=b.real_team_id LEFT JOIN rml_teams AS r ON p.rml_team_id=r.rml_team_id WHERE p.year=? ORDER BY name ASC, p.real_team ASC, p.name ASC;';
+        const queryString = 'SELECT p.*, b.st_si_l, b.st_si_r, b.st_hr_l, b.st_hr_r, r.rml_team_name FROM pitcher_ratings AS p LEFT JOIN bp_ratings AS b ON p.year=b.year && p.real_team_id=b.real_team_id LEFT JOIN rml_teams AS r ON p.rml_team_id=r.id WHERE p.year=? ORDER BY name ASC, p.real_team ASC, p.name ASC;';
         const queryParams = [year];
         return await pool.query(queryString, queryParams)
             .then(([rows]) => [rows, null])
             .catch(error => [null, error]);
     },
     getMultiTeamPitchersPartialByYear: async (year) => {
-        const queryString = 'SELECT m.real_team_id, m.pitcher, m.ip, b.st_si_l, b.st_si_r, b.st_hr_l, b.st_hr_r FROM multi_team_pitchers AS m LEFT JOIN bp_ratings AS b ON m.year=b.year && m.real_team_id=b.real_team_id WHERE year=?;';
+        const queryString = 'SELECT m.real_team_id, m.pitcher, m.ip, b.st_si_l, b.st_si_r, b.st_hr_l, b.st_hr_r FROM multi_team_pitchers AS m LEFT JOIN bp_ratings AS b ON m.year=b.year && m.real_team_id=b.real_team_id WHERE m.year=?;';
         const queryParams = [year];
         return await pool.query(queryString, queryParams)
             .then(([rows]) => [rows, null])
@@ -45,7 +45,7 @@ const Pitchers = {
         }
     },
     getPitchersDataByYearAndId: async (year, id) => {
-        const queryString = 'SELECT p.*, b.st_si_l, b.st_si_r, b.st_hr_l, b.st_hr_r, r.rml_team_name FROM pitcher_ratings AS p LEFT JOIN bp_ratings AS b ON p.year=b.year && p.real_team_id=b.real_team_id LEFT JOIN rml_teams AS r ON p.rml_team_id=r.rml_team_id WHERE p.year=? && p.pitcher_id=? ORDER BY name ASC, p.real_team ASC, p.name ASC;';
+        const queryString = 'SELECT p.*, b.st_si_l, b.st_si_r, b.st_hr_l, b.st_hr_r, r.rml_team_name FROM pitcher_ratings AS p LEFT JOIN bp_ratings AS b ON p.year=b.year && p.real_team_id=b.real_team_id LEFT JOIN rml_teams AS r ON p.rml_team_id=r.id WHERE p.year=? && p.pitcher_id=? ORDER BY name ASC, p.real_team ASC, p.name ASC;';
         const queryParams = [year, id];
         return await pool.query(queryString, queryParams)
             .then(([rows]) => [rows, null])

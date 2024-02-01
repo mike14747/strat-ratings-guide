@@ -13,7 +13,7 @@
     <script defer src="header.js"></script>
     <script defer src="footer.js"></script>
     <script defer src="upload-hitter-data.js"></script>
-    <title>Strat Ratings Guide Analysis</title>
+    <title>Upload Hitter Data</title>
 </head>
 
 <body id="app-wrapper">
@@ -26,7 +26,7 @@
 
             <p>Keep these things in mind when trying to upload the Hitter Data:</p>
             <ul>
-                <li>The only file allowed for upload is: <b>hitter_ratings.csv</b>.</li>
+                <li>The only file allowed for upload is: <b><span id="filename"></span></b>.</li>
                 <li>The file must have the proper columns (ie: Year as the first column, INJ after HITTERS and RML Team
                     at the end).</li>
                 <li>This process will truncate the hitter_ratings table and replace it with the data in the uploaded
@@ -36,7 +36,7 @@
             <form id="file-upload-form" class="form-upload">
                 <label for="file-input">Select file for upload:</label>
                 <input id="file-input" type="file" accept=".csv" />
-                <button class="ml-4" type="submit">
+                <button type="submit">
                     Upload
                 </button>
             </form>

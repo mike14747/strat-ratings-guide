@@ -276,9 +276,27 @@ h1.page-heading {
     margin: 0;
 }
 
+/* start form styles */
+
 .form-upload {
     margin-bottom: 2rem;
 }
+
+.form-upload > label,
+.form-upload > input {
+    display: block;
+}
+
+.form-upload > label {
+    color: var(--mg-blue);
+    margin-top: 3rem;
+}
+
+.form-upload > input {
+    margin-bottom: 2rem;
+}
+
+/* end form styles */
 
 /* start table styles */
 
