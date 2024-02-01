@@ -10,6 +10,9 @@
 
 Figure out how to upload/process .xlsx files instead of .csv files.
 
+    -   xlsx
+    -   exceljs
+
 ~~Style the buttons.~~
 
 ~~Remove bcryptjs and implement node functions instead.~~
