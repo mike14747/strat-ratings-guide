@@ -1,5 +1,5 @@
+/* eslint-disable no-unreachable */
 const ExcelJS = require('exceljs');
-const parse = require('csv-parse');
 const fs = require('fs');
 const path = require('path');
 const cardedPlayers = require('./cardedPlayers');
@@ -35,14 +35,14 @@ const convertBpToBpWAndBpSi = (bp) => {
     };
 };
 
-const processHittersInsertData = (csvData, realTeams, rmlTeams) => {
-    return csvData.map(row => {
+const processHittersInsertData = (xlsxData, realTeams, rmlTeams) => {
+    return xlsxData.map(row => {
         const { hitterName, bats } = convertNameToNameAndBats(row.HITTERS);
         const { bp: bpVsL, w: wVsL, bpsi: bpSiVsL } = convertBpToBpWAndBpSi(row.BP_v_lhp);
         const { bp: bpVsR, w: wVsR, bpsi: bpSiVsR } = convertBpToBpWAndBpSi(row.BP_v_rhp);
 
         const foundTeam = realTeams.find(team => team.strat_abbrev === row.TM);
-        if (!foundTeam) throw new RangeError(`No match found for the strat abbreviation (${row.TM}) in the csv file!`);
+        if (!foundTeam) throw new RangeError(`No match found for the strat abbreviation (${row.TM}) in the .xlsx file!`);
         const { real_team_abbrev: realTeam, id: realTeamId } = foundTeam;
 
         const hitterObj = {
@@ -96,54 +96,31 @@ const processHittersInsertData = (csvData, realTeams, rmlTeams) => {
     });
 };
 
-const processHittersCSV = () => {
-    const csvData = [];
-    return new Promise((resolve, reject) => {
-        fs.createReadStream(path.join(__dirname, '../uploads/hitter_ratings.csv'))
-            .pipe(
-                parse({
-                    delimiter: ',',
-                    columns: true,
-                    // from_line: 1,
-                    // to_line: 2,
-                    trim: true,
-                    // cast: true,
-                    cast: function (value, { header, index }) {
-                        const castInts = [0, 5, 6, 7, 13, 14, 15, 16, 22, 23, 26];
-                        const castFloats = [8, 9, 10, 11, 17, 18, 19, 20];
-                        const possibleNull = [2, 4, 38];
-                        if (header) {
-                            return value;
-                        } else {
-                            if (castInts.includes(index)) {
-                                return parseInt(value);
-                            } else if (castFloats.includes(index)) {
-                                return parseFloat(value);
-                            } else if (possibleNull.includes(index)) {
-                                return value ? parseInt(value) : null;
-                            } else {
-                                return value;
-                            }
-                        }
-                    },
-                    skip_empty_lines: true,
-                }),
-            )
-            .on('data', row => csvData.push(row))
-            .on('error', error => reject(error))
-            .on('end', async function () {
-                try {
-                    await fs.promises.unlink(path.join(__dirname, '../uploads/hitter_ratings.csv'));
-                    resolve(csvData);
-                } catch (error) {
-                    console.log(error);
-                    reject(error);
-                }
-            });
+const processHittersXLSX = async () => {
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(path.join(__dirname, '../uploads/hitter_ratings.xlsx'));
+
+    const xlsxData = [];
+
+    const worksheet = workbook.getWorksheet(1);
+    const headingRow = [];
+    worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) {
+            row.eachCell(cell => headingRow.push(cell.value));
+        }
+        // const rowArray = [];
+        // row.eachCell(cell => rowArray.push(cell.value));
+        // xlsxData.push(rowArray);
     });
+
+    console.log(headingRow);
+
+    // console.log(xlsxData);
+
+    await fs.promises.unlink(path.join(__dirname, '../uploads/hitter_ratings.xlsx'));
 };
 
 module.exports = {
-    processHittersCSV,
+    processHittersXLSX,
     processHittersInsertData,
 };

@@ -2,7 +2,8 @@ const router = require('express').Router();
 const Hitters = require('../models/hitters');
 const RealTeam = require('../models/realTeam');
 const RmlTeam = require('../models/rmlTeam');
-const { processHittersCSV, processHittersInsertData } = require('./utils/processHittersCSV');
+// const { processHittersCSV, processHittersInsertData } = require('./utils/processHittersCSV');
+const { processHittersXLSX, processHittersInsertData } = require('./utils/processHittersXLSX');
 const { processMultiTeamHittersCSV, processMultiTeamHittersInsertData } = require('./utils/processMultiTeamHittersCSV');
 const calculateHitterValues = require('./utils/calculateHitterValues');
 const ensureUploadsExists = require('./utils/ensureUploadsExists');
@@ -44,25 +45,51 @@ router.get('/:year', async (req, res, next) => {
     }
 });
 
+// router.post('/', fileUpload(), async (req, res, next) => {
+//     try {
+//         if (req.files === null) return res.status(400).json({ message: 'No file was uploaded!' });
+//         const file = req.files.file;
+
+//         await ensureUploadsExists();
+//         await file.mv(path.join(__dirname, '/uploads/hitter_ratings.csv'), error => {
+//             if (error) return next(error);
+//         });
+
+//         const [realTeams] = await RealTeam.getAllRealTeams();
+//         const [rmlTeamsArr] = await RmlTeam.getAllRmlTeams();
+//         const rmlTeams = convertArrToObj(rmlTeamsArr);
+//         const csvData = await processHittersCSV();
+//         await hittersSchema.validateAsync(csvData);
+//         const processedHitters = processHittersInsertData(csvData, realTeams, rmlTeams);
+
+//         const [data, error] = await Hitters.addNewHittersData(processedHitters);
+//         data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);
+//     } catch (error) {
+//         next(error);
+//     }
+// });
+
 router.post('/', fileUpload(), async (req, res, next) => {
     try {
         if (req.files === null) return res.status(400).json({ message: 'No file was uploaded!' });
         const file = req.files.file;
 
         await ensureUploadsExists();
-        await file.mv(path.join(__dirname, '/uploads/hitter_ratings.csv'), error => {
+        await file.mv(path.join(__dirname, '/uploads/hitter_ratings.xlsx'), error => {
             if (error) return next(error);
         });
 
         const [realTeams] = await RealTeam.getAllRealTeams();
         const [rmlTeamsArr] = await RmlTeam.getAllRmlTeams();
         const rmlTeams = convertArrToObj(rmlTeamsArr);
-        const csvData = await processHittersCSV();
-        await hittersSchema.validateAsync(csvData);
-        const processedHitters = processHittersInsertData(csvData, realTeams, rmlTeams);
+        const xlsxData = await processHittersXLSX();
+        // await hittersSchema.validateAsync(xlsxData);
+        // const processedHitters = processHittersInsertData(xlsxData, realTeams, rmlTeams);
 
-        const [data, error] = await Hitters.addNewHittersData(processedHitters);
-        data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);
+        // const [data, error] = await Hitters.addNewHittersData(processedHitters);
+        // data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);
+
+        return res.status(400).json({ message: 'This was for testing!' });
     } catch (error) {
         next(error);
     }
