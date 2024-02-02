@@ -103,7 +103,7 @@ Those files will include the following sheets:
 
 > **UPDATE**: On January 8, 2024 I finished a new route and function to generate the above multi-team hitter AB/IP (respectively) on their individual teams.
 > 
-> To use this route/function, you'll first need to update the data objects in **/controllers/utils/convertMultiTeamHittersToCsv.js** and **/controllers/utils/convertMultiTeamPitchersToCsv.js** using the current season's data from the **Original_with_Ind_Teams** and **Carded** sheets of **Hitter_Stats_202x.xlsx** and **Pitcher_Stats_202x.xlsx**.
+> To use this route/function, you'll first need to update the data objects in **/controllers/utils/convertMultiTeamHittersToXLSX.js** and **/controllers/utils/convertMultiTeamPitchersToXLSX.js** using the current season's data from the **Original_with_Ind_Teams** and **Carded** sheets of **Hitter_Stats_202x.xlsx** and **Pitcher_Stats_202x.xlsx**.
 > 
 > After that, you can run the server-only **npm run server**, then access these routes: **http://localhost:3001/api/hitters/create-multi-team-csv** and **http://localhost:3001/api/pitchers/create-multi-team-csv** using Postman to get the generated csv data for each.
 > 
@@ -135,7 +135,7 @@ The final data needs to have these columns (and a row for each team played for):
     -   '#' after their name means S
     -   neither of the above after their name means R
 
-Once the data is in the proper format and gets added to: **/data/multi_team_hitters.xlsx**, save the file, then save it as: **/data/hitter_ratings.csv** because the upload only supports csv files.
+Once the data is in the proper format and gets added to: **/data/multi_team_hitters.xlsx**. **UPDATE**: as of 2024-02-02, it's no longer necessary to then save the file as .csv. The new parser now works with .xlsx files.
 
 Now the whole file can get uploaded from the **Upload Multi-Team Hitter Data** page. This process will truncate the current **multi_team_hitters** table in the database and replace it with the new file's data.
 
@@ -165,9 +165,18 @@ The final data needs to have these columns (and a row for each team played for):
     -   '#' after their name means S
     -   neither of the above after their name means R
 
-Once the data is in the proper format and gets added to: **/data/multi_team_pitchers.xlsx**, save the file, then save it as: **/data/pitcher_ratings.csv**.
+Once the data is in the proper format and gets added to: **/data/multi_team_pitchers.xlsx**. **UPDATE**: as of 2024-02-02, it's no longer necessary to then save the file as .csv. The new parser now works with .xlsx files.
 
 Now the whole file can get uploaded from the **Upload Multi-Team Pitcher Data** page. This process will truncate the current **multi_team_pitchers** table in the database and replace it with the new file's data.
+
+### File upload sheet names
+
+For all the following files that will be uploading data, make sure to name the single sheet in these files the same as the file name minus the extension.
+
+-   /data/hitter_ratings.xlsx --> sheet name: hitter_ratings
+-   /data/pitcher_ratings.xlsx --> sheet name: pitcher_ratings
+-   /data/multi_team_hitters.xlsx --> sheet name: multi_team_hitters
+-   /data/multi_team_pitchers.xlsx --> sheet name: multi_team_pitchers
 
 ---
 
@@ -212,9 +221,9 @@ Now the whole file can get uploaded from the **Upload Multi-Team Pitcher Data** 
 -   Add an **rml_team_id** column to the end of each file.
 -   The **INJ** column might have to get moved to its correct place (immediately after the **HITTERS** column).
 -   Delete the **W** column (starting with the 2022 season). This is actual real life walks and is not needed.
--   Make sure each multi-team hitter is listed in the regular **/data/hitter_ratings.csv** file as being on team **TOT**.
+-   Make sure each multi-team hitter is listed in the regular **/data/hitter_ratings.xlsx** file as being on team **TOT**.
 
-Column names for the **Hitters.xls**, **hitter_ratings.xlsx** and especially **hitter_ratings.csv** files must use these exact column names (with no spaces and none of them beginning with a number) because of the csv parser that's being used:
+Column names for the **/data/hitter_ratings.xlsx** file must use these exact column names (with no spaces and none of them beginning with a number) because of the parser that's being used:
 
 -   Year, TM, Location, HITTERS, INJ, AB, SO_v_lhp, BB_v_lhp, HIT_v_lhp, OB_v_lhp, TB_v_lhp, HR_v_lhp, BP_v_lhp, CL_v_lhp, DP_v_lhp, SO_v_rhp, BB_v_rhp, HIT_v_rhp, OB_v_rhp, TB_v_rhp, HR_v_rhp, BP_v_rhp, CL_v_rhp, DP_v_rhp, STEALING, STL, SPD, B, H, d_CA, d_1B, d_2B, d_3B, d_SS, d_LF, d_CF, d_RF, FIELDING, rml_team_id
 
@@ -237,9 +246,9 @@ Column names for the **Hitters.xls**, **hitter_ratings.xlsx** and especially **h
 -   Insert a **Year** column to the beginning of each file (the MLB year).
 -   Add an **rml_team_id** column to the end of each file.
 -   To fix an issue where Excel formats the **FIELD** column as dates once the file is closed, add an apostrophe as a prefix to each pitcher's fielding rating... **eg**: **'3e21**. The apostrophe will be removed as the data is getting uploaded and it will keep Excel from formatting the column as dates.
--   Make sure each multi-team pitcher is listed in the regular **/data/pitcher_ratings.csv** file as being on team **TOT**.
+-   Make sure each multi-team pitcher is listed in the regular **/data/pitcher_ratings.xlsx** file as being on team **TOT**.
 
-Column names for the **Pitchers.xls**, **data/pitcher_ratings.xlsx** and especially **pitcher_ratings.csv** files must use these exact column names (with no spaces and none of them beginning with a number) because of the csv parser that's being used:
+Column names for the **/data/pitcher_ratings.xlsx** file must use these exact column names (with no spaces and none of them beginning with a number) because of the parser that's being used:
 
 -   Year, TM, Location, PITCHERS, IP, SO_v_l, BB_v_l, HIT_v_l, OB_v_l, TB_v_l, HR_v_l, BP_v_l, DP_v_l, SO_v_r, BB_v_r, HIT_v_r, OB_v_r, TB_v_r, HR_v_r, BP_v_r, DP_v_r, HO, ENDURANCE, FIELD, BK, WP, BAT_B, STL, SPD, rml_team_id
 
@@ -260,19 +269,8 @@ In these cases, just add their **rml_team_id** manually before reuploading the d
 
 ### Uploading the data into the database.
 
--   The files that need to be uploaded are **/data/hitter_ratings.csv** and **/data/pitcher_ratings.csv**.
+-   The files that need to be uploaded are **/data/hitter_ratings.xlsx** and **/data/pitcher_ratings.xlsx**.
 -   Both files must have the proper columns... as just described earlier.
 
-> **IMPORTANT:** When uploading hitter and pitcher data (**/data/hitter_ratings.csv** and **/data/pitcher_ratings.csv**):
-
--   Update the **/data/hitter_ratings.csv** and **/data/pitcher_ratings.xlsx** files first. Once that is populated with all the new season's data, save the file as **/data/hitter_ratings.csv** and **/data/pitcher_ratings.csv** (respectively).
 
 **NOTE**: This next step isn't necessary if you added an apostrophe as a prefix to each pitcher's fielding rating.
-
--   While **/data/pitcher_ratings.csv** is still open, upload the data via the '**Upload Pitcher Data**' link on the website. If you close **/data/pitcher_ratings.csv** before uploading it, the fielding column will be formatted like dates and it will fail to import properly into the database.
-
----
-
-## Todos
-
-When uploading multi-team hitters and pitchers, letter case within player names is important. I had an issue with "Dejong,P" vs "DeJong,P" where it wasn't totaling his ABs **calculateHitterValues.js**. Somehow, I need to set something up to convert to lower case, or just make a note to only have the first letter of last names capitalized in **multi_team_hitters.csv** and **multi_team_pitchers.csv**.

@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const cardedPlayers = require('./cardedPlayers');
 
-const convertNameToNameAndThrows = (name) => {
+function convertNameToNameAndThrows(name) {
     return {
         pitcherName: (name.slice(-1) === '*' || name.slice(-1) === '+')
             ? name.slice(0, -1)
@@ -14,9 +14,9 @@ const convertNameToNameAndThrows = (name) => {
                 ? 'S'
                 : 'R',
     };
-};
+}
 
-const convertBpToBpAndBpSi = (bp) => {
+function convertBpToBpAndBpSi(bp) {
     return {
         bp: isNaN(bp.charAt(0))
             ? 0
@@ -25,7 +25,7 @@ const convertBpToBpAndBpSi = (bp) => {
             ? 0
             : 2,
     };
-};
+}
 
 function processPitchersInsertData(csvData, realTeams, rmlTeams) {
     return csvData.map(row => {
@@ -79,50 +79,54 @@ function processPitchersInsertData(csvData, realTeams, rmlTeams) {
 }
 
 async function processPitchersXLSX() {
-    const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.readFile(path.join(__dirname, '../uploads/pitcher_ratings.xlsx'));
+    try {
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.readFile(path.join(__dirname, '../uploads/pitcher_ratings.xlsx'));
 
-    const xlsxData = [];
-    const headingRow = [];
+        const xlsxData = [];
+        const headingRow = [];
 
-    const worksheet = workbook.getWorksheet(1);
+        const worksheet = workbook.getWorksheet('pitcher_ratings');
 
-    // 30 possible columns (1 through 30)
-    const castInts = [1, 5, 6, 7, 13, 14, 15, 21, 22, 25, 26, 29]; // 12
-    const castFloats = [8, 9, 10, 11, 16, 17, 18, 19]; // 8
-    const castStrings = [2, 4, 12, 20, 23, 27, 28, 30]; // 8
-    const possibleNull = [3, 30]; // 2
+        // 30 possible columns (1 through 30)
+        const castInts = [1, 5, 6, 7, 13, 14, 15, 21, 22, 25, 26, 29]; // 12
+        const castFloats = [8, 9, 10, 11, 16, 17, 18, 19]; // 8
+        const castStrings = [2, 4, 12, 20, 23, 27, 28, 30]; // 8
+        const possibleNull = [3, 30]; // 2
 
-    function castCellTypes(column, value) {
-        if (castInts.includes(column)) {
-            return parseInt(value);
-        } else if (castFloats.includes(column)) {
-            return parseFloat(value);
-        } else if (castStrings.includes(column)) {
-            return value || value === 0 ? value.toString() : '';
-        } else if (possibleNull.includes(column)) {
-            return value ? parseInt(value) : null;
-        } else {
-            return value;
+        function castCellTypes(column, value) {
+            if (castInts.includes(column)) {
+                return parseInt(value);
+            } else if (castFloats.includes(column)) {
+                return parseFloat(value);
+            } else if (castStrings.includes(column)) {
+                return value || value === 0 ? value.toString() : '';
+            } else if (possibleNull.includes(column)) {
+                return value ? parseInt(value) : null;
+            } else {
+                return value;
+            }
         }
+
+        worksheet.eachRow((row, rowNumber) => {
+            if (rowNumber === 1) {
+                row.eachCell(cell => headingRow.push(cell.value));
+            } else {
+                const rowObject = {};
+                row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+                    rowObject[headingRow[colNumber - 1]] = castCellTypes(colNumber, cell.value);
+                });
+                xlsxData.push(rowObject);
+            }
+        });
+
+        await fs.promises.unlink(path.join(__dirname, '../uploads/pitcher_ratings.xlsx'));
+
+        return xlsxData;
+    } catch (error) {
+        console.log(error);
+        return null;
     }
-
-    worksheet.eachRow((row, rowNumber) => {
-        if (rowNumber === 1) {
-            row.eachCell(cell => headingRow.push(cell.value));
-        } else {
-            const rowObject = {};
-            row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-                rowObject[headingRow[colNumber - 1]] = castCellTypes(colNumber, cell.value);
-            });
-            xlsxData.push(rowObject);
-            if (rowNumber === 2) console.log(rowObject);
-        }
-    });
-
-    await fs.promises.unlink(path.join(__dirname, '../uploads/pitcher_ratings.xlsx'));
-
-    return xlsxData;
 }
 
 module.exports = {

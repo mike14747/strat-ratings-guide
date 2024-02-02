@@ -3,11 +3,11 @@ const fs = require('fs');
 const path = require('path');
 const cardedPlayers = require('./cardedPlayers');
 
-const convertPositionlFielding = (rating) => {
+function convertPositionlFielding(rating) {
     return rating !== '' ? `${rating.charAt(0)}e${parseInt(rating.slice(1, 3))}` : '';
-};
+}
 
-const convertNameToNameAndBats = (name) => {
+function convertNameToNameAndBats(name) {
     return {
         hitterName: (name.slice(-1) === '*' || name.slice(-1) === '+')
             ? name.slice(0, -1)
@@ -18,9 +18,9 @@ const convertNameToNameAndBats = (name) => {
                 ? 'S'
                 : 'R',
     };
-};
+}
 
-const convertBpToBpWAndBpSi = (bp) => {
+function convertBpToBpWAndBpSi(bp) {
     return {
         bp: isNaN(bp.charAt(0))
             ? 0
@@ -32,9 +32,9 @@ const convertBpToBpWAndBpSi = (bp) => {
             ? 0
             : 2,
     };
-};
+}
 
-const processHittersInsertData = (xlsxData, realTeams, rmlTeams) => {
+function processHittersInsertData(xlsxData, realTeams, rmlTeams) {
     return xlsxData.map(row => {
         const { hitterName, bats } = convertNameToNameAndBats(row.HITTERS);
         const { bp: bpVsL, w: wVsL, bpsi: bpSiVsL } = convertBpToBpWAndBpSi(row.BP_v_lhp);
@@ -93,54 +93,58 @@ const processHittersInsertData = (xlsxData, realTeams, rmlTeams) => {
 
         return Object.values(hitterObj);
     });
-};
+}
 
-const processHittersXLSX = async () => {
-    const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.readFile(path.join(__dirname, '../uploads/hitter_ratings.xlsx'));
+async function processHittersXLSX() {
+    try {
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.readFile(path.join(__dirname, '../uploads/hitter_ratings.xlsx'));
 
-    const xlsxData = [];
-    const headingRow = [];
+        const xlsxData = [];
+        const headingRow = [];
 
-    const worksheet = workbook.getWorksheet(1);
+        const worksheet = workbook.getWorksheet('hitter_ratings');
 
-    // 39 possible columns (1 through 39)
-    const castInts = [1, 6, 7, 8, 14, 15, 16, 17, 23, 24, 27]; // 11
-    const castFloats = [9, 10, 11, 12, 18, 19, 20, 21]; // 8
-    const castStrings = [2, 4, 13, 22, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38]; // 17
-    const possibleNull = [3, 5, 39]; // 3
+        // 39 possible columns (1 through 39)
+        const castInts = [1, 6, 7, 8, 14, 15, 16, 17, 23, 24, 27]; // 11
+        const castFloats = [9, 10, 11, 12, 18, 19, 20, 21]; // 8
+        const castStrings = [2, 4, 13, 22, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38]; // 17
+        const possibleNull = [3, 5, 39]; // 3
 
-    function castCellTypes(column, value) {
-        if (castInts.includes(column)) {
-            return parseInt(value);
-        } else if (castFloats.includes(column)) {
-            return parseFloat(value);
-        } else if (castStrings.includes(column)) {
-            return value || value === 0 ? value.toString() : '';
-        } else if (possibleNull.includes(column)) {
-            return value ? parseInt(value) : null;
-        } else {
-            return value;
+        function castCellTypes(column, value) {
+            if (castInts.includes(column)) {
+                return parseInt(value);
+            } else if (castFloats.includes(column)) {
+                return parseFloat(value);
+            } else if (castStrings.includes(column)) {
+                return value || value === 0 ? value.toString() : '';
+            } else if (possibleNull.includes(column)) {
+                return value ? parseInt(value) : null;
+            } else {
+                return value;
+            }
         }
+
+        worksheet.eachRow((row, rowNumber) => {
+            if (rowNumber === 1) {
+                row.eachCell(cell => headingRow.push(cell.value));
+            } else {
+                const rowObject = {};
+                row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+                    rowObject[headingRow[colNumber - 1]] = castCellTypes(colNumber, cell.value);
+                });
+                xlsxData.push(rowObject);
+            }
+        });
+
+        await fs.promises.unlink(path.join(__dirname, '../uploads/hitter_ratings.xlsx'));
+
+        return xlsxData;
+    } catch (error) {
+        console.log(error);
+        return null;
     }
-
-    worksheet.eachRow((row, rowNumber) => {
-        if (rowNumber === 1) {
-            row.eachCell(cell => headingRow.push(cell.value));
-        } else {
-            const rowObject = {};
-            row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-                rowObject[headingRow[colNumber - 1]] = castCellTypes(colNumber, cell.value);
-            });
-            xlsxData.push(rowObject);
-            if (rowNumber === 2) console.log(rowObject);
-        }
-    });
-
-    await fs.promises.unlink(path.join(__dirname, '../uploads/hitter_ratings.xlsx'));
-
-    return xlsxData;
-};
+}
 
 module.exports = {
     processHittersXLSX,

@@ -1,4 +1,4 @@
-const UPLOAD_FILENAME = 'multi_team_hitters.csv';
+const UPLOAD_FILENAME = 'multi_team_hitters.xlsx';
 
 document.getElementById('filename').textContent = UPLOAD_FILENAME;
 
