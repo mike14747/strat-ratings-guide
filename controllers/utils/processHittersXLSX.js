@@ -110,7 +110,7 @@ const processHittersXLSX = async () => {
     const castStrings = [2, 4, 13, 22, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38]; // 17
     const possibleNull = [3, 5, 39]; // 3
 
-    function castCells(column, value) {
+    function castCellTypes(column, value) {
         if (castInts.includes(column)) {
             return parseInt(value);
         } else if (castFloats.includes(column)) {
@@ -130,7 +130,7 @@ const processHittersXLSX = async () => {
         } else {
             const rowObject = {};
             row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-                rowObject[headingRow[colNumber - 1]] = castCells(colNumber, cell.value);
+                rowObject[headingRow[colNumber - 1]] = castCellTypes(colNumber, cell.value);
             });
             xlsxData.push(rowObject);
             if (rowNumber === 2) console.log(rowObject);
