@@ -2,7 +2,7 @@ const router = require('express').Router();
 const Hitters = require('../models/hitters');
 const RealTeam = require('../models/realTeam');
 const RmlTeam = require('../models/rmlTeam');
-// const { processHittersCSV, processHittersInsertData } = require('./utils/processHittersCSV');
+// const { processHittersCSV, processHittersInsertData } = require('./utils/processHittersCSV'); // no longer used
 const { processHittersXLSX, processHittersInsertData } = require('./utils/processHittersXLSX');
 const { processMultiTeamHittersCSV, processMultiTeamHittersInsertData } = require('./utils/processMultiTeamHittersCSV');
 const calculateHitterValues = require('./utils/calculateHitterValues');
@@ -45,6 +45,7 @@ router.get('/:year', async (req, res, next) => {
     }
 });
 
+// this is the old POST route to process .csv file uploads... no longer used
 // router.post('/', fileUpload(), async (req, res, next) => {
 //     try {
 //         if (req.files === null) return res.status(400).json({ message: 'No file was uploaded!' });
@@ -83,13 +84,13 @@ router.post('/', fileUpload(), async (req, res, next) => {
         const [rmlTeamsArr] = await RmlTeam.getAllRmlTeams();
         const rmlTeams = convertArrToObj(rmlTeamsArr);
         const xlsxData = await processHittersXLSX();
-        // await hittersSchema.validateAsync(xlsxData);
-        // const processedHitters = processHittersInsertData(xlsxData, realTeams, rmlTeams);
+        await hittersSchema.validateAsync(xlsxData);
+        const processedHitters = processHittersInsertData(xlsxData, realTeams, rmlTeams);
 
-        // const [data, error] = await Hitters.addNewHittersData(processedHitters);
-        // data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);
+        const [data, error] = await Hitters.addNewHittersData(processedHitters);
+        data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);
 
-        return res.status(400).json({ message: 'This was for testing!' });
+        // return res.status(400).json({ message: 'This was for testing!' });
     } catch (error) {
         next(error);
     }
@@ -106,8 +107,6 @@ router.post('/multi-team', fileUpload(), async (req, res, next) => {
         });
 
         const [realTeams] = await RealTeam.getAllRealTeams();
-
-        console.log({ realTeams });
         const csvData = await processMultiTeamHittersCSV();
         await multiTeamHittersSchema.validateAsync(csvData);
         const processedMultiTeamHitters = processMultiTeamHittersInsertData(csvData, realTeams);

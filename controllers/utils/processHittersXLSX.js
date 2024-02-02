@@ -1,4 +1,3 @@
-/* eslint-disable no-unreachable */
 const ExcelJS = require('exceljs');
 const fs = require('fs');
 const path = require('path');
@@ -101,23 +100,46 @@ const processHittersXLSX = async () => {
     await workbook.xlsx.readFile(path.join(__dirname, '../uploads/hitter_ratings.xlsx'));
 
     const xlsxData = [];
+    const headingRow = [];
 
     const worksheet = workbook.getWorksheet(1);
-    const headingRow = [];
+
+    // 39 possible columns (1 through 39)
+    const castInts = [1, 6, 7, 8, 14, 15, 16, 17, 23, 24, 27]; // 11
+    const castFloats = [9, 10, 11, 12, 18, 19, 20, 21]; // 8
+    const castStrings = [2, 4, 13, 22, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38]; // 17
+    const possibleNull = [3, 5, 39]; // 3
+
+    function castCells(column, value) {
+        if (castInts.includes(column)) {
+            return parseInt(value);
+        } else if (castFloats.includes(column)) {
+            return parseFloat(value);
+        } else if (castStrings.includes(column)) {
+            return value || value === 0 ? value.toString() : '';
+        } else if (possibleNull.includes(column)) {
+            return value ? parseInt(value) : null;
+        } else {
+            return value;
+        }
+    }
+
     worksheet.eachRow((row, rowNumber) => {
         if (rowNumber === 1) {
             row.eachCell(cell => headingRow.push(cell.value));
+        } else {
+            const rowObject = {};
+            row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+                rowObject[headingRow[colNumber - 1]] = castCells(colNumber, cell.value);
+            });
+            xlsxData.push(rowObject);
+            if (rowNumber === 2) console.log(rowObject);
         }
-        // const rowArray = [];
-        // row.eachCell(cell => rowArray.push(cell.value));
-        // xlsxData.push(rowArray);
     });
 
-    console.log(headingRow);
-
-    // console.log(xlsxData);
-
     await fs.promises.unlink(path.join(__dirname, '../uploads/hitter_ratings.xlsx'));
+
+    return xlsxData;
 };
 
 module.exports = {
