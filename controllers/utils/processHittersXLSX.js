@@ -1,5 +1,4 @@
 const ExcelJS = require('exceljs');
-const parse = require('csv-parse');
 const fs = require('fs');
 const path = require('path');
 const cardedPlayers = require('./cardedPlayers');
@@ -35,14 +34,14 @@ const convertBpToBpWAndBpSi = (bp) => {
     };
 };
 
-const processHittersInsertData = (csvData, realTeams, rmlTeams) => {
-    return csvData.map(row => {
+const processHittersInsertData = (xlsxData, realTeams, rmlTeams) => {
+    return xlsxData.map(row => {
         const { hitterName, bats } = convertNameToNameAndBats(row.HITTERS);
         const { bp: bpVsL, w: wVsL, bpsi: bpSiVsL } = convertBpToBpWAndBpSi(row.BP_v_lhp);
         const { bp: bpVsR, w: wVsR, bpsi: bpSiVsR } = convertBpToBpWAndBpSi(row.BP_v_rhp);
 
         const foundTeam = realTeams.find(team => team.strat_abbrev === row.TM);
-        if (!foundTeam) throw new RangeError(`No match found for the strat abbreviation (${row.TM}) in the csv file!`);
+        if (!foundTeam) throw new RangeError(`No match found for the strat abbreviation (${row.TM}) in the .xlsx file!`);
         const { real_team_abbrev: realTeam, id: realTeamId } = foundTeam;
 
         const hitterObj = {
@@ -96,54 +95,54 @@ const processHittersInsertData = (csvData, realTeams, rmlTeams) => {
     });
 };
 
-const processHittersCSV = () => {
-    const csvData = [];
-    return new Promise((resolve, reject) => {
-        fs.createReadStream(path.join(__dirname, '../uploads/hitter_ratings.csv'))
-            .pipe(
-                parse({
-                    delimiter: ',',
-                    columns: true,
-                    // from_line: 1,
-                    // to_line: 2,
-                    trim: true,
-                    // cast: true,
-                    cast: function (value, { header, index }) {
-                        const castInts = [0, 5, 6, 7, 13, 14, 15, 16, 22, 23, 26];
-                        const castFloats = [8, 9, 10, 11, 17, 18, 19, 20];
-                        const possibleNull = [2, 4, 38];
-                        if (header) {
-                            return value;
-                        } else {
-                            if (castInts.includes(index)) {
-                                return parseInt(value);
-                            } else if (castFloats.includes(index)) {
-                                return parseFloat(value);
-                            } else if (possibleNull.includes(index)) {
-                                return value ? parseInt(value) : null;
-                            } else {
-                                return value;
-                            }
-                        }
-                    },
-                    skip_empty_lines: true,
-                }),
-            )
-            .on('data', row => csvData.push(row))
-            .on('error', error => reject(error))
-            .on('end', async function () {
-                try {
-                    await fs.promises.unlink(path.join(__dirname, '../uploads/hitter_ratings.csv'));
-                    resolve(csvData);
-                } catch (error) {
-                    console.log(error);
-                    reject(error);
-                }
+const processHittersXLSX = async () => {
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(path.join(__dirname, '../uploads/hitter_ratings.xlsx'));
+
+    const xlsxData = [];
+    const headingRow = [];
+
+    const worksheet = workbook.getWorksheet(1);
+
+    // 39 possible columns (1 through 39)
+    const castInts = [1, 6, 7, 8, 14, 15, 16, 17, 23, 24, 27]; // 11
+    const castFloats = [9, 10, 11, 12, 18, 19, 20, 21]; // 8
+    const castStrings = [2, 4, 13, 22, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38]; // 17
+    const possibleNull = [3, 5, 39]; // 3
+
+    function castCellTypes(column, value) {
+        if (castInts.includes(column)) {
+            return parseInt(value);
+        } else if (castFloats.includes(column)) {
+            return parseFloat(value);
+        } else if (castStrings.includes(column)) {
+            return value || value === 0 ? value.toString() : '';
+        } else if (possibleNull.includes(column)) {
+            return value ? parseInt(value) : null;
+        } else {
+            return value;
+        }
+    }
+
+    worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) {
+            row.eachCell(cell => headingRow.push(cell.value));
+        } else {
+            const rowObject = {};
+            row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+                rowObject[headingRow[colNumber - 1]] = castCellTypes(colNumber, cell.value);
             });
+            xlsxData.push(rowObject);
+            if (rowNumber === 2) console.log(rowObject);
+        }
     });
+
+    await fs.promises.unlink(path.join(__dirname, '../uploads/hitter_ratings.xlsx'));
+
+    return xlsxData;
 };
 
 module.exports = {
-    processHittersCSV,
+    processHittersXLSX,
     processHittersInsertData,
 };

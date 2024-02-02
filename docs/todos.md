@@ -8,10 +8,7 @@
 
 ~~Figure out how to have a button to copy all hitter and pitcher data.~~
 
-Figure out how to upload/process .xlsx files instead of .csv files.
-
-    -   xlsx
-    -   exceljs
+~~Figure out how to upload/process .xlsx files instead of .csv files. (I've chosen exceljs)~~
 
 ~~Style the buttons.~~
 

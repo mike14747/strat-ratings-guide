@@ -2,7 +2,8 @@ const router = require('express').Router();
 const Pitchers = require('../models/pitchers');
 const RealTeam = require('../models/realTeam');
 const RmlTeam = require('../models/rmlTeam');
-const { processPitchersCSV, processPitchersInsertData } = require('./utils/processPitchersCSV');
+const { processPitchersXLSX, processPitchersInsertData } = require('./utils/processPitchersXLSX');
+// const { processPitchersCSV, processPitchersInsertData } = require('./utils/processPitchersCSV'); // no longer used
 const { processMultiTeamPitchersCSV, processMultiTeamPitchersInsertData } = require('./utils/processMultiTeamPitchersCSV');
 const calculatePitcherValues = require('./utils/calculatePitcherValues');
 const ensureUploadsExists = require('./utils/ensureUploadsExists');
@@ -54,25 +55,54 @@ router.get('/:year', async (req, res, next) => {
     }
 });
 
+// this is the old POST route to process .csv file uploads... no longer used
+// router.post('/', fileUpload(), async (req, res, next) => {
+//     try {
+//         if (req.files === null) return res.status(400).json({ message: 'No file was uploaded!' });
+//         const file = req.files.file;
+
+//         await ensureUploadsExists();
+//         await file.mv(path.join(__dirname, '/uploads/pitcher_ratings.csv'), error => {
+//             if (error) return next(error);
+//         });
+
+//         const [realTeams] = await RealTeam.getAllRealTeams();
+//         const [rmlTeamsArr] = await RmlTeam.getAllRmlTeams();
+//         const rmlTeams = convertArrToObj(rmlTeamsArr);
+//         const csvData = await processPitchersCSV();
+//         await pitchersSchema.validateAsync(csvData);
+//         const processedPitchers = processPitchersInsertData(csvData, realTeams, rmlTeams);
+
+//         const [data, error] = await Pitchers.addNewPitchersData(processedPitchers);
+//         return data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new pitcher row(s) to the database!`, added: data[1].affectedRows }) : next(error);
+//     } catch (error) {
+//         next(error);
+//     }
+// });
+
 router.post('/', fileUpload(), async (req, res, next) => {
     try {
         if (req.files === null) return res.status(400).json({ message: 'No file was uploaded!' });
         const file = req.files.file;
 
         await ensureUploadsExists();
-        await file.mv(path.join(__dirname, '/uploads/pitcher_ratings.csv'), error => {
+        await file.mv(path.join(__dirname, '/uploads/pitcher_ratings.xlsx'), error => {
             if (error) return next(error);
         });
 
         const [realTeams] = await RealTeam.getAllRealTeams();
         const [rmlTeamsArr] = await RmlTeam.getAllRmlTeams();
         const rmlTeams = convertArrToObj(rmlTeamsArr);
-        const csvData = await processPitchersCSV();
-        await pitchersSchema.validateAsync(csvData);
-        const processedPitchers = processPitchersInsertData(csvData, realTeams, rmlTeams);
+
+        const xlsxData = await processPitchersXLSX();
+
+        await pitchersSchema.validateAsync(xlsxData);
+        const processedPitchers = processPitchersInsertData(xlsxData, realTeams, rmlTeams);
 
         const [data, error] = await Pitchers.addNewPitchersData(processedPitchers);
         return data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new pitcher row(s) to the database!`, added: data[1].affectedRows }) : next(error);
+
+        // return res.status(400).json({ message: 'This was for testing!' });
     } catch (error) {
         next(error);
     }
