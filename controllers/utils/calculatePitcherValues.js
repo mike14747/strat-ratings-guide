@@ -4,9 +4,11 @@ const { bpHRAdjCalculate, bpSiAdjCalculate } = require('./bpCalculateFunctions')
 
 const roundTo = require('./roundTo');
 
-const processBpColumn = (bpsi) => bpsi === 0 ? '*' : '';
+function processBpColumn(bpsi) {
+    return bpsi === 0 ? '*' : '';
+}
 
-const gbpWopsCalculate = (fielding) => {
+function gbpWopsCalculate(fielding) {
     const gbpHits = (parseInt(fielding.charAt(0)) - 1) * 0.1 * 2;
     const gbpErrors = parseInt(fielding.substring(2, 4)) * 0.0180 * 2;
     const gbpTwoBaseErrorTotalBaseAdj = TB_VALUE * gbpErrors / 20;
@@ -16,11 +18,13 @@ const gbpWopsCalculate = (fielding) => {
     const gbpWopsOnHitAndError = OB_VALUE * (((gbpHits / 2) * (gbpErrors / 2)) * 2) + 2 * TB_VALUE * (((gbpHits / 2) * (gbpErrors / 2)) * 2);
 
     return gbpWopsOnHitsOnly + gbpWopsOnErrorsOnly + gbpWopsOnHitAndError + gbpTwoBaseErrorTotalBaseAdj;
-};
+}
 
-const wOPSCalculate = (ob, tb, dp, gbp, bk, wp) => (OB_VALUE * ob) + (TB_VALUE * tb) - (OB_VALUE * 20 * dp / 108) + gbp + (BALK_VALUE * bk) + (WP_VALUE * wp);
+function wOPSCalculate(ob, tb, dp, gbp, bk, wp) {
+    return (OB_VALUE * ob) + (TB_VALUE * tb) - (OB_VALUE * 20 * dp / 108) + gbp + (BALK_VALUE * bk) + (WP_VALUE * wp);
+}
 
-const ballparkCalculations = (pitcher) => {
+function ballparkCalculations(pitcher) {
     let bpAdjVsL = 0;
     let bpSiAdjVsL = 0;
     let bpAdjVsR = 0;
@@ -69,9 +73,9 @@ const ballparkCalculations = (pitcher) => {
         wopsVsL,
         wopsVsR,
     };
-};
+}
 
-const multiBallparkCalculations = (pitcher, partials) => {
+function multiBallparkCalculations(pitcher, partials) {
     let bpAdjVsL = 0;
     let bpSiAdjVsL = 0;
     let bpAdjVsR = 0;
@@ -140,9 +144,9 @@ const multiBallparkCalculations = (pitcher, partials) => {
         wopsVsL,
         wopsVsR,
     };
-};
+}
 
-const withoutBPCalculations = (pitcher) => {
+function withoutBPCalculations(pitcher) {
     return {
         hit_v_l: `~${roundTo(parseFloat(pitcher.hit_v_l) + pitcher.bp_si_v_l, 1)}`,
         ob_v_l: `~${roundTo(parseFloat(pitcher.ob_v_l) + pitcher.bp_si_v_l, 1)}`,
@@ -155,9 +159,9 @@ const withoutBPCalculations = (pitcher) => {
         wopsVsL: '',
         wopsVsR: '',
     };
-};
+}
 
-const mainCalculations = (pitcher, partials = []) => {
+function mainCalculations(pitcher, partials = []) {
     if (pitcher.real_team_id !== 1) {
         return ballparkCalculations(pitcher);
     } else {
@@ -165,9 +169,9 @@ const mainCalculations = (pitcher, partials = []) => {
         const partialIPTotal = partials.reduce((acc, cur) => acc + parseFloat(cur.ip), 0);
         return pitcher.ip === Math.round(partialIPTotal) ? multiBallparkCalculations(pitcher, partials) : withoutBPCalculations(pitcher);
     }
-};
+}
 
-const calculatePitcherValues = (pitchersArr, multiData) => {
+function calculatePitcherValues(pitchersArr, multiData) {
     const pitchersTeamsAndIPPerTeam = JSON.parse(JSON.stringify(multiData));
 
     const PitchersCalculated = pitchersArr.map(p => {
@@ -215,6 +219,6 @@ const calculatePitcherValues = (pitchersArr, multiData) => {
         };
     });
     return PitchersCalculated;
-};
+}
 
 module.exports = calculatePitcherValues;

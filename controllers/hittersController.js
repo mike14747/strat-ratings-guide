@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Hitters = require('../models/hitters');
-const { getAllRmlTeams, getAllRealTeams } = require('../models/team');
+const { getAllRmlTeams } = require('../models/rmlTeam');
+const { getAllRealTeams } = require('../models/realTeam');
 const { processHittersXLSX, processHittersInsertData } = require('./utils/processHittersXLSX');
 const { processMultiTeamHittersXLSX, processMultiTeamHittersInsertData } = require('./utils/processMultiTeamHittersXLSX');
 const calculateHitterValues = require('./utils/calculateHitterValues');

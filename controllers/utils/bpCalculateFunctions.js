@@ -1,5 +1,10 @@
-const bpHRAdjCalculate = (bpHR) => ((bpHR / 20) + 0.45) / 2;
-const bpSiAdjCalculate = (bpSI) => 5 * ((bpSI + 8) / 40) - 2;
+function bpHRAdjCalculate(bpHR) {
+    return ((bpHR / 20) + 0.45) / 2;
+}
+
+function bpSiAdjCalculate(bpSI) {
+    return 5 * ((bpSI + 8) / 40) - 2;
+}
 
 module.exports = {
     bpHRAdjCalculate,

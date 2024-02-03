@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 
-const ensureUploadsExists = () => {
+function ensureUploadsExists() {
     return new Promise((resolve, reject) => {
         fs.promises.access(path.join(__dirname, '../uploads'), fs.constants.F_OK)
             .then(() => resolve())
@@ -11,6 +11,6 @@ const ensureUploadsExists = () => {
                     .catch(error => reject(error));
             });
     });
-};
+}
 
 module.exports = ensureUploadsExists;

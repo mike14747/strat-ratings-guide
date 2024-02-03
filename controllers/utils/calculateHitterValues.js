@@ -4,18 +4,20 @@ const { bpHRAdjCalculate, bpSiAdjCalculate } = require('./bpCalculateFunctions')
 
 const roundTo = require('./roundTo');
 
-const processWColumn = (w, bpsi) => {
+function processWColumn(w, bpsi) {
     let wCol = '';
 
     if (w === 'w') wCol += 'w';
     if (bpsi === 0) wCol += '*';
 
     return wCol;
-};
+}
 
-const wOPSCalculate = (ob, tb, dp, wAdj) => ((OB_VALUE * ob) + (TB_VALUE * tb) - (OB_VALUE * 20 * dp / 108)) - wAdj;
+function wOPSCalculate(ob, tb, dp, wAdj) {
+    return ((OB_VALUE * ob) + (TB_VALUE * tb) - (OB_VALUE * 20 * dp / 108)) - wAdj;
+}
 
-const ballparkCalculations = (hitter) => {
+function ballparkCalculations(hitter) {
     let bpAdjVsL = 0;
     let bpSiAdjVsL = 0;
     let clAdjVsL = 0;
@@ -85,9 +87,9 @@ const ballparkCalculations = (hitter) => {
         wopsVsL,
         wopsVsR,
     };
-};
+}
 
-const multiBallparkCalculations = (hitter, partials) => {
+function multiBallparkCalculations(hitter, partials) {
     let bpAdjVsL = 0;
     let bpSiAdjVsL = 0;
     let clAdjVsL = 0;
@@ -179,7 +181,7 @@ const multiBallparkCalculations = (hitter, partials) => {
     };
 };
 
-const withoutBPCalculations = (hitter) => {
+function withoutBPCalculations(hitter) {
     return {
         hit_v_l: `~${roundTo(parseFloat(hitter.hit_v_l) + hitter.bp_si_v_l, 1)}`,
         ob_v_l: `~${roundTo(parseFloat(hitter.ob_v_l) + hitter.bp_si_v_l, 1)}`,
@@ -192,9 +194,9 @@ const withoutBPCalculations = (hitter) => {
         wopsVsL: '',
         wopsVsR: '',
     };
-};
+}
 
-const mainCalculations = (hitter, partials = []) => {
+function mainCalculations(hitter, partials = []) {
     if (hitter.real_team_id !== 1) {
         return ballparkCalculations(hitter);
     } else {
@@ -202,9 +204,9 @@ const mainCalculations = (hitter, partials = []) => {
         const partialABTotal = partials.reduce((acc, cur) => acc + cur.ab, 0);
         return hitter.ab === partialABTotal ? multiBallparkCalculations(hitter, partials) : withoutBPCalculations(hitter);
     }
-};
+}
 
-const calculateHitterValues = (hittersArr, multiData) => {
+function calculateHitterValues(hittersArr, multiData) {
     const hittersTeamsAndABPerTeam = JSON.parse(JSON.stringify(multiData));
 
     const hittersCalculated = hittersArr.map(h => {
@@ -258,6 +260,6 @@ const calculateHitterValues = (hittersArr, multiData) => {
         };
     });
     return hittersCalculated;
-};
+}
 
 module.exports = calculateHitterValues;
