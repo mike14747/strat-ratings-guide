@@ -32,18 +32,9 @@ async function getRealTeamIdByBBRefName(name) {
         .catch(error => [null, error]);
 }
 
-async function getAllRmlAndRealTeams() {
-    const queryString = 'SELECT id, rml_team_name FROM rml_teams';
-    const queryParams = [];
-    return await pool.query(queryString, queryParams)
-        .then(([rows]) => [rows, null])
-        .catch(error => [null, error]);
-}
-
 module.exports = {
     getAllRmlTeams,
     getAllRealTeams,
     getRealTeamIdByStratName,
     getRealTeamIdByBBRefName,
-    getAllRmlAndRealTeams,
 };

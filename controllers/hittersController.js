@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const Hitters = require('../models/hitters');
-const RealTeam = require('../models/realTeam');
-const RmlTeam = require('../models/rmlTeam');
+const { getAllRmlTeams, getAllRealTeams } = require('../models/team');
 const { processHittersXLSX, processHittersInsertData } = require('./utils/processHittersXLSX');
 const { processMultiTeamHittersXLSX, processMultiTeamHittersInsertData } = require('./utils/processMultiTeamHittersXLSX');
 const calculateHitterValues = require('./utils/calculateHitterValues');
@@ -54,8 +53,8 @@ router.post('/', fileUpload(), async (req, res, next) => {
             if (error) return next(error);
         });
 
-        const [realTeams] = await RealTeam.getAllRealTeams();
-        const [rmlTeamsArr] = await RmlTeam.getAllRmlTeams();
+        const [realTeams] = await getAllRealTeams();
+        const [rmlTeamsArr] = await getAllRmlTeams();
         const rmlTeams = convertArrToObj(rmlTeamsArr);
         const xlsxData = await processHittersXLSX();
         await hittersSchema.validateAsync(xlsxData);
@@ -78,7 +77,7 @@ router.post('/multi-team', fileUpload(), async (req, res, next) => {
             if (error) return next(error);
         });
 
-        const [realTeams] = await RealTeam.getAllRealTeams();
+        const [realTeams] = await getAllRealTeams();
         const xlsxData = await processMultiTeamHittersXLSX();
         await multiTeamHittersSchema.validateAsync(xlsxData);
         const processedMultiTeamHitters = processMultiTeamHittersInsertData(xlsxData, realTeams);

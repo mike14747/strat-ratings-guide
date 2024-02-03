@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const Pitchers = require('../models/pitchers');
-const RealTeam = require('../models/realTeam');
-const RmlTeam = require('../models/rmlTeam');
+const { getAllRmlTeams, getAllRealTeams } = require('../models/team');
 const { processPitchersXLSX, processPitchersInsertData } = require('./utils/processPitchersXLSX');
 const { processMultiTeamPitchersXLSX, processMultiTeamPitchersInsertData } = require('./utils/processMultiTeamPitchersXLSX');
 const calculatePitcherValues = require('./utils/calculatePitcherValues');
@@ -64,8 +63,8 @@ router.post('/', fileUpload(), async (req, res, next) => {
             if (error) return next(error);
         });
 
-        const [realTeams] = await RealTeam.getAllRealTeams();
-        const [rmlTeamsArr] = await RmlTeam.getAllRmlTeams();
+        const [realTeams] = await getAllRealTeams();
+        const [rmlTeamsArr] = await getAllRmlTeams();
         const rmlTeams = convertArrToObj(rmlTeamsArr);
 
         const xlsxData = await processPitchersXLSX();
@@ -90,7 +89,7 @@ router.post('/multi-team', fileUpload(), async (req, res, next) => {
             if (error) return next(error);
         });
 
-        const [realTeams] = await RealTeam.getAllRealTeams();
+        const [realTeams] = await getAllRealTeams();
         const xlsxData = await processMultiTeamPitchersXLSX();
         await multiTeamPitchersSchema.validateAsync(xlsxData);
         const processedMultiTeamPitchers = processMultiTeamPitchersInsertData(xlsxData, realTeams);
