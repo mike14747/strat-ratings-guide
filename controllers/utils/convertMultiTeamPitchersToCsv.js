@@ -1136,7 +1136,6 @@ function convertToCsv() {
 
     allPitchers.forEach(indTeam => {
         if (indTeam.team !== 'TOT' && multiTeamPitchers[indTeam.id]) {
-            indTeam.year = 2023;
             const nameParts = multiTeamPitchers[indTeam.id].name.split(', ');
             pitchersOnIndividualTeams.push({
                 year: 2023,
