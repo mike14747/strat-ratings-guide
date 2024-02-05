@@ -25,3 +25,5 @@
 When uploading multi-team hitters and pitchers, letter case within player names is important. I had an issue with "Dejong,P" vs "DeJong,P" where it wasn't totaling his ABs **calculateHitterValues.js**. Somehow, I need to set something up to convert to lower case, or just make a note to only have the first letter of last names capitalized in **multi_team_hitters.csv** and **multi_team_pitchers.csv**.
 
 Get the login system working.
+
+Should I move the cardedPlayers.js data into the database?

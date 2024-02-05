@@ -256,7 +256,7 @@ function calculateHitterValues(hittersArr, multiData) {
             d_cf: h.d_cf,
             d_rf: h.d_rf,
             fielding: h.fielding,
-            rml_team_name: h.rml_team_name ? h.rml_team_name : '',
+            rml_team_name: h.rml_team_name || '',
         };
     });
     return hittersCalculated;
