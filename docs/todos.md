@@ -27,3 +27,7 @@
 Get the login system working.
 
 Should I move the cardedPlayers.js data into the database?
+
+Figure out how to make hitter injury ratings 0 instead of null when they played in every game.
+
+Figure out how to make the "Copy Data" button not add an extra tab and row to the end of the columns and rows.
