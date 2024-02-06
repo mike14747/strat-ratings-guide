@@ -194,8 +194,9 @@ For all the following files that will be uploading data, make sure to name the s
 
 -   It's no longer necessary to rename the **Location** column to **real_team_id**, since that is now calculated by the app when uploading data. This is confirmed to be true. In fact, changing the name from **Location** will now generate an error from the Joi schema validation.
 -   It's also no longer necessary to change the **TM** column to reflect my preferred team abbreviations (eg: ARIZ instead of ARN) since that is now converted by the app when uploading data.
+-   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. I had some issues with St Louis in the past... (falsely?) thinking they used to be listed as **STN** instead of **SLN** in the past. Also, I removed the extra St Louis row (real_team_id = 32) from **real_teams.xlsx** file and change the original (real_team_id = 27) St Louis to SLN.
 
-> **IMPORTANT** (for both **Hitters.xlsx** and **Pitchers.xlsx**): Every hitter and pitcher that played for multiple teams needs to have their **TM** column set to **TOT**.
+> **IMPORTANT** (for both **Hitters.xlsx** and **Pitchers.xlsx**): Every hitter and pitcher that played for multiple teams needs to have their **TM** column manually set to **TOT**.
 > 
 > In a normal season, there could be well over 100 players that need this team change. But, it's important to do because of the bp stadium ratings for each team have such an impact on the wOPS numbers.
 > 
@@ -216,7 +217,6 @@ For all the following files that will be uploading data, make sure to name the s
 -   Remove all the **+** signs from the **CL v lhp** and **CL v rhp** columns (may no longer need to be done).
 -   Remove all hitters that have an **M** in the **Location** column. All hitters with an **X** in the **Location** column should be deleted too, but double-check that one or two don't have 100+ ABs.
 -   Remove all uncarded hitters (those without 100+ AB in full 162 game seasons).
--   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. **eg**: I thought St Louis might have changed from **STN** to **SLN**... but I'm not sure about that. I'm in the process of changing all the data files that use this abbreviation to **SLN**. Also, I need to remove the extra St Louis row I've added to my home pc's **real_teams.xlsx** file and change the original St Louis to SLN.
 -   Insert a **Year** column to the beginning of each file (the MLB year).
 -   Add an **rml_team_id** column to the end of each file.
 -   The **INJ** column might have to get moved to its correct place (immediately after the **HITTERS** column).
@@ -242,7 +242,6 @@ Column names for the **/data/hitter_ratings.xlsx** file must use these exact col
 -   Remove all the **+** signs from the **Hold** column (may no longer need to be done).
 -   Remove all pitchers that have an **M** in the **Location** column. Most pitchers with an **X** in the **Location** column should be deleted too. **HOWEVER**, you might find that a couple low IP, carded pitchers might have been part of the X players group and have to be brought back in from the original file.
 -   Remove all uncarded pitchers (this is a tedious task for pitchers).
--   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. **eg**: I thought St Louis might have changed from **STN** to **SLN**... but I'm not sure about that. I'm in the process of changing all the data files that use this abbreviation to **SLN**. Also, I need to remove the extra St Louis row I've added to my home pc's **real_teams.xlsx** file and change the original St Louis to SLN.
 -   Insert a **Year** column to the beginning of each file (the MLB year).
 -   Add an **rml_team_id** column to the end of each file.
 -   To fix an issue where Excel formats the **FIELD** column as dates once the file is closed, add an apostrophe as a prefix to each pitcher's fielding rating... **eg**: **'3e21**. The apostrophe will be removed as the data is getting uploaded and it will keep Excel from formatting the column as dates.
