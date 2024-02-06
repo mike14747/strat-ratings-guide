@@ -207,59 +207,63 @@ function mainCalculations(hitter, partials = []) {
 }
 
 function calculateHitterValues(hittersArr, multiData) {
-    const hittersTeamsAndABPerTeam = JSON.parse(JSON.stringify(multiData));
+    try {
+        const hittersTeamsAndABPerTeam = JSON.parse(JSON.stringify(multiData));
 
-    const hittersCalculated = hittersArr.map(h => {
-        let result;
-        if (h.real_team_id === 1) {
-            const partialTeams = hittersTeamsAndABPerTeam.filter(hp => hp.hitter === h.name);
-            result = mainCalculations(h, partialTeams);
-        } else {
-            result = mainCalculations(h);
-        }
+        const hittersCalculated = hittersArr.map(h => {
+            let result;
+            if (h.real_team_id === 1) {
+                const partialTeams = hittersTeamsAndABPerTeam.filter(hp => hp.hitter.toLowerCase() === h.name.toLowerCase());
+                result = mainCalculations(h, partialTeams);
+            } else {
+                result = mainCalculations(h);
+            }
 
-        return {
-            year: h.year,
-            real_team: h.real_team,
-            name: h.name,
-            bats: h.bats,
-            injury: h.injury,
-            ab: h.ab,
-            so_v_l: h.so_v_l,
-            bb_v_l: h.bb_v_l,
-            hit_v_l: result.hit_v_l,
-            ob_v_l: result.ob_v_l,
-            tb_v_l: result.tb_v_l,
-            hr_v_l: result.hr_v_l,
-            w_v_l: processWColumn(h.w_v_l, h.bp_si_v_l),
-            dp_v_l: h.dp_v_l,
-            wops_v_l: result.wopsVsL,
-            so_v_r: h.so_v_r,
-            bb_v_r: h.bb_v_r,
-            hit_v_r: result.hit_v_r,
-            ob_v_r: result.ob_v_r,
-            tb_v_r: result.tb_v_r,
-            hr_v_r: result.hr_v_r,
-            w_v_r: processWColumn(h.w_v_r, h.bp_si_v_r),
-            dp_v_r: h.dp_v_r,
-            wops_v_r: result.wopsVsR,
-            stealing: h.stealing,
-            spd: h.spd,
-            bunt: h.bunt,
-            h_r: h.h_r,
-            d_ca: h.d_ca,
-            d_1b: h.d_1b,
-            d_2b: h.d_2b,
-            d_3b: h.d_3b,
-            d_ss: h.d_ss,
-            d_lf: h.d_lf,
-            d_cf: h.d_cf,
-            d_rf: h.d_rf,
-            fielding: h.fielding,
-            rml_team_name: h.rml_team_name || '',
-        };
-    });
-    return hittersCalculated;
+            return {
+                year: h.year,
+                real_team: h.real_team,
+                name: h.name,
+                bats: h.bats,
+                injury: h.injury,
+                ab: h.ab,
+                so_v_l: h.so_v_l,
+                bb_v_l: h.bb_v_l,
+                hit_v_l: result.hit_v_l,
+                ob_v_l: result.ob_v_l,
+                tb_v_l: result.tb_v_l,
+                hr_v_l: result.hr_v_l,
+                w_v_l: processWColumn(h.w_v_l, h.bp_si_v_l),
+                dp_v_l: h.dp_v_l,
+                wops_v_l: result.wopsVsL,
+                so_v_r: h.so_v_r,
+                bb_v_r: h.bb_v_r,
+                hit_v_r: result.hit_v_r,
+                ob_v_r: result.ob_v_r,
+                tb_v_r: result.tb_v_r,
+                hr_v_r: result.hr_v_r,
+                w_v_r: processWColumn(h.w_v_r, h.bp_si_v_r),
+                dp_v_r: h.dp_v_r,
+                wops_v_r: result.wopsVsR,
+                stealing: h.stealing,
+                spd: h.spd,
+                bunt: h.bunt,
+                h_r: h.h_r,
+                d_ca: h.d_ca,
+                d_1b: h.d_1b,
+                d_2b: h.d_2b,
+                d_3b: h.d_3b,
+                d_ss: h.d_ss,
+                d_lf: h.d_lf,
+                d_cf: h.d_cf,
+                d_rf: h.d_rf,
+                fielding: h.fielding,
+                rml_team_name: h.rml_team_name || '',
+            };
+        });
+        return hittersCalculated;
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 module.exports = calculateHitterValues;

@@ -14,57 +14,40 @@ The **/config/ratings_guide_db(seeds).sql** file will get imported into the data
 
 ### Update the Carded Player lists
 
-**NEW** (as of 2024-01-22):
+**NEW**: As of 2024-02-06, you no longer need to copy/paste the formatted data from the Master Roster to Quokka to have each player's IP rounded and their **abbrevName** added.
 
-Use this formula for all the carded players from the Master Roster (in a temporary "formatted" column at the end):
+Sort the Master Roster file by "Carded", then use this formula for all the carded players from the Master Roster (in a temporary "formatted" column at the end):
 
 ```text
 ="{ year: 2023, fullName: """&A2&""", rmlTeam: '"&C2&"', ip: '"&S2&"', ab: '"&Y2&"' },"
 ```
 
-Use Quokka in VSCode, pasting the above player objects list into the **allPlayers** array, then execute this "forEach" array method:
+Highlight the formatted column data then copy/paste into the cardedPlayed array in: **/controllers/utils/cardedPlayers.js**. Each player's **abbrevName** will automatically be calculated.
 
 ```js
-const allPlayers = [
-    // ...
-    { year: 2023, fullName: "Nootbaar, Lars", rmlTeam: 'Blaze', ip: '', ab: '426' },
-    { year: 2023, fullName: "Ober, Bailey", rmlTeam: 'Clown Princes', ip: '144.1', ab: '' },
-    { year: 2023, fullName: "Odor, Rougned", rmlTeam: 'Z-Unowned', ip: '', ab: '138' },
-    { year: 2023, fullName: "O'Hearn, Ryan", rmlTeam: 'RockHounds', ip: '', ab: '346' },
-    { year: 2023, fullName: "O'Hoppe, Logan", rmlTeam: 'Pilgrims', ip: '', ab: '182' },
-    { year: 2023, fullName: "Ohtani, Shohei", rmlTeam: 'Titans', ip: '132', ab: '497' },
-    { year: 2023, fullName: "Okert, Steven", rmlTeam: 'Dodgers', ip: '58.2', ab: '' },
-    { year: 2023, fullName: "Olivares, Edward", rmlTeam: 'Reds', ip: '', ab: '354' },
-    { year: 2023, fullName: "Olson, Matt", rmlTeam: 'Reds', ip: '', ab: '608' },
-    { year: 2023, fullName: "Olson, Reese", rmlTeam: 'Gypsies', ip: '103.2', ab: '' },
-    { year: 2023, fullName: "O'Neill, Tyler", rmlTeam: 'Titans', ip: '', ab: '238' },
-    { year: 2023, fullName: "Ortega, Rafael", rmlTeam: 'Z-Unowned', ip: '', ab: '114' },
-    { year: 2023, fullName: "Ortiz, Luis", rmlTeam: 'Hornets', ip: '86.2', ab: '' },
-    { year: 2023, fullName: "Ottavino, Adam", rmlTeam: 'Captains', ip: '61.2', ab: '' },
-    { year: 2023, fullName: "Outman, James", rmlTeam: 'Pilots', ip: '', ab: '483' },
-    { year: 2023, fullName: "Oviedo, Johan", rmlTeam: 'River Dogs', ip: '177.2', ab: '' },
-    { year: 2023, fullName: "Ozuna, Marcell", rmlTeam: 'Pilgrims', ip: '', ab: '530' },
-    { year: 2023, fullName: "Pagan, Emilio", rmlTeam: 'Titans', ip: '69.1', ab: '' },
-    // ...
+const cardedPlayers = [
+    { year: 2023, fullName: 'Abbott, Andrew', rmlTeam: 'Clown Princes', ip: '109.1', ab: '' },
+    { year: 2023, fullName: 'Abrams, CJ', rmlTeam: 'RockHounds', ip: '', ab: '563' },
+    // more players
 ];
 
 function roundInnings(ip) {
     if (!ip) return null;
     if (ip.endsWith('.2')) {
-        return Math.ceil(ip)
+        return Math.ceil(ip);
     } else {
         return Math.floor(ip);
     }
 }
 
-allPlayers.forEach((player, index) => {
+cardedPlayers.forEach((player, index) => {
     const nameParts = player.fullName.split(', ');
-    allPlayers[index].abbrevName = nameParts[0] + ',' + nameParts[1][0];
-    allPlayers[index].ip = roundInnings(player.ip);
-    allPlayers[index].ab = parseInt(player.ab) || null;
+    cardedPlayers[index].abbrevName = nameParts[0] + ',' + nameParts[1][0];
+    cardedPlayers[index].ip = roundInnings(player.ip);
+    cardedPlayers[index].ab = parseInt(player.ab) || null;
 });
 
-console.log(allPlayers);
+module.exports = cardedPlayers;
 ```
 
 The output of this will get pasted into **/controllers/utils/cardedPlayers.js** each time a significant number of RML team changes occur (eg: after drafts).
@@ -92,7 +75,7 @@ The output of this will get pasted into **/controllers/utils/cardedPlayers.js** 
 
 At the conclusion of each MLB season... far before the ratings disk is set to arrive, the multi-team hitter/pitcher data can be compiled.
 
-Typically, I add **Hitter_Stats_202x.xlsx** and **Pitcher_Stats_202x.xlsx** files the current RML season folder.
+Typically, I add **Hitter_Stats_202x.xlsx** and **Pitcher_Stats_202x.xlsx** files following the current RML season folder.
 
 Those files will include the following sheets:
 
@@ -107,7 +90,7 @@ Those files will include the following sheets:
 > 
 > After that, you can run the server-only **npm run server**, then access these routes: **http://localhost:3001/api/hitters/create-multi-team-csv** and **http://localhost:3001/api/pitchers/create-multi-team-csv** using Postman to get the generated csv data for each.
 > 
-> Paste the data into **/data/multi_team_hitters.xlsx** and **/data/multi_team_pitchers.xlsx**... followed by converting the text to columns with each.
+> Paste the data into **/data/multi_team_hitters.xlsx** and **/data/multi_team_pitchers.xlsx**... followed by converting the text to columns.
 
 Each hitter/pitcher name will need to be changed to match the exact name Strat uses in the ratings guide (since that will be how the ratings guide links the multi-team hitters to this data). Strat's name format is **last name, comma, then first initial**... without a space after the comma... eg: **Doe,J**. Strat does include spaces in last names for some players (eg: De Los Santos,E).
 

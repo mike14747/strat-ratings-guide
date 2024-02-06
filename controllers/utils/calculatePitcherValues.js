@@ -172,53 +172,57 @@ function mainCalculations(pitcher, partials = []) {
 }
 
 function calculatePitcherValues(pitchersArr, multiData) {
-    const pitchersTeamsAndIPPerTeam = JSON.parse(JSON.stringify(multiData));
+    try {
+        const pitchersTeamsAndIPPerTeam = JSON.parse(JSON.stringify(multiData));
 
-    const PitchersCalculated = pitchersArr.map(p => {
-        let result;
-        if (p.real_team_id === 1) {
-            const partialTeams = pitchersTeamsAndIPPerTeam.filter(pp => pp.pitcher === p.name);
-            result = mainCalculations(p, partialTeams);
-        } else {
-            result = mainCalculations(p);
-        }
+        const PitchersCalculated = pitchersArr.map(p => {
+            let result;
+            if (p.real_team_id === 1) {
+                const partialTeams = pitchersTeamsAndIPPerTeam.filter(pp => pp.pitcher.toLowerCase() === p.name.toLowerCase());
+                result = mainCalculations(p, partialTeams);
+            } else {
+                result = mainCalculations(p);
+            }
 
-        return {
-            year: p.year,
-            real_team: p.real_team,
-            name: p.name,
-            throws: p.throws,
-            ip: p.ip,
-            so_v_l: p.so_v_l,
-            bb_v_l: p.bb_v_l,
-            hit_v_l: result.hit_v_l,
-            ob_v_l: result.ob_v_l,
-            tb_v_l: result.tb_v_l,
-            hr_v_l: result.hr_v_l,
-            bp_v_l: processBpColumn(p.bp_si_v_l),
-            dp_v_l: p.dp_v_l,
-            wops_v_l: result.wopsVsL,
-            so_v_r: p.so_v_r,
-            bb_v_r: p.bb_v_r,
-            hit_v_r: result.hit_v_r,
-            ob_v_r: result.ob_v_r,
-            tb_v_r: result.tb_v_r,
-            hr_v_r: result.hr_v_r,
-            bp_v_r: processBpColumn(p.bp_si_v_r),
-            dp_v_r: p.dp_v_r,
-            wops_v_r: result.wopsVsR,
-            hold: p.hold,
-            endurance: p.endurance,
-            fielding: p.fielding,
-            balk: p.balk,
-            wp: p.wp,
-            batting_b: p.batting_b,
-            stl: p.stl,
-            spd: p.spd,
-            rml_team_name: p.rml_team_name || '',
-        };
-    });
-    return PitchersCalculated;
+            return {
+                year: p.year,
+                real_team: p.real_team,
+                name: p.name,
+                throws: p.throws,
+                ip: p.ip,
+                so_v_l: p.so_v_l,
+                bb_v_l: p.bb_v_l,
+                hit_v_l: result.hit_v_l,
+                ob_v_l: result.ob_v_l,
+                tb_v_l: result.tb_v_l,
+                hr_v_l: result.hr_v_l,
+                bp_v_l: processBpColumn(p.bp_si_v_l),
+                dp_v_l: p.dp_v_l,
+                wops_v_l: result.wopsVsL,
+                so_v_r: p.so_v_r,
+                bb_v_r: p.bb_v_r,
+                hit_v_r: result.hit_v_r,
+                ob_v_r: result.ob_v_r,
+                tb_v_r: result.tb_v_r,
+                hr_v_r: result.hr_v_r,
+                bp_v_r: processBpColumn(p.bp_si_v_r),
+                dp_v_r: p.dp_v_r,
+                wops_v_r: result.wopsVsR,
+                hold: p.hold,
+                endurance: p.endurance,
+                fielding: p.fielding,
+                balk: p.balk,
+                wp: p.wp,
+                batting_b: p.batting_b,
+                stl: p.stl,
+                spd: p.spd,
+                rml_team_name: p.rml_team_name || '',
+            };
+        });
+        return PitchersCalculated;
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 module.exports = calculatePitcherValues;
