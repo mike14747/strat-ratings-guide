@@ -2,27 +2,28 @@ function displayError() {
     document.getElementById('error-message').textContent = 'An error occurred fetching data!';
 }
 
+function tableToText(tableRows) {
+    let tableText = '';
+    const rows = tableRows.querySelectorAll('tr');
+
+    rows.forEach((row, rowIndex) => {
+        const cells = row.querySelectorAll('td');
+        cells.forEach((cell, cellIndex) => {
+            tableText += cell.innerText; // Use tab as a delimiter
+            if (cells.length !== cellIndex + 1) tableText += '\t';
+        });
+        if (rows.length !== rowIndex + 1) tableText += '\n';
+    });
+
+    return tableText;
+}
+
 // eslint-disable-next-line no-unused-vars
 async function copyContent() {
     const tableRows = document.getElementById('data-rows');
     const tableText = tableToText(tableRows);
 
     await navigator.clipboard.writeText(tableText);
-}
-
-function tableToText(tableRows) {
-    let tableText = '';
-    const rows = tableRows.querySelectorAll('tr');
-
-    rows.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        cells.forEach(cell => {
-            tableText += cell.innerText + '\t'; // Use tab as a delimiter
-        });
-        tableText += '\n';
-    });
-
-    return tableText;
 }
 
 async function getData() {

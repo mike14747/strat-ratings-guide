@@ -119,7 +119,7 @@ async function processHittersXLSX() {
             } else if (castStrings.includes(column)) {
                 return value || value === 0 ? value.toString() : '';
             } else if (possibleNull.includes(column)) {
-                return value ? parseInt(value) : null;
+                return value || value === 0 ? parseInt(value) : null;
             } else {
                 return value;
             }
