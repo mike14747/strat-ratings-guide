@@ -8,6 +8,8 @@ router.use('/hitters', require('./hittersController'));
 
 router.use('/pitchers', require('./pitchersController'));
 
+router.use('/carded-players', require('./cardedPlayersController'));
+
 router.use((req, res, next) => {
     const error = new Error('API route not found!');
     error.status = 404;
