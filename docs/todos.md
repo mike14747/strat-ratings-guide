@@ -26,7 +26,7 @@
 
 Get the login system working.
 
-Should I move the cardedPlayers.js data into the database?
+~~Should I move the cardedPlayers.js data into the database? Done... I moved it.~~
 
 ~~Figure out how to make hitter injury ratings 0 instead of null when they played in every game.~~
 

@@ -1,7 +1,6 @@
 const ExcelJS = require('exceljs');
 const fs = require('fs');
 const path = require('path');
-const cardedPlayers = require('./cardedPlayers');
 
 function convertPositionlFielding(rating) {
     return rating !== '' ? `${rating.charAt(0)}e${parseInt(rating.slice(1, 3))}` : '';
@@ -34,7 +33,7 @@ function convertBpToBpWAndBpSi(bp) {
     };
 }
 
-function processHittersInsertData(xlsxData, realTeams, rmlTeams) {
+function processHittersInsertData(xlsxData, realTeams, rmlTeams, cardedPlayers) {
     return xlsxData.map(row => {
         const { hitterName, bats } = convertNameToNameAndBats(row.HITTERS);
         const { bp: bpVsL, w: wVsL, bpsi: bpSiVsL } = convertBpToBpWAndBpSi(row.BP_v_lhp);
@@ -88,7 +87,7 @@ function processHittersInsertData(xlsxData, realTeams, rmlTeams) {
             dCF: convertPositionlFielding(row.d_CF),
             dRF: convertPositionlFielding(row.d_RF),
             fielding: row.FIELDING,
-            rmlTeamId: row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.abbrevName.toLowerCase() === hitterName.toLowerCase() && item.year === row.Year && item.ab === row.AB))]?.rmlTeam] || null,
+            rmlTeamId: row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.abbrev_name.toLowerCase() === hitterName.toLowerCase() && item.year === row.Year && item.ab === row.AB))]?.rml_team] || null,
         };
 
         return Object.values(hitterObj);

@@ -2,7 +2,8 @@ const router = require('express').Router();
 const Hitters = require('../models/hitters');
 const { getAllRmlTeams } = require('../models/rmlTeam');
 const { getAllRealTeams } = require('../models/realTeam');
-const { processHittersXLSX, processHittersInsertData } = require('./utils/processHittersXLSX');
+const { getAllCardedPlayers } = require('../models/cardedPlayers')
+;const { processHittersXLSX, processHittersInsertData } = require('./utils/processHittersXLSX');
 const { processMultiTeamHittersXLSX, processMultiTeamHittersInsertData } = require('./utils/processMultiTeamHittersXLSX');
 const calculateHitterValues = require('./utils/calculateHitterValues');
 const ensureUploadsExists = require('./utils/ensureUploadsExists');
@@ -57,9 +58,10 @@ router.post('/', fileUpload(), async (req, res, next) => {
         const [realTeams] = await getAllRealTeams();
         const [rmlTeamsArr] = await getAllRmlTeams();
         const rmlTeams = convertArrToObj(rmlTeamsArr);
+        const [cardedPlayers] = await getAllCardedPlayers();
         const xlsxData = await processHittersXLSX();
         await hittersSchema.validateAsync(xlsxData);
-        const processedHitters = processHittersInsertData(xlsxData, realTeams, rmlTeams);
+        const processedHitters = processHittersInsertData(xlsxData, realTeams, rmlTeams, cardedPlayers);
 
         const [data, error] = await Hitters.addNewHittersData(processedHitters);
         data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);
