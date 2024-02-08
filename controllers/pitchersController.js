@@ -2,6 +2,7 @@ const router = require('express').Router();
 const Pitchers = require('../models/pitchers');
 const { getAllRmlTeams } = require('../models/rmlTeam');
 const { getAllRealTeams } = require('../models/realTeam');
+const { getAllCardedPlayers } = require('../models/cardedPlayers');
 const { processPitchersXLSX, processPitchersInsertData } = require('./utils/processPitchersXLSX');
 const { processMultiTeamPitchersXLSX, processMultiTeamPitchersInsertData } = require('./utils/processMultiTeamPitchersXLSX');
 const calculatePitcherValues = require('./utils/calculatePitcherValues');
@@ -67,11 +68,10 @@ router.post('/', fileUpload(), async (req, res, next) => {
         const [realTeams] = await getAllRealTeams();
         const [rmlTeamsArr] = await getAllRmlTeams();
         const rmlTeams = convertArrToObj(rmlTeamsArr);
-
+        const [cardedPlayers] = await getAllCardedPlayers();
         const xlsxData = await processPitchersXLSX();
-
         await pitchersSchema.validateAsync(xlsxData);
-        const processedPitchers = processPitchersInsertData(xlsxData, realTeams, rmlTeams);
+        const processedPitchers = processPitchersInsertData(xlsxData, realTeams, rmlTeams, cardedPlayers);
 
         const [data, error] = await Pitchers.addNewPitchersData(processedPitchers);
         return data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new pitcher row(s) to the database!`, added: data[1].affectedRows }) : next(error);

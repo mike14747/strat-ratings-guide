@@ -1,7 +1,6 @@
 const ExcelJS = require('exceljs');
 const fs = require('fs');
 const path = require('path');
-const cardedPlayers = require('./cardedPlayers');
 
 function convertNameToNameAndThrows(name) {
     return {
@@ -27,7 +26,7 @@ function convertBpToBpAndBpSi(bp) {
     };
 }
 
-function processPitchersInsertData(csvData, realTeams, rmlTeams) {
+function processPitchersInsertData(csvData, realTeams, rmlTeams, cardedPlayers) {
     return csvData.map(row => {
         const { pitcherName, throws } = convertNameToNameAndThrows(row.PITCHERS);
 
@@ -71,7 +70,7 @@ function processPitchersInsertData(csvData, realTeams, rmlTeams) {
             batting: row.BAT_B,
             stl: row.STL,
             spd: row.SPD,
-            rmlTeamId: row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.abbrevName.toLowerCase() === pitcherName.toLowerCase() && item.year === row.Year && item.ip === row.IP))]?.rmlTeam] || null,
+            rmlTeamId: row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.abbrev_name.toLowerCase() === pitcherName.toLowerCase() && item.year === row.Year && item.ip === row.IP))]?.rml_team] || null,
         };
 
         return Object.values(pitcherObj);

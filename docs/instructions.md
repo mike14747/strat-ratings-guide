@@ -75,6 +75,7 @@ I've added the following:
 I need to add:
 
 -   Functions to process the uploaded excel data (parsing, adding an abbrevName field, etc).
+-   Add html and js files to the frontend for uploading carded_players.xlsx.
 
 To get the necessary data from the Master Roster file to paste into **carded_players.xlsx**, use this formula on row 2 of the first column to the right of the "Carded" column:
 
