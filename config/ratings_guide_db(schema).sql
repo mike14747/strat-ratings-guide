@@ -176,11 +176,11 @@ CREATE TABLE `users` (
 
 CREATE TABLE `carded_players` (
     `year` int unsigned NOT NULL,
+    `abbrev_name` varchar(100) NOT NULL,
     `full_name` varchar(100) NOT NULL,
     `rml_team` varchar(100) NOT NULL,
     `ip` int unsigned DEFAULT NULL,
-    `ab` int unsigned DEFAULT NULL,
-    `abbrev_name` varchar(100) NOT NULL
+    `ab` int unsigned DEFAULT NULL
 );
 
 -- --------------------------------------------------------
