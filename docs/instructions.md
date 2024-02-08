@@ -16,43 +16,30 @@ The **/config/ratings_guide_db(seeds).sql** file will get imported into the data
 
 **NEW**: As of 2024-02-06, you no longer need to copy/paste the formatted data from the Master Roster to Quokka to have each player's IP rounded and their **abbrevName** added.
 
-Sort the Master Roster file by "Carded", then use this formula for all the carded players from the Master Roster (in a temporary "formatted" column at the end):
+I've added the following:
+
+-   "carded_players" table in the database and its schema.
+-   "carded-players" api route and controller.
+-   "cardedPlayers" data models.
+-   "carded_players.xlsx" file which will have its data uploaded to the database.
+-   Functions to process the uploaded excel data (parsing, rounding IP, adding an abbrevName field, etc).
+-   Added html and js files to the frontend for uploading "carded_players.xlsx".
+
+#### Using this new feature
+
+To get the necessary data from the Master Roster file to paste into **carded_players.xlsx**, sort the Master Roster file by "Carded", then by "Name" and use this formula on row 2 of the first column to the right of the "Carded" column:
 
 ```text
-="{ year: 2023, fullName: """&A2&""", rmlTeam: '"&C2&"', ip: '"&S2&"', ab: '"&Y2&"' },"
+=IF(INDEX($A$2:$Z$860, ROW($A$1:$A$859), {1,3,19,25})<>"", INDEX($A$2:$Z$860, ROW($A$1:$A$859), {1,3,19,25}), "")
 ```
+
+**NOTE**: You'll need to adjust the above formula based upon how many carded players are in each season's Master Roster file. The above formula is set for having 859 carded players.
 
 Highlight the formatted column data then copy/paste into the cardedPlayed array in: **/controllers/utils/cardedPlayers.js**. Each player's **abbrevName** will automatically be calculated.
 
-```js
-const cardedPlayers = [
-    { year: 2023, fullName: 'Abbott, Andrew', rmlTeam: 'Clown Princes', ip: '109.1', ab: '' },
-    { year: 2023, fullName: 'Abrams, CJ', rmlTeam: 'RockHounds', ip: '', ab: '563' },
-    // more players
-];
+Each time a significant number of RML team changes occur (eg: after drafts), this process can be repeated.
 
-function roundInnings(ip) {
-    if (!ip) return null;
-    if (ip.endsWith('.2')) {
-        return Math.ceil(ip);
-    } else {
-        return Math.floor(ip);
-    }
-}
-
-cardedPlayers.forEach((player, index) => {
-    const nameParts = player.fullName.split(', ');
-    cardedPlayers[index].abbrevName = nameParts[0] + ',' + nameParts[1][0];
-    cardedPlayers[index].ip = roundInnings(player.ip);
-    cardedPlayers[index].ab = parseInt(player.ab) || null;
-});
-
-module.exports = cardedPlayers;
-```
-
-The output of this will get pasted into **/controllers/utils/cardedPlayers.js** each time a significant number of RML team changes occur (eg: after drafts).
-
-**NOTE**: If you have a few players who have blank RML teams, here are some things to watch look for:
+**TIP**: If you have a few players who have blank RML teams, here are some things to watch look for:
 
 -   An erroneous space after the comma in a player's name in Strat's ratings disk.
 -   Spaces between last name segments don't match between the Master Roster and the Ratings Disk.
@@ -63,39 +50,11 @@ The output of this will get pasted into **/controllers/utils/cardedPlayers.js** 
 >
 > Usually, you'll be updating the **Master Roster** (and thus **/controllers/utils/cardedPlayers.js**) when the issues are with AB or IP not matching.
 
-**WORKING ON**:
-
-I've added the following:
-
--   "carded_players" table in the database schema.
--   "carded-players" api route and controller.
--   "cardedPlayers" data models.
--   "carded_players.xlsx" file which will be uploaded to the database.
-
-I need to add:
-
--   Functions to process the uploaded excel data (parsing, adding an abbrevName field, etc).
--   Add html and js files to the frontend for uploading carded_players.xlsx.
-
-To get the necessary data from the Master Roster file to paste into **carded_players.xlsx**, use this formula on row 2 of the first column to the right of the "Carded" column:
-
-```text
-=INDEX($A$2:$Z$860, ROW($A$1:$A$859), {1,3,19,25})
-```
-
-Using the above formula has an issue in that if an original cell is empty, it's showing up as zero in the copied cell.
-
-This formula fixes that issue.
-
-```text
-=IF(INDEX($A$2:$Z$860, ROW($A$1:$A$859), {1,3,19,25})<>"", INDEX($A$2:$Z$860, ROW($A$1:$A$859), {1,3,19,25}), "")
-```
-
 ---
 
-### Players with duplicate names
+### Players with duplicate name abbreviations
 
-**UPDATE**: As of 2024-01-22, you no longer need to be concerned with this. It is handled automatically by the hitter and pitcher controllers.
+**UPDATE**: As of 2024-01-22, you no longer need to be concerned with this. It is handled automatically by the hitter and pitcher controllers. The functions now match not only their abbreviated name, but also their IP and/or AB, so it's unlikely there will ever be a player with the same abbreviated name and IP/AB.
 
 ---
 
@@ -281,5 +240,3 @@ In these cases, just add their **rml_team_id** manually before reuploading the d
 
 -   The files that need to be uploaded are **/data/hitter_ratings.xlsx** and **/data/pitcher_ratings.xlsx**.
 -   Both files must have the proper columns... as just described earlier.
-
-**NOTE**: This next step isn't necessary if you added an apostrophe as a prefix to each pitcher's fielding rating.
