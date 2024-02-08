@@ -4,6 +4,7 @@ const ensureUploadsExists = require('./utils/ensureUploadsExists');
 const path = require('path');
 const fileUpload = require('express-fileupload');
 const cardedPlayersSchema = require('./validation/schema/cardedPlayersSchema');
+const { processCardedPlayersXLSX } = require('./utils/processCardedPlayersXLSX');
 
 router.get('/:year', async (req, res, next) => {
     try {
@@ -29,22 +30,19 @@ router.post('/', fileUpload(), async (req, res, next) => {
         const file = req.files.file;
 
         await ensureUploadsExists();
-        // await file.mv(path.join(__dirname, '/uploads/hitter_ratings.xlsx'), error => {
-        //     if (error) return next(error);
-        // });
+        await file.mv(path.join(__dirname, '/uploads/carded_players.xlsx'), error => {
+            if (error) return next(error);
+        });
 
-        // const [realTeams] = await getAllRealTeams();
-        // const [rmlTeamsArr] = await getAllRmlTeams();
-        // const rmlTeams = convertArrToObj(rmlTeamsArr);
-        // const xlsxData = await processHittersXLSX();
-        // await hittersSchema.validateAsync(xlsxData);
-        // const processedHitters = processHittersInsertData(xlsxData, realTeams, rmlTeams);
+        const xlsxData = await processCardedPlayersXLSX();
+        await cardedPlayersSchema.validateAsync(xlsxData);
+        const processedCardedPlayers = xlsxData.map(row => Object.values(row));
 
-        // const [data, error] = await Hitters.addNewHittersData(processedHitters);
-        // data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);
-
-        res.status(299).send('testing');
+        const [data, error] = await addNewCardedPlayerData(processedCardedPlayers);
+        data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);
     } catch (error) {
         next(error);
     }
 });
+
+module.exports = router;

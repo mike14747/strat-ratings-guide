@@ -39,6 +39,7 @@ app.get('/upload-multi-team-hitter-data', (req, res) => res.sendFile(path.join(_
 app.get('/pitcher-analysis', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/pitcher-analysis.html')));
 app.get('/upload-pitcher-data', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/upload-pitcher-data.html')));
 app.get('/upload-multi-team-pitcher-data', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/upload-multi-team-pitcher-data.html')));
+app.get('/upload-carded-player-data', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/upload-carded-player-data.html')));
 app.get('/login', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/login.html')));
 
 function authenticateToken(req, res, next) {

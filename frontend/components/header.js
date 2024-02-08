@@ -36,6 +36,7 @@ class NavComponent extends HTMLElement {
                 <a href="/pitcher-analysis"><li>View Pitcher Analysis</li></a>
                 <a href="/upload-pitcher-data"><li>Upload Pitcher Data</li></a>
                 <a href="/upload-multi-team-pitcher-data"><li>Upload Multi-Team Pitcher Data</li></a>
+                <a href="/upload-carded-player-data"><li>Upload Carded Player Data</li></a>
         </nav>
         `;
     }

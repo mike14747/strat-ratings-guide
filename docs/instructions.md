@@ -63,6 +63,33 @@ The output of this will get pasted into **/controllers/utils/cardedPlayers.js** 
 >
 > Usually, you'll be updating the **Master Roster** (and thus **/controllers/utils/cardedPlayers.js**) when the issues are with AB or IP not matching.
 
+**WORKING ON**:
+
+I've added the following:
+
+-   "carded_players" table in the database schema.
+-   "carded-players" api route and controller.
+-   "cardedPlayers" data models.
+-   "carded_players.xlsx" file which will be uploaded to the database.
+
+I need to add:
+
+-   Functions to process the uploaded excel data (parsing, adding an abbrevName field, etc).
+
+To get the necessary data from the Master Roster file to paste into **carded_players.xlsx**, use this formula on row 2 of the first column to the right of the "Carded" column:
+
+```text
+=INDEX($A$2:$Z$860, ROW($A$1:$A$859), {1,3,19,25})
+```
+
+Using the above formula has an issue in that if an original cell is empty, it's showing up as zero in the copied cell.
+
+This formula fixes that issue.
+
+```text
+=IF(INDEX($A$2:$Z$860, ROW($A$1:$A$859), {1,3,19,25})<>"", INDEX($A$2:$Z$860, ROW($A$1:$A$859), {1,3,19,25}), "")
+```
+
 ---
 
 ### Players with duplicate names
@@ -85,11 +112,11 @@ Those files will include the following sheets:
 -   TOT (this will just be a list of hitters and pitchers whose team is TOT, with their Name, Tm and AB/IP)
 
 > **UPDATE**: On January 8, 2024 I finished a new route and function to generate the above multi-team hitter AB/IP (respectively) on their individual teams.
-> 
+>
 > To use this route/function, you'll first need to update the data objects in **/controllers/utils/convertMultiTeamHittersToXLSX.js** and **/controllers/utils/convertMultiTeamPitchersToXLSX.js** using the current season's data from the **Original_with_Ind_Teams** and **Carded** sheets of **Hitter_Stats_202x.xlsx** and **Pitcher_Stats_202x.xlsx**.
-> 
+>
 > After that, you can run the server-only **npm run server**, then access these routes: **http://localhost:3001/api/hitters/create-multi-team-csv** and **http://localhost:3001/api/pitchers/create-multi-team-csv** using Postman to get the generated csv data for each.
-> 
+>
 > Paste the data into **/data/multi_team_hitters.xlsx** and **/data/multi_team_pitchers.xlsx**... followed by converting the text to columns.
 
 Each hitter/pitcher name will need to be changed to match the exact name Strat uses in the ratings guide (since that will be how the ratings guide links the multi-team hitters to this data). Strat's name format is **last name, comma, then first initial**... without a space after the comma... eg: **Doe,J**. Strat does include spaces in last names for some players (eg: De Los Santos,E).
@@ -180,9 +207,9 @@ For all the following files that will be uploading data, make sure to name the s
 -   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. I had some issues with St Louis in the past... (falsely?) thinking they used to be listed as **STN** instead of **SLN** in the past. Also, I removed the extra St Louis row (real_team_id = 32) from **real_teams.xlsx** file and change the original (real_team_id = 27) St Louis to SLN.
 
 > **IMPORTANT** (for both **Hitters.xlsx** and **Pitchers.xlsx**): Every hitter and pitcher that played for multiple teams needs to have their **TM** column manually set to **TOT**.
-> 
+>
 > In a normal season, there could be well over 100 players that need this team change. But, it's important to do because of the bp stadium ratings for each team have such an impact on the wOPS numbers.
-> 
+>
 > Multi-team players will not have wOPS ratings unless they also have their multi-team breakdowns added to **data/multi_team_hitters.xlsx** and **data/multi_team_pitchers.xlsx**.
 
 ---
@@ -253,6 +280,5 @@ In these cases, just add their **rml_team_id** manually before reuploading the d
 
 -   The files that need to be uploaded are **/data/hitter_ratings.xlsx** and **/data/pitcher_ratings.xlsx**.
 -   Both files must have the proper columns... as just described earlier.
-
 
 **NOTE**: This next step isn't necessary if you added an apostrophe as a prefix to each pitcher's fielding rating.

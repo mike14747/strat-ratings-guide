@@ -18,7 +18,7 @@ async function getCardedPlayersByYear(year) {
 
 async function addNewCardedPlayerData(playerArr = []) {
     if (playerArr.length > 0) {
-        const queryString = 'TRUNCATE TABLE carded_players;INSERT INTO carded_players (year, full_name, rml_team, ip, ab, abbrev_name) VALUES ?;SHOW WARNINGS;';
+        const queryString = 'TRUNCATE TABLE carded_players;INSERT INTO carded_players (year, abbrev_name, full_name, rml_team, ip, ab) VALUES ?;SHOW WARNINGS;';
         const queryParams = [playerArr];
         return await pool.query(queryString, queryParams)
             .then(([rows]) => [rows, null])
