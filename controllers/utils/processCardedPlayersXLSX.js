@@ -5,6 +5,13 @@ const path = require('path');
 async function processCardedPlayersXLSX() {
     try {
         const workbook = new ExcelJS.Workbook();
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        await sleep(1000);
+        const fileExits = fs.existsSync(path.join(__dirname, '../uploads/carded_players.xlsx'));
+        if (!fileExits) {
+            console.log('File does not exist');
+            return [];
+        }
         await workbook.xlsx.readFile(path.join(__dirname, '../uploads/carded_players.xlsx'));
 
         const xlsxData = [];

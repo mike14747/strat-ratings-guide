@@ -50,6 +50,8 @@ Each time a significant number of RML team changes occur (eg: after drafts), thi
 >
 > Usually, you'll be updating the **Master Roster** (and thus **/controllers/utils/cardedPlayers.js**) when the issues are with AB or IP not matching.
 
+**NOTE**: If you ever make changes to **/data/carded_players.xlsx**, you'll need to re-upload the hitter and pitcher ratings because the process of uploading them sets their RML teams... which may have changed in the carded player update.
+
 ---
 
 ### Players with duplicate name abbreviations
