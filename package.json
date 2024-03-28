@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "Converts Strat-O-Matic Baseball Ratings Guide to wOPS for hitters and pitchers",
     "main": "server.js",
+    "type":"module",
     "scripts": {
         "build": "rimraf dist && npx tsc",
         "start": "nodemon server.js",
@@ -24,9 +25,11 @@
     "devDependencies": {
         "@types/express": "^4.17.21",
         "@types/node": "^20.11.30",
+        "@typescript-eslint/eslint-plugin": "^7.4.0",
+        "@typescript-eslint/parser": "^7.4.0",
         "chai": "^5.0.3",
         "chai-http": "^4.4.0",
-        "eslint": "^8.56.0",
+        "eslint": "^8.57.0",
         "eslint-config-standard": "^17.1.0",
         "eslint-plugin-import": "^2.29.1",
         "eslint-plugin-node": "^11.1.0",
