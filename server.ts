@@ -1,10 +1,10 @@
-require('dotenv').config();
-const PORT = process.env.PORT || 3000;
-
+import 'dotenv/config';
 import express, { Express, Request, Response, NextFunction } from 'express';
-const app = express();
 import path from 'path';
 import helmet from 'helmet';
+
+const app: Express = express();
+const PORT = process.env.PORT || 3000;
 
 app.use(helmet());
 app.use(
