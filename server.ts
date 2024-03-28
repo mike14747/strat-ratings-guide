@@ -1,10 +1,10 @@
 require('dotenv').config();
 const PORT = process.env.PORT || 3000;
 
-const express = require('express');
+import express, {Express, Request, Response, NextFunction} from 'express';
 const app = express();
-const path = require('path');
-const helmet = require('helmet');
+import path from 'path';
+import helmet from 'helmet';
 
 app.use(helmet());
 app.use(
@@ -42,7 +42,7 @@ app.get('/upload-multi-team-pitcher-data', (req, res) => res.sendFile(path.join(
 app.get('/upload-carded-player-data', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/upload-carded-player-data.html')));
 app.get('/login', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/login.html')));
 
-function authenticateToken(req, res, next) {
+function authenticateToken(req: Request, res: Response, next: NextFunction) {
     // const authHeader = req.headers.authorization;
     // const token = authHeader && authHeader.split(' ')[1];
     // if (token == null) return res.sendStatus(401);
@@ -65,9 +65,14 @@ dbTest()
         app.use('/api/auth', require('./controllers/authController'));
         app.use('/api', authenticateToken, require('./controllers'));
     })
-    .catch((error) => {
+    .catch((error: unknown) => {
+        if (error instanceof Error) {
+            console.error(error.name + ': ' + error.message);
+        } else {
+            console.error(error);
+        }
         app.get('/api/*', (req, res) => {
-            res.status(500).json({ message: 'An error occurred connecting to the database! ' + error.message });
+            res.status(500).json({ message: 'An error occurred connecting to the database!' });
         });
     })
     .finally(() => {
