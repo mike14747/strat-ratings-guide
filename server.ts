@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express, { Express, Request, Response, NextFunction } from 'express';
 import path from 'path';
 import helmet from 'helmet';
+import testController from './controllers/testController';
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -57,11 +58,9 @@ function authenticateToken(req: Request, res: Response, next: NextFunction) {
 
 const { dbTest } = require('./config/connectionPool');
 
-app.use(require('./controllers/testController'));
-
 dbTest()
     .then(() => {
-        app.use('/api/test', authenticateToken, require('./controllers/testController'));
+        app.use('/api/test', authenticateToken, testController);
         app.use('/api/auth', require('./controllers/authController'));
         app.use('/api', authenticateToken, require('./controllers'));
     })

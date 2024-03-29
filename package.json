@@ -3,7 +3,6 @@
     "version": "1.0.0",
     "description": "Converts Strat-O-Matic Baseball Ratings Guide to wOPS for hitters and pitchers",
     "main": "server.js",
-    "type":"module",
     "scripts": {
         "build": "rimraf dist && npx tsc",
         "start": "nodemon server.js",
