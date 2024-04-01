@@ -19,7 +19,11 @@ const router = express.Router();
 //         });
 // });
 
-router.get('/', (req, res) => {
+const _test = (_val: string) => {
+    console.log('blah!');
+};
+
+router.get('/', (_req, res) => {
     res.send('This is the test controller.');
 });
 

@@ -33,17 +33,17 @@ app.use(express.static(path.join(__dirname, 'frontend/css')));
 app.use(express.static(path.join(__dirname, 'frontend/images')));
 app.use(express.static(path.join(__dirname, 'frontend/js')));
 
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/index.html')));
-app.get('/hitter-analysis', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/hitter-analysis.html')));
-app.get('/upload-hitter-data', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/upload-hitter-data.html')));
-app.get('/upload-multi-team-hitter-data', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/upload-multi-team-hitter-data.html')));
-app.get('/pitcher-analysis', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/pitcher-analysis.html')));
-app.get('/upload-pitcher-data', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/upload-pitcher-data.html')));
-app.get('/upload-multi-team-pitcher-data', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/upload-multi-team-pitcher-data.html')));
-app.get('/upload-carded-player-data', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/upload-carded-player-data.html')));
-app.get('/login', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/login.html')));
+app.get('/', (_req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/index.html')));
+app.get('/hitter-analysis', (_req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/hitter-analysis.html')));
+app.get('/upload-hitter-data', (_req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/upload-hitter-data.html')));
+app.get('/upload-multi-team-hitter-data', (_req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/upload-multi-team-hitter-data.html')));
+app.get('/pitcher-analysis', (_req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/pitcher-analysis.html')));
+app.get('/upload-pitcher-data', (_req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/upload-pitcher-data.html')));
+app.get('/upload-multi-team-pitcher-data', (_req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/upload-multi-team-pitcher-data.html')));
+app.get('/upload-carded-player-data', (_req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/upload-carded-player-data.html')));
+app.get('/login', (_req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/login.html')));
 
-function authenticateToken(req: Request, res: Response, next: NextFunction) {
+function authenticateToken(_req: Request, _res: Response, next: NextFunction) {
     // const authHeader = req.headers.authorization;
     // const token = authHeader && authHeader.split(' ')[1];
     // if (token == null) return res.sendStatus(401);
@@ -70,12 +70,12 @@ dbTest()
         } else {
             console.error(error);
         }
-        app.get('/api/*', (req, res) => {
+        app.get('/api/*', (_req, res) => {
             res.status(500).json({ message: 'An error occurred connecting to the database!' });
         });
     })
     .finally(() => {
-        app.get('*', (req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/404.html')));
+        app.get('*', (_req, res) => res.sendFile(path.join(__dirname, '/frontend/pages/404.html')));
     });
 
 app.listen(PORT, () => console.log('Server is listening on port ' + PORT));
