@@ -1,4 +1,26 @@
-const multiTeamPitchers = {
+type MultiTeamPitchers = {
+    name: string;
+    team: string;
+    throws: string;
+    ip: number;
+};
+
+type AllPitchers = {
+    id: string;
+    name: string;
+    team: string;
+    ip: number;
+};
+
+type PitchersOnIndividualTeams = {
+    year: number;
+    name: string;
+    throws: string;
+    team: string;
+    ip: string;
+};
+
+const multiTeamPitchers: Record<string, MultiTeamPitchers> = {
     anderch01: { name: 'Anderson, Chase', team: 'TOT', throws: 'R', ip: 86.1 },
     barlosc01: { name: 'Barlow, Scott', team: 'TOT', throws: 'R', ip: 68 },
     bickfph01: { name: 'Bickford, Phil', team: 'TOT', throws: 'R', ip: 67.1 },
@@ -62,7 +84,7 @@ const multiTeamPitchers = {
     yarbrry01: { name: 'Yarbrough, Ryan', team: 'TOT', throws: 'L', ip: 89.2 },
 };
 
-const allPitchers = [
+const allPitchers: AllPitchers[] = [
     { id: 'abadfe01', name: 'Fernando Abad*', team: 'COL', ip: 6.1 },
     { id: 'abbotan01', name: 'Andrew Abbott*', team: 'CIN', ip: 109.1 },
     { id: 'abbotco01', name: 'Cory Abbott', team: 'WSN', ip: 39.1 },
@@ -1131,8 +1153,8 @@ const allPitchers = [
 
 // =AE339&": {name: '"&B339&"', team: '"&D339&"', bats: '"&AF339&"', ab: "&H339&"},"
 
-function convertToCsv() {
-    const pitchersOnIndividualTeams = [];
+export function convertToCsv() {
+    const pitchersOnIndividualTeams: PitchersOnIndividualTeams[] = [];
 
     allPitchers.forEach(indTeam => {
         if (indTeam.team !== 'TOT' && multiTeamPitchers[indTeam.id]) {
@@ -1149,5 +1171,3 @@ function convertToCsv() {
 
     return pitchersOnIndividualTeams;
 }
-
-module.exports = convertToCsv;

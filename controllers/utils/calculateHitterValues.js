@@ -179,7 +179,7 @@ function multiBallparkCalculations(hitter, partials) {
         wopsVsL,
         wopsVsR,
     };
-};
+}
 
 function withoutBPCalculations(hitter) {
     return {

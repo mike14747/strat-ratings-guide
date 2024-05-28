@@ -2,18 +2,14 @@ import ExcelJS from 'exceljs';
 import * as fs from 'fs';
 import * as path from 'path';
 
-type XlsxData = {
-
-};
-
-type RealTeams = {
+type RealTeam = {
     id: number;
     real_team_abbrev: string;
     strat_abbrev: string;
     bbref_abbrev: string;
 };
 
-type CardedPlayers = {
+type CardedPlayer = {
     year: number;
     abbrev_name: string;
     full_name: string;
@@ -21,6 +17,48 @@ type CardedPlayers = {
     ip: number | null;
     ab: number | null;
 };
+
+type XlsxData = {
+    Year: number;
+    TM: string;
+    Location: string | null;
+    HITTERS: string;
+    INJ: number | null; // 5
+    AB: number;
+    SO_v_lhp: number;
+    BB_v_lhp: number;
+    HIT_v_lhp: number;
+    OB_v_lhp: number; // 10
+    TB_v_lhp: number;
+    HR_v_lhp: number;
+    BP_v_lhp: string;
+    CL_v_lhp: number;
+    DP_v_lhp: number; // 15
+    SO_v_rhp: number;
+    BB_v_rhp: number;
+    HIT_v_rhp: number;
+    OB_v_rhp: number;
+    TB_v_rhp: number; // 20
+    HR_v_rhp: number;
+    BP_v_rhp: string;
+    CL_v_rhp: number;
+    DP_v_rhp: number;
+    STEALING: string; // 25
+    STL: string;
+    SPD: number;
+    B: string;
+    H: string;
+    d_CA: string; // 30
+    d_1B: string;
+    d_2B: string;
+    d_3B: string;
+    d_SS: string;
+    d_LF: string; // 35
+    d_CF: string;
+    d_RF: string;
+    FIELDING: string;
+    rml_team_id: number | null;
+}
 
 function convertPositionlFielding(rating: string) {
     return rating !== '' ? `${rating.charAt(0)}e${parseInt(rating.slice(1, 3))}` : '';
@@ -53,7 +91,7 @@ function convertBpToBpWAndBpSi(bp: string) {
     };
 }
 
-export function processHittersInsertData(xlsxData, realTeams: RealTeams[], rmlTeams: Record<string, number>[], cardedPlayers: CardedPlayers[]) {
+export function processHittersInsertData(xlsxData: XlsxData[], realTeams: RealTeam[], rmlTeams: Record<string, number>[], cardedPlayers: CardedPlayer[]) {
     return xlsxData.map(row => {
         const { hitterName, bats } = convertNameToNameAndBats(row.HITTERS);
         const { bp: bpVsL, w: wVsL, bpsi: bpSiVsL } = convertBpToBpWAndBpSi(row.BP_v_lhp);
@@ -62,6 +100,13 @@ export function processHittersInsertData(xlsxData, realTeams: RealTeams[], rmlTe
         const foundTeam = realTeams.find(team => team.strat_abbrev === row.TM);
         if (!foundTeam) throw new RangeError(`No match found for the strat abbreviation (${row.TM}) in the .xlsx file!`);
         const { real_team_abbrev: realTeam, id: realTeamId } = foundTeam;
+
+        function calculateRMLTeamId() {
+            const index = cardedPlayers.findIndex((item) => (item.abbrev_name.toLowerCase() === hitterName.toLowerCase() && item.year === row.Year && item.ab === row.AB));
+            if (!index) return null;
+            return rmlTeams[index]?.rml_team || null;
+        }
+        const rmlTeamId = row.rml_team_id || calculateRMLTeamId();
 
         const hitterObj = {
             year: row.Year,
@@ -107,46 +152,45 @@ export function processHittersInsertData(xlsxData, realTeams: RealTeams[], rmlTe
             dCF: convertPositionlFielding(row.d_CF),
             dRF: convertPositionlFielding(row.d_RF),
             fielding: row.FIELDING,
-            rmlTeamId: row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.abbrev_name.toLowerCase() === hitterName.toLowerCase() && item.year === row.Year && item.ab === row.AB))]?.rml_team] || null,
+            // rmlTeamId: row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.abbrev_name.toLowerCase() === hitterName.toLowerCase() && item.year === row.Year && item.ab === row.AB))]?.rml_team] || null,
+            rmlTeamId,
         };
 
         return Object.values(hitterObj);
     });
 }
 
-// 39 possible columns (1 through 39)
-const castInts = [1, 6, 7, 8, 14, 15, 16, 17, 23, 24, 27]; // 11
-const castFloats = [9, 10, 11, 12, 18, 19, 20, 21]; // 8
-const castStrings = [2, 4, 13, 22, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38]; // 17
-const possibleNull = [3, 5, 39]; // 3
-
-function castCellTypes(column: number, value: string | number | null | undefined) {
-    if (castInts.includes(column)) {
-        if (!value) return 'n/a';
-        if (typeof value === 'number') return value;
-        return parseInt(value);
-    } else if (castFloats.includes(column)) {
-        if (!value) return 'n/a';
-        if (typeof value === 'number') return value;
-        return parseFloat(value);
-    } else if (castStrings.includes(column)) {
-        return value || value === 0 ? value.toString() : '';
-    } else if (possibleNull.includes(column)) {
-        if (typeof value === 'number') return value;
-        if (!value) return null;
-        return parseInt(value);
-    } else {
-        return value;
-    }
-}
-
 export async function processHittersXLSX() {
+    // 39 possible columns (1 through 39)
+    const castInts = [1, 6, 7, 8, 14, 15, 16, 17, 23, 24, 27]; // 11
+    const castFloats = [9, 10, 11, 12, 18, 19, 20, 21]; // 8
+    const castStrings = [2, 4, 13, 22, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38]; // 17
+    const possibleNull = [3, 5, 39]; // 3
+
+    function castCellTypes(column: number, value: string | number | null) {
+        if (castInts.includes(column)) {
+            if (typeof value === 'number' && Number.isInteger(value)) return value;
+            throw new Error('Value in column ' + column + ' was expected to be an integer, but instead was: ' + value);
+        } else if (castFloats.includes(column)) {
+            if (typeof value === 'number') return value;
+            throw new Error('Value in column ' + column + ' was expected to be a number, but instead was: ' + value);
+        } else if (castStrings.includes(column)) {
+            return value || value === 0 ? value.toString() : '';
+        } else if (possibleNull.includes(column)) {
+            if (typeof value === 'number') return value;
+            if (!value) return null;
+            return parseInt(value);
+        } else {
+            return value;
+        }
+    }
+
     try {
         const workbook = new ExcelJS.Workbook();
         await workbook.xlsx.readFile(path.join(__dirname, '../uploads/hitter_ratings.xlsx'));
 
-        const xlsxData = [];
-        const headingRow = [];
+        const xlsxData: Record<string, string | number | null>[] = [];
+        const headingRow: string[] = [];
 
         const worksheet = workbook.getWorksheet('hitter_ratings');
 
@@ -154,11 +198,20 @@ export async function processHittersXLSX() {
 
         worksheet.eachRow((row, rowNumber) => {
             if (rowNumber === 1) {
-                row.eachCell(cell => headingRow.push(cell.value));
+                row.eachCell(cell => {
+                    if (typeof (cell.value) !== 'string') {
+                        throw new Error('Header row cell was expected to be a string, but was instead: ' + cell.value);
+                    }
+                    headingRow.push(cell.value);
+                });
             } else {
-                const rowObject = {};
+                const rowObject: Record<string, string | number | null> = {};
                 row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-                    rowObject[headingRow[colNumber - 1]] = castCellTypes(colNumber, cell.value);
+                    if (typeof (cell.value) !== 'string' || typeof (cell.value) !== 'number' || cell.value === null || cell.value === undefined) {
+                        rowObject[headingRow[colNumber - 1]] = null;
+                    } else {
+                        rowObject[headingRow[colNumber - 1]] = castCellTypes(colNumber, cell.value);
+                    }
                 });
                 xlsxData.push(rowObject);
             }

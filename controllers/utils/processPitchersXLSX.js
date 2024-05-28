@@ -77,6 +77,26 @@ function processPitchersInsertData(csvData, realTeams, rmlTeams, cardedPlayers) 
     });
 }
 
+// 30 possible columns (1 through 30)
+const castInts = [1, 5, 6, 7, 13, 14, 15, 21, 22, 25, 26, 29]; // 12
+const castFloats = [8, 9, 10, 11, 16, 17, 18, 19]; // 8
+const castStrings = [2, 4, 12, 20, 23, 27, 28, 30]; // 8
+const possibleNull = [3, 30]; // 2
+
+function castCellTypes(column, value) {
+    if (castInts.includes(column)) {
+        return parseInt(value);
+    } else if (castFloats.includes(column)) {
+        return parseFloat(value);
+    } else if (castStrings.includes(column)) {
+        return value || value === 0 ? value.toString() : '';
+    } else if (possibleNull.includes(column)) {
+        return value ? parseInt(value) : null;
+    } else {
+        return value;
+    }
+}
+
 async function processPitchersXLSX() {
     try {
         const workbook = new ExcelJS.Workbook();
@@ -86,26 +106,6 @@ async function processPitchersXLSX() {
         const headingRow = [];
 
         const worksheet = workbook.getWorksheet('pitcher_ratings');
-
-        // 30 possible columns (1 through 30)
-        const castInts = [1, 5, 6, 7, 13, 14, 15, 21, 22, 25, 26, 29]; // 12
-        const castFloats = [8, 9, 10, 11, 16, 17, 18, 19]; // 8
-        const castStrings = [2, 4, 12, 20, 23, 27, 28, 30]; // 8
-        const possibleNull = [3, 30]; // 2
-
-        function castCellTypes(column, value) {
-            if (castInts.includes(column)) {
-                return parseInt(value);
-            } else if (castFloats.includes(column)) {
-                return parseFloat(value);
-            } else if (castStrings.includes(column)) {
-                return value || value === 0 ? value.toString() : '';
-            } else if (possibleNull.includes(column)) {
-                return value ? parseInt(value) : null;
-            } else {
-                return value;
-            }
-        }
 
         worksheet.eachRow((row, rowNumber) => {
             if (rowNumber === 1) {
