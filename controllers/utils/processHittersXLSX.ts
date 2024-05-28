@@ -1,12 +1,32 @@
-const ExcelJS = require('exceljs');
-const fs = require('fs');
-const path = require('path');
+import ExcelJS from 'exceljs';
+import * as fs from 'fs';
+import * as path from 'path';
 
-function convertPositionlFielding(rating) {
+type XlsxData = {
+
+};
+
+type RealTeams = {
+    id: number;
+    real_team_abbrev: string;
+    strat_abbrev: string;
+    bbref_abbrev: string;
+};
+
+type CardedPlayers = {
+    year: number;
+    abbrev_name: string;
+    full_name: string;
+    rml_team: string;
+    ip: number | null;
+    ab: number | null;
+};
+
+function convertPositionlFielding(rating: string) {
     return rating !== '' ? `${rating.charAt(0)}e${parseInt(rating.slice(1, 3))}` : '';
 }
 
-function convertNameToNameAndBats(name) {
+function convertNameToNameAndBats(name: string) {
     return {
         hitterName: (name.slice(-1) === '*' || name.slice(-1) === '+')
             ? name.slice(0, -1)
@@ -19,9 +39,9 @@ function convertNameToNameAndBats(name) {
     };
 }
 
-function convertBpToBpWAndBpSi(bp) {
+function convertBpToBpWAndBpSi(bp: string) {
     return {
-        bp: isNaN(bp.charAt(0))
+        bp: isNaN(parseInt(bp.charAt(0)))
             ? 0
             : bp.charAt(0),
         w: bp.charAt(0) === 'w'
@@ -33,7 +53,7 @@ function convertBpToBpWAndBpSi(bp) {
     };
 }
 
-function processHittersInsertData(xlsxData, realTeams, rmlTeams, cardedPlayers) {
+export function processHittersInsertData(xlsxData, realTeams: RealTeams[], rmlTeams: Record<string, number>[], cardedPlayers: CardedPlayers[]) {
     return xlsxData.map(row => {
         const { hitterName, bats } = convertNameToNameAndBats(row.HITTERS);
         const { bp: bpVsL, w: wVsL, bpsi: bpSiVsL } = convertBpToBpWAndBpSi(row.BP_v_lhp);
@@ -94,7 +114,33 @@ function processHittersInsertData(xlsxData, realTeams, rmlTeams, cardedPlayers) 
     });
 }
 
-async function processHittersXLSX() {
+// 39 possible columns (1 through 39)
+const castInts = [1, 6, 7, 8, 14, 15, 16, 17, 23, 24, 27]; // 11
+const castFloats = [9, 10, 11, 12, 18, 19, 20, 21]; // 8
+const castStrings = [2, 4, 13, 22, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38]; // 17
+const possibleNull = [3, 5, 39]; // 3
+
+function castCellTypes(column: number, value: string | number | null | undefined) {
+    if (castInts.includes(column)) {
+        if (!value) return 'n/a';
+        if (typeof value === 'number') return value;
+        return parseInt(value);
+    } else if (castFloats.includes(column)) {
+        if (!value) return 'n/a';
+        if (typeof value === 'number') return value;
+        return parseFloat(value);
+    } else if (castStrings.includes(column)) {
+        return value || value === 0 ? value.toString() : '';
+    } else if (possibleNull.includes(column)) {
+        if (typeof value === 'number') return value;
+        if (!value) return null;
+        return parseInt(value);
+    } else {
+        return value;
+    }
+}
+
+export async function processHittersXLSX() {
     try {
         const workbook = new ExcelJS.Workbook();
         await workbook.xlsx.readFile(path.join(__dirname, '../uploads/hitter_ratings.xlsx'));
@@ -104,25 +150,7 @@ async function processHittersXLSX() {
 
         const worksheet = workbook.getWorksheet('hitter_ratings');
 
-        // 39 possible columns (1 through 39)
-        const castInts = [1, 6, 7, 8, 14, 15, 16, 17, 23, 24, 27]; // 11
-        const castFloats = [9, 10, 11, 12, 18, 19, 20, 21]; // 8
-        const castStrings = [2, 4, 13, 22, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38]; // 17
-        const possibleNull = [3, 5, 39]; // 3
-
-        function castCellTypes(column, value) {
-            if (castInts.includes(column)) {
-                return parseInt(value);
-            } else if (castFloats.includes(column)) {
-                return parseFloat(value);
-            } else if (castStrings.includes(column)) {
-                return value || value === 0 ? value.toString() : '';
-            } else if (possibleNull.includes(column)) {
-                return value || value === 0 ? parseInt(value) : null;
-            } else {
-                return value;
-            }
-        }
+        if (!worksheet) return null;
 
         worksheet.eachRow((row, rowNumber) => {
             if (rowNumber === 1) {
@@ -144,8 +172,3 @@ async function processHittersXLSX() {
         return null;
     }
 }
-
-module.exports = {
-    processHittersXLSX,
-    processHittersInsertData,
-};

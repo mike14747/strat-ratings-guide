@@ -1,8 +1,8 @@
-const path = require('path');
-const fs = require('fs');
+import * as fs from 'fs';
+import * as path from 'path';
 
-function ensureUploadsExists() {
-    return new Promise((resolve, reject) => {
+export async function ensureUploadsExists() {
+    return new Promise<void>((resolve, reject) => {
         fs.promises.access(path.join(__dirname, '../uploads'), fs.constants.F_OK)
             .then(() => resolve())
             .catch(() => {
@@ -12,5 +12,3 @@ function ensureUploadsExists() {
             });
     });
 }
-
-module.exports = ensureUploadsExists;

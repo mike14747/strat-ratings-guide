@@ -1,13 +1,10 @@
-const pool = require('../config/connectionPool.js').getDb();
+import { getDb } from '../config/connectionPool';
+const pool = getDb();
 
-async function getAllRmlTeams() {
+export async function getAllRmlTeams() {
     const queryString = 'SELECT id, rml_team_name FROM rml_teams';
-    const queryParams = [];
+    const queryParams: never[] = [];
     return await pool.query(queryString, queryParams)
         .then(([rows]) => [rows, null])
         .catch(error => [null, error]);
 }
-
-module.exports = {
-    getAllRmlTeams,
-};

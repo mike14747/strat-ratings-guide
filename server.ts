@@ -2,7 +2,10 @@ import 'dotenv/config';
 import express, { Express, Request, Response, NextFunction } from 'express';
 import path from 'path';
 import helmet from 'helmet';
+import { dbTest } from './config/connectionPool';
 import testController from './controllers/testController';
+import authController from './controllers/authController';
+import mainController from './controllers';
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -22,8 +25,6 @@ app.use(
         },
     }),
 );
-
-// const jwt = require('jsonwebtoken');
 
 app.use(express.urlencoded({ limit: '20mb', parameterLimit: 100000, extended: true }));
 app.use(express.json({ limit: '20mb' }));
@@ -56,13 +57,11 @@ function authenticateToken(_req: Request, _res: Response, next: NextFunction) {
     next();
 }
 
-const { dbTest } = require('./config/connectionPool');
-
 dbTest()
     .then(() => {
         app.use('/api/test', authenticateToken, testController);
-        app.use('/api/auth', require('./controllers/authController'));
-        app.use('/api', authenticateToken, require('./controllers'));
+        app.use('/api/auth', authController);
+        app.use('/api', authenticateToken, mainController);
     })
     .catch((error: unknown) => {
         if (error instanceof Error) {
@@ -80,4 +79,4 @@ dbTest()
 
 app.listen(PORT, () => console.log('Server is listening on port ' + PORT));
 
-module.exports = app;
+export default app;
