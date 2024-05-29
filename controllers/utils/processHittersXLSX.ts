@@ -170,16 +170,20 @@ export async function processHittersXLSX() {
     function castCellTypes(column: number, value: string | number | null) {
         if (castInts.includes(column)) {
             if (typeof value === 'number' && Number.isInteger(value)) return value;
-            throw new Error('Value in column ' + column + ' was expected to be an integer, but instead was: ' + value);
+            if (typeof value === 'string' && /^\d+$/.test(value)) return parseInt(value, 10);
+            throw new TypeError(`Value in column: "${column}" was expected to be an "integer", but instead was: "${value}"... a "${typeof (value)}" type.`);
         } else if (castFloats.includes(column)) {
             if (typeof value === 'number') return value;
-            throw new Error('Value in column ' + column + ' was expected to be a number, but instead was: ' + value);
+            if (typeof value === 'string' && /^-?\d*\.?\d+$/.test(value)) return parseFloat(value);
+            // if the value is a string, the regular expression matches an optional leading minus sign, zero or more digits before an optional decimal point, an optional decimal point, then one or more digits after an optional decimal point (to confirm it is a string containing only number characters... including decimal numbers)
+            throw new TypeError(`Value in column: "${column}" was expected to be a "number", but instead was: "${value}"... a "${typeof (value)}" type.`);
         } else if (castStrings.includes(column)) {
             return value || value === 0 ? value.toString() : '';
         } else if (possibleNull.includes(column)) {
-            if (typeof value === 'number') return value;
             if (!value) return null;
-            return parseInt(value);
+            if (typeof value === 'number' && Number.isInteger(value)) return value;
+            if (typeof value === 'string' && /^\d+$/.test(value)) return parseInt(value, 10);
+            throw new TypeError(`Column: "${column}" was expected to be either "empty" or an "integer", but instead was: "${value}"... a "${typeof (value)}" type.`);
         } else {
             return value;
         }
@@ -200,15 +204,15 @@ export async function processHittersXLSX() {
             if (rowNumber === 1) {
                 row.eachCell(cell => {
                     if (typeof (cell.value) !== 'string') {
-                        throw new Error('Header row cell was expected to be a string, but was instead: ' + cell.value);
+                        throw new TypeError(`Header row cell was expected to be a "string", but was instead: "${cell.value}"... a "${typeof (cell.value)}" type.`);
                     }
                     headingRow.push(cell.value);
                 });
             } else {
                 const rowObject: Record<string, string | number | null> = {};
                 row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-                    if (typeof (cell.value) !== 'string' || typeof (cell.value) !== 'number' || cell.value === null || cell.value === undefined) {
-                        rowObject[headingRow[colNumber - 1]] = null;
+                    if (typeof (cell.value) !== 'string' || typeof (cell.value) !== 'number' || cell.value !== null || cell.value !== undefined) {
+                        throw new TypeError(`Cell in row/column: "${rowNumber}/${colNumber}" was expected to be a "string|number|null|undefined", but was instead: ${cell.value}... a "${typeof (cell.value)}" type.`);
                     } else {
                         rowObject[headingRow[colNumber - 1]] = castCellTypes(colNumber, cell.value);
                     }
@@ -221,7 +225,10 @@ export async function processHittersXLSX() {
 
         return xlsxData;
     } catch (error) {
-        console.log(error);
-        return null;
+        if (error instanceof Error) {
+            console.error(error.name + ': ' + error.message);
+        } else {
+            console.error('An unknown error occurred:', error);
+        }
     }
 }
