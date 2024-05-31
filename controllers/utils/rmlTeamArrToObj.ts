@@ -3,8 +3,12 @@ type RmlTeam = {
     id: number;
 };
 
+type RmlTeamObj = {
+    [key: string]: number;
+}
+
 export function convertArrToObj(arr: RmlTeam[]) {
-    const obj: Record<string, number> = {};
+    const obj: RmlTeamObj = {};
 
     arr.forEach((elem) => {
         obj[elem.rml_team_name] = elem.id;

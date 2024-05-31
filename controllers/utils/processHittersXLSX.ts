@@ -1,12 +1,17 @@
 import ExcelJS from 'exceljs';
 import * as fs from 'fs';
 import * as path from 'path';
+import castCellTypes from './castCellTypes';
 
 type RealTeam = {
     id: number;
     real_team_abbrev: string;
     strat_abbrev: string;
     bbref_abbrev: string;
+};
+
+type RmlTeam= {
+    [key: string]: number;
 };
 
 type CardedPlayer = {
@@ -91,7 +96,7 @@ function convertBpToBpWAndBpSi(bp: string) {
     };
 }
 
-export function processHittersInsertData(xlsxData: XlsxData[], realTeams: RealTeam[], rmlTeams: Record<string, number>[], cardedPlayers: CardedPlayer[]) {
+export function processHittersInsertData(xlsxData: XlsxData[], realTeams: RealTeam[], rmlTeams: RmlTeam, cardedPlayers: CardedPlayer[]) {
     return xlsxData.map(row => {
         const { hitterName, bats } = convertNameToNameAndBats(row.HITTERS);
         const { bp: bpVsL, w: wVsL, bpsi: bpSiVsL } = convertBpToBpWAndBpSi(row.BP_v_lhp);
@@ -100,13 +105,6 @@ export function processHittersInsertData(xlsxData: XlsxData[], realTeams: RealTe
         const foundTeam = realTeams.find(team => team.strat_abbrev === row.TM);
         if (!foundTeam) throw new RangeError(`No match found for the strat abbreviation (${row.TM}) in the .xlsx file!`);
         const { real_team_abbrev: realTeam, id: realTeamId } = foundTeam;
-
-        function calculateRMLTeamId() {
-            const index = cardedPlayers.findIndex((item) => (item.abbrev_name.toLowerCase() === hitterName.toLowerCase() && item.year === row.Year && item.ab === row.AB));
-            if (!index) return null;
-            return rmlTeams[index]?.rml_team || null;
-        }
-        const rmlTeamId = row.rml_team_id || calculateRMLTeamId();
 
         const hitterObj = {
             year: row.Year,
@@ -152,8 +150,7 @@ export function processHittersInsertData(xlsxData: XlsxData[], realTeams: RealTe
             dCF: convertPositionlFielding(row.d_CF),
             dRF: convertPositionlFielding(row.d_RF),
             fielding: row.FIELDING,
-            // rmlTeamId: row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.abbrev_name.toLowerCase() === hitterName.toLowerCase() && item.year === row.Year && item.ab === row.AB))]?.rml_team] || null,
-            rmlTeamId,
+            rmlTeamId: row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.abbrev_name.toLowerCase() === hitterName.toLowerCase() && item.year === row.Year && item.ab === row.AB))]?.rml_team] || null,
         };
 
         return Object.values(hitterObj);
@@ -161,34 +158,6 @@ export function processHittersInsertData(xlsxData: XlsxData[], realTeams: RealTe
 }
 
 export async function processHittersXLSX() {
-    // 39 possible columns (1 through 39)
-    const castInts = [1, 6, 7, 8, 14, 15, 16, 17, 23, 24, 27]; // 11
-    const castFloats = [9, 10, 11, 12, 18, 19, 20, 21]; // 8
-    const castStrings = [2, 4, 13, 22, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38]; // 17
-    const possibleNull = [3, 5, 39]; // 3
-
-    function castCellTypes(column: number, value: string | number | null) {
-        if (castInts.includes(column)) {
-            if (typeof value === 'number' && Number.isInteger(value)) return value;
-            if (typeof value === 'string' && /^\d+$/.test(value)) return parseInt(value, 10);
-            throw new TypeError(`Value in column: "${column}" was expected to be an "integer", but instead was: "${value}"... a "${typeof (value)}" type.`);
-        } else if (castFloats.includes(column)) {
-            if (typeof value === 'number') return value;
-            if (typeof value === 'string' && /^-?\d*\.?\d+$/.test(value)) return parseFloat(value);
-            // if the value is a string, the regular expression matches an optional leading minus sign, zero or more digits before an optional decimal point, an optional decimal point, then one or more digits after an optional decimal point (to confirm it is a string containing only number characters... including decimal numbers)
-            throw new TypeError(`Value in column: "${column}" was expected to be a "number", but instead was: "${value}"... a "${typeof (value)}" type.`);
-        } else if (castStrings.includes(column)) {
-            return value || value === 0 ? value.toString() : '';
-        } else if (possibleNull.includes(column)) {
-            if (!value) return null;
-            if (typeof value === 'number' && Number.isInteger(value)) return value;
-            if (typeof value === 'string' && /^\d+$/.test(value)) return parseInt(value, 10);
-            throw new TypeError(`Column: "${column}" was expected to be either "empty" or an "integer", but instead was: "${value}"... a "${typeof (value)}" type.`);
-        } else {
-            return value;
-        }
-    }
-
     try {
         const workbook = new ExcelJS.Workbook();
         await workbook.xlsx.readFile(path.join(__dirname, '../uploads/hitter_ratings.xlsx'));
@@ -209,12 +178,20 @@ export async function processHittersXLSX() {
                     headingRow.push(cell.value);
                 });
             } else {
+                const castingTypes = {
+                    // 39 possible columns (1 through 39)
+                    castInts: [1, 6, 7, 8, 14, 15, 16, 17, 23, 24, 27], // 11
+                    castFloats: [9, 10, 11, 12, 18, 19, 20, 21], // 8
+                    castStrings: [2, 4, 13, 22, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38], // 17
+                    possibleNull: [3, 5, 39], // 3
+                };
+
                 const rowObject: Record<string, string | number | null> = {};
                 row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
                     if (typeof (cell.value) !== 'string' || typeof (cell.value) !== 'number' || cell.value !== null || cell.value !== undefined) {
                         throw new TypeError(`Cell in row/column: "${rowNumber}/${colNumber}" was expected to be a "string|number|null|undefined", but was instead: ${cell.value}... a "${typeof (cell.value)}" type.`);
                     } else {
-                        rowObject[headingRow[colNumber - 1]] = castCellTypes(colNumber, cell.value);
+                        rowObject[headingRow[colNumber - 1]] = castCellTypes(rowNumber, colNumber, cell.value, castingTypes);
                     }
                 });
                 xlsxData.push(rowObject);
