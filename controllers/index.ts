@@ -1,5 +1,6 @@
 import express, { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import { CustomError } from '../types';
+import hittersController from './hittersController';
 
 const router = express.Router();
 
@@ -7,7 +8,7 @@ router.get('/', (_req, res) => {
     res.status(200).send('Sending this from the /api root!');
 });
 
-// router.use('/hitters', require('./hittersController'));
+router.use('/hitters', hittersController);
 
 // router.use('/pitchers', require('./pitchersController'));
 

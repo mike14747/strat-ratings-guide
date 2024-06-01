@@ -1,8 +1,6 @@
-const { OB_VALUE, TB_VALUE, CLUTCH_ADJUST_VALUE } = require('./constants');
-
-const { bpHRAdjCalculate, bpSiAdjCalculate } = require('./bpCalculateFunctions');
-
-const roundTo = require('./roundTo');
+import { OB_VALUE, TB_VALUE, CLUTCH_ADJUST_VALUE } from './constants';
+import { bpHRAdjCalculate, bpSiAdjCalculate } from './bpCalculateFunctions';
+import { roundTo } from './roundTo';
 
 function processWColumn(w, bpsi) {
     let wCol = '';
@@ -206,7 +204,7 @@ function mainCalculations(hitter, partials = []) {
     }
 }
 
-function calculateHitterValues(hittersArr, multiData) {
+export function calculateHitterValues(hittersArr, multiData) {
     try {
         const hittersTeamsAndABPerTeam = JSON.parse(JSON.stringify(multiData));
 
@@ -265,5 +263,3 @@ function calculateHitterValues(hittersArr, multiData) {
         console.log(error);
     }
 }
-
-module.exports = calculateHitterValues;

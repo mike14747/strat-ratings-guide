@@ -1,6 +1,6 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
-const hittersSchema = Joi.array().items({
+export const hittersSchema = Joi.array().items({
     Year: Joi.number().integer().min(1900).max(2050).required(),
     TM: Joi.string().length(3).required(),
     Location: Joi.optional(),
@@ -41,5 +41,3 @@ const hittersSchema = Joi.array().items({
     FIELDING: Joi.string().allow('').required(),
     rml_team_id: Joi.number().integer().min(1).allow(null).required(),
 });
-
-module.exports = hittersSchema;

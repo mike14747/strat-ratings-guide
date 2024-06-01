@@ -2,17 +2,7 @@ import ExcelJS from 'exceljs';
 import * as fs from 'fs';
 import * as path from 'path';
 import castCellTypes from './castCellTypes';
-
-type RealTeam = {
-    id: number;
-    real_team_abbrev: string;
-    strat_abbrev: string;
-    bbref_abbrev: string;
-};
-
-type RmlTeam= {
-    [key: string]: number;
-};
+import type { RealTeam, RmlTeam } from '../../types';
 
 type CardedPlayer = {
     year: number;
