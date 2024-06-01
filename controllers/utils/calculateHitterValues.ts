@@ -2,7 +2,7 @@ import { OB_VALUE, TB_VALUE, CLUTCH_ADJUST_VALUE } from './constants';
 import { bpHRAdjCalculate, bpSiAdjCalculate } from './bpCalculateFunctions';
 import { roundTo } from './roundTo';
 
-function processWColumn(w, bpsi) {
+function processWColumn(w: string, bpsi: number) {
     let wCol = '';
 
     if (w === 'w') wCol += 'w';
@@ -11,7 +11,7 @@ function processWColumn(w, bpsi) {
     return wCol;
 }
 
-function wOPSCalculate(ob, tb, dp, wAdj) {
+function wOPSCalculate(ob: number, tb: number, dp: number, wAdj: number) {
     return ((OB_VALUE * ob) + (TB_VALUE * tb) - (OB_VALUE * 20 * dp / 108)) - wAdj;
 }
 

@@ -8,7 +8,7 @@ import { processHittersXLSX, processHittersInsertData } from './utils/processHit
 import { processMultiTeamHittersXLSX, processMultiTeamHittersInsertData } from './utils/processMultiTeamHittersXLSX';
 import { ensureUploadsExists } from './utils/ensureUploadsExists';
 import { calculateHitterValues } from './utils/calculateHitterValues';
-import fileUpload from 'express-fileupload';
+import fileUpload, { UploadedFile } from 'express-fileupload';
 import { hittersSchema } from './validation/schema/hittersSchema';
 import { multiTeamHittersSchema } from './validation/schema/multiTeamHittersSchema';
 import { convertToCsv } from './utils/convertMultiTeamHittersToCsv';
@@ -47,51 +47,51 @@ router.get('/:year', async (req, res, next) => {
     }
 });
 
-// router.post('/', fileUpload(), async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//         if (req.files === null) return res.status(400).json({ message: 'No file was uploaded!' });
-//         const file = req.files.file;
+router.post('/', fileUpload(), async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        if (!req.files) return res.status(400).json({ message: 'No file was uploaded!' });
+        const file = req.files.file as UploadedFile;
 
-//         await ensureUploadsExists();
-//         await file.mv(path.join(__dirname, '/uploads/hitter_ratings.xlsx'), error => {
-//             if (error) return next(error);
-//         });
+        await ensureUploadsExists();
+        await file.mv(path.join(__dirname, '/uploads/hitter_ratings.xlsx'), error => {
+            if (error) return next(error);
+        });
 
-//         const [realTeams] = await getAllRealTeams();
-//         const [rmlTeamsArr] = await getAllRmlTeams();
-//         const rmlTeams = convertArrToObj(rmlTeamsArr);
-//         const [cardedPlayers] = await getAllCardedPlayers();
-//         const xlsxData = await processHittersXLSX();
-//         await hittersSchema.validateAsync(xlsxData);
-//         const processedHitters = processHittersInsertData(xlsxData, realTeams, rmlTeams, cardedPlayers);
+        const [realTeams] = await getAllRealTeams();
+        const [rmlTeamsArr] = await getAllRmlTeams();
+        const rmlTeams = convertArrToObj(rmlTeamsArr);
+        const [cardedPlayers] = await getAllCardedPlayers();
+        const xlsxData = await processHittersXLSX();
+        await hittersSchema.validateAsync(xlsxData);
+        const processedHitters = processHittersInsertData(xlsxData, realTeams, rmlTeams, cardedPlayers);
 
-//         const [data, error] = await addNewHittersData(processedHitters);
-//         data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);
-//     } catch (error) {
-//         next(error);
-//     }
-// });
+        const [data, error] = await addNewHittersData(processedHitters);
+        data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);
+    } catch (error) {
+        next(error);
+    }
+});
 
-// router.post('/multi-team', fileUpload(), async (req, res, next) => {
-//     try {
-//         if (req.files === null) return res.status(400).json({ message: 'No file was uploaded!' });
-//         const file = req.files.file;
+router.post('/multi-team', fileUpload(), async (req, res, next) => {
+    try {
+        if (!req.files) return res.status(400).json({ message: 'No file was uploaded!' });
+        const file = req.files.file as UploadedFile;
 
-//         await ensureUploadsExists();
-//         await file.mv(path.join(__dirname, '/uploads/multi_team_hitters.xlsx'), error => {
-//             if (error) return next(error);
-//         });
+        await ensureUploadsExists();
+        await file.mv(path.join(__dirname, '/uploads/multi_team_hitters.xlsx'), error => {
+            if (error) return next(error);
+        });
 
-//         const [realTeams] = await getAllRealTeams();
-//         const xlsxData = await processMultiTeamHittersXLSX();
-//         await multiTeamHittersSchema.validateAsync(xlsxData);
-//         const processedMultiTeamHitters = processMultiTeamHittersInsertData(xlsxData, realTeams);
+        const [realTeams] = await getAllRealTeams();
+        const xlsxData = await processMultiTeamHittersXLSX();
+        await multiTeamHittersSchema.validateAsync(xlsxData);
+        const processedMultiTeamHitters = processMultiTeamHittersInsertData(xlsxData, realTeams);
 
-//         const [data, error] = await addMultiTeamHittersData(processedMultiTeamHitters);
-//         data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);
-//     } catch (error) {
-//         next(error);
-//     }
-// });
+        const [data, error] = await addMultiTeamHittersData(processedMultiTeamHitters);
+        data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);
+    } catch (error) {
+        next(error);
+    }
+});
 
 export default router;
