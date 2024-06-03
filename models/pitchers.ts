@@ -25,7 +25,7 @@ export async function getSeasonsListWithPitcherData() {
         .catch(error => [null, error]);
 }
 
-export async function addNewPitchersData(pitcherArr = []) {
+export async function addNewPitchersData(pitcherArr: (string | number | null)[][] = []) {
     if (pitcherArr.length > 0) {
         const queryString = 'TRUNCATE TABLE pitcher_ratings;INSERT INTO pitcher_ratings (year, real_team, real_team_id, name, throws, ip, so_v_l, bb_v_l, hit_v_l, ob_v_l, tb_v_l, hr_v_l, bp_hr_v_l, bp_si_v_l, dp_v_l, so_v_r, bb_v_r, hit_v_r, ob_v_r, tb_v_r, hr_v_r, bp_hr_v_r, bp_si_v_r, dp_v_r, hold, endurance, fielding, balk, wp, batting_b, stl, spd, rml_team_id) VALUES ?;';
         const queryParams = [pitcherArr];
@@ -37,7 +37,7 @@ export async function addNewPitchersData(pitcherArr = []) {
     }
 }
 
-export async function addMultiTeamPitchersData(pitcherArr = []) {
+export async function addMultiTeamPitchersData(pitcherArr: (string | number)[][] = []) {
     if (pitcherArr.length > 0) {
         const queryString = 'TRUNCATE TABLE multi_team_pitchers;INSERT INTO multi_team_pitchers (year, real_team_id, pitcher, throws, ip) VALUES ?;';
         const queryParams = [pitcherArr];

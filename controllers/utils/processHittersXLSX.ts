@@ -2,57 +2,49 @@ import ExcelJS from 'exceljs';
 import * as fs from 'fs';
 import * as path from 'path';
 import castCellTypes from './castCellTypes';
-import type { RealTeam, RmlTeam } from '../../types';
-
-type CardedPlayer = {
-    year: number;
-    abbrev_name: string;
-    full_name: string;
-    rml_team: string;
-    ip: number | null;
-    ab: number | null;
-};
+import type { RealTeam, RmlTeam, CardedPlayer } from '../../types';
 
 type XlsxData = {
-    Year: number;
-    TM: string;
-    Location: string | null;
-    HITTERS: string;
-    INJ: number | null; // 5
-    AB: number;
-    SO_v_lhp: number;
-    BB_v_lhp: number;
-    HIT_v_lhp: number;
-    OB_v_lhp: number; // 10
-    TB_v_lhp: number;
-    HR_v_lhp: number;
-    BP_v_lhp: string;
-    CL_v_lhp: number;
-    DP_v_lhp: number; // 15
-    SO_v_rhp: number;
-    BB_v_rhp: number;
-    HIT_v_rhp: number;
-    OB_v_rhp: number;
-    TB_v_rhp: number; // 20
-    HR_v_rhp: number;
-    BP_v_rhp: string;
-    CL_v_rhp: number;
-    DP_v_rhp: number;
-    STEALING: string; // 25
-    STL: string;
-    SPD: number;
-    B: string;
-    H: string;
-    d_CA: string; // 30
-    d_1B: string;
-    d_2B: string;
-    d_3B: string;
-    d_SS: string;
-    d_LF: string; // 35
-    d_CF: string;
-    d_RF: string;
-    FIELDING: string;
-    rml_team_id: number | null;
+    [key: string]: string | number | null,
+    Year: number,
+    TM: string,
+    Location: string | null,
+    HITTERS: string,
+    INJ: number | null, // 5
+    AB: number,
+    SO_v_lhp: number,
+    BB_v_lhp: number,
+    HIT_v_lhp: number,
+    OB_v_lhp: number, // 10
+    TB_v_lhp: number,
+    HR_v_lhp: number,
+    BP_v_lhp: string,
+    CL_v_lhp: number,
+    DP_v_lhp: number, // 15
+    SO_v_rhp: number,
+    BB_v_rhp: number,
+    HIT_v_rhp: number,
+    OB_v_rhp: number,
+    TB_v_rhp: number, // 20
+    HR_v_rhp: number,
+    BP_v_rhp: string,
+    CL_v_rhp: number,
+    DP_v_rhp: number,
+    STEALING: string, // 25
+    STL: string,
+    SPD: number,
+    B: string,
+    H: string,
+    d_CA: string, // 30
+    d_1B: string,
+    d_2B: string,
+    d_3B: string,
+    d_SS: string,
+    d_LF: string, // 35
+    d_CF: string,
+    d_RF: string,
+    FIELDING: string,
+    rml_team_id: number | null,
 }
 
 function convertPositionlFielding(rating: string) {
@@ -152,11 +144,10 @@ export async function processHittersXLSX() {
         const workbook = new ExcelJS.Workbook();
         await workbook.xlsx.readFile(path.join(__dirname, '../uploads/hitter_ratings.xlsx'));
 
-        const xlsxData: Record<string, string | number | null>[] = [];
+        const xlsxData: XlsxData[] = [];
         const headingRow: string[] = [];
 
         const worksheet = workbook.getWorksheet('hitter_ratings');
-
         if (!worksheet) return null;
 
         worksheet.eachRow((row, rowNumber) => {
@@ -176,10 +167,10 @@ export async function processHittersXLSX() {
                     possibleNull: [3, 5, 39], // 3
                 };
 
-                const rowObject: Record<string, string | number | null> = {};
+                const rowObject = {} as XlsxData;
                 row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
                     if (typeof (cell.value) !== 'string' || typeof (cell.value) !== 'number' || cell.value !== null || cell.value !== undefined) {
-                        throw new TypeError(`Cell in row/column: "${rowNumber}/${colNumber}" was expected to be a "string|number|null|undefined", but was instead: ${cell.value}... a "${typeof (cell.value)}" type.`);
+                        throw new TypeError(`Cell in row/column: "${rowNumber}/${colNumber}" was expected to be a "string | number | null | undefined", but was instead: ${cell.value}... a "${typeof (cell.value)}" type.`);
                     } else {
                         rowObject[headingRow[colNumber - 1]] = castCellTypes(rowNumber, colNumber, cell.value, castingTypes);
                     }

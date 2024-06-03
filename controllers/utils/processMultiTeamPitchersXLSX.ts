@@ -1,8 +1,9 @@
-const ExcelJS = require('exceljs');
-const fs = require('fs');
-const path = require('path');
+import ExcelJS from 'exceljs';
+import * as fs from 'fs';
+import * as path from 'path';
+import type { RealTeam } from '../../types';
 
-function processMultiTeamPitchersInsertData(xlsxData, realTeams) {
+export function processMultiTeamPitchersInsertData(xlsxData, realTeams) {
     return xlsxData.map(row => {
         const foundTeam = realTeams.find(team => team.bbref_abbrev === row.Tm);
         if (!foundTeam) throw new RangeError(`No match found for the bbref abbreviation (${row.Tm}) in the .xlsx file!`);
@@ -20,7 +21,7 @@ function processMultiTeamPitchersInsertData(xlsxData, realTeams) {
     });
 }
 
-async function processMultiTeamPitchersXLSX() {
+export async function processMultiTeamPitchersXLSX() {
     try {
         const workbook = new ExcelJS.Workbook();
         await workbook.xlsx.readFile(path.join(__dirname, '../uploads/multi_team_pitchers.xlsx'));
@@ -50,8 +51,3 @@ async function processMultiTeamPitchersXLSX() {
         return null;
     }
 }
-
-module.exports = {
-    processMultiTeamPitchersXLSX,
-    processMultiTeamPitchersInsertData,
-};

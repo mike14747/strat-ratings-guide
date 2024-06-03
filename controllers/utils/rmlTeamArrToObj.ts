@@ -1,14 +1,14 @@
-type RmlTeam = {
+type RmlTeamObj = {
     rml_team_name: string;
     id: number;
 };
 
-type RmlTeamObj = {
+type RmlTeamsInOneObj = {
     [key: string]: number;
 }
 
-export function convertArrToObj(arr: RmlTeam[]) {
-    const obj: RmlTeamObj = {};
+export function convertArrToObj(arr: RmlTeamObj[]) {
+    const obj: RmlTeamsInOneObj = {};
 
     arr.forEach((elem) => {
         obj[elem.rml_team_name] = elem.id;

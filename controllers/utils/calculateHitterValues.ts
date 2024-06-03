@@ -260,6 +260,10 @@ export function calculateHitterValues(hittersArr, multiData) {
         });
         return hittersCalculated;
     } catch (error) {
-        console.log(error);
+        if (error instanceof Error) {
+            console.error(error.name + ': ' + error.message);
+        } else {
+            console.error('An unknown error occurred:', error);
+        }
     }
 }

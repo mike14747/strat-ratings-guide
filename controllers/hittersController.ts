@@ -7,8 +7,8 @@ import { getAllCardedPlayers } from '../models/cardedPlayers';
 import { processHittersXLSX, processHittersInsertData } from './utils/processHittersXLSX';
 import { processMultiTeamHittersXLSX, processMultiTeamHittersInsertData } from './utils/processMultiTeamHittersXLSX';
 import { ensureUploadsExists } from './utils/ensureUploadsExists';
-import { calculateHitterValues } from './utils/calculateHitterValues';
 import fileUpload, { UploadedFile } from 'express-fileupload';
+import { calculateHitterValues } from './utils/calculateHitterValues';
 import { hittersSchema } from './validation/schema/hittersSchema';
 import { multiTeamHittersSchema } from './validation/schema/multiTeamHittersSchema';
 import { convertToCsv } from './utils/convertMultiTeamHittersToCsv';
@@ -53,7 +53,7 @@ router.post('/', fileUpload(), async (req: Request, res: Response, next: NextFun
         const file = req.files.file as UploadedFile;
 
         await ensureUploadsExists();
-        await file.mv(path.join(__dirname, '/uploads/hitter_ratings.xlsx'), error => {
+        file.mv(path.join(__dirname, '/uploads/hitter_ratings.xlsx'), error => {
             if (error) return next(error);
         });
 
@@ -62,6 +62,7 @@ router.post('/', fileUpload(), async (req: Request, res: Response, next: NextFun
         const rmlTeams = convertArrToObj(rmlTeamsArr);
         const [cardedPlayers] = await getAllCardedPlayers();
         const xlsxData = await processHittersXLSX();
+        if (!xlsxData) throw new Error('There was an error parsing data from the uploaded file.');
         await hittersSchema.validateAsync(xlsxData);
         const processedHitters = processHittersInsertData(xlsxData, realTeams, rmlTeams, cardedPlayers);
 
@@ -78,7 +79,7 @@ router.post('/multi-team', fileUpload(), async (req, res, next) => {
         const file = req.files.file as UploadedFile;
 
         await ensureUploadsExists();
-        await file.mv(path.join(__dirname, '/uploads/multi_team_hitters.xlsx'), error => {
+        file.mv(path.join(__dirname, '/uploads/multi_team_hitters.xlsx'), error => {
             if (error) return next(error);
         });
 

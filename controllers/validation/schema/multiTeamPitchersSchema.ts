@@ -1,6 +1,6 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
-const multiTeamPitchersSchema = Joi.array().items({
+export const multiTeamPitchersSchema = Joi.array().items({
     // Year,Name,Throws,Tm,IP
     Year: Joi.number().integer().min(1900).max(2050).required(),
     Name: Joi.string().min(3).required(),
@@ -8,5 +8,3 @@ const multiTeamPitchersSchema = Joi.array().items({
     Tm: Joi.string().length(3).required(),
     IP: Joi.number().min(0).required(),
 });
-
-module.exports = multiTeamPitchersSchema;

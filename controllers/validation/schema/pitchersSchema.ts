@@ -1,6 +1,6 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
-const pitchersSchema = Joi.array().items({
+export const pitchersSchema = Joi.array().items({
     Year: Joi.number().integer().min(1900).max(2050).required(),
     TM: Joi.string().length(3).required(),
     Location: Joi.optional(),
@@ -32,5 +32,3 @@ const pitchersSchema = Joi.array().items({
     SPD: Joi.number().integer().min(0).required(),
     rml_team_id: Joi.string().allow('').required(),
 });
-
-module.exports = pitchersSchema;

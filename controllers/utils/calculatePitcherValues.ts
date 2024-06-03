@@ -1,8 +1,6 @@
-const { OB_VALUE, TB_VALUE, BALK_VALUE, WP_VALUE } = require('./constants');
-
-const { bpHRAdjCalculate, bpSiAdjCalculate } = require('./bpCalculateFunctions');
-
-const roundTo = require('./roundTo');
+import { OB_VALUE, TB_VALUE, BALK_VALUE, WP_VALUE } from './constants';
+import { bpHRAdjCalculate, bpSiAdjCalculate } from './bpCalculateFunctions';
+import { roundTo } from './roundTo';
 
 function processBpColumn(bpsi) {
     return bpsi === 0 ? '*' : '';
@@ -171,7 +169,7 @@ function mainCalculations(pitcher, partials = []) {
     }
 }
 
-function calculatePitcherValues(pitchersArr, multiData) {
+export function calculatePitcherValues(pitchersArr, multiData) {
     try {
         const pitchersTeamsAndIPPerTeam = JSON.parse(JSON.stringify(multiData));
 
@@ -221,8 +219,10 @@ function calculatePitcherValues(pitchersArr, multiData) {
         });
         return PitchersCalculated;
     } catch (error) {
-        console.log(error);
+        if (error instanceof Error) {
+            console.error(error.name + ': ' + error.message);
+        } else {
+            console.error('An unknown error occurred:', error);
+        }
     }
 }
-
-module.exports = calculatePitcherValues;
