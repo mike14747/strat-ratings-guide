@@ -2,6 +2,8 @@ import express, { ErrorRequestHandler, NextFunction, Request, Response } from 'e
 import { CustomError } from '../types';
 import hittersController from './hittersController';
 
+import cardedPlayersController from './cardedPlayersController';
+
 const router = express.Router();
 
 router.get('/', (_req, res) => {
@@ -9,10 +11,8 @@ router.get('/', (_req, res) => {
 });
 
 router.use('/hitters', hittersController);
-
 // router.use('/pitchers', require('./pitchersController'));
-
-// router.use('/carded-players', require('./cardedPlayersController'));
+router.use('/carded-players', cardedPlayersController);
 
 router.use((_req: Request, _res: Response, next: NextFunction) => {
     const error: CustomError = new Error('API route not found!');

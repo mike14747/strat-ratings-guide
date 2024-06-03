@@ -17,7 +17,7 @@ export async function getCardedPlayersByYear(year: number) {
         .catch(error => [null, error]);
 }
 
-export async function addNewCardedPlayerData(playerArr = []) {
+export async function addNewCardedPlayerData(playerArr: (string | number | null)[][] = []) {
     if (playerArr.length > 0) {
         const queryString = 'TRUNCATE TABLE carded_players;INSERT INTO carded_players (year, abbrev_name, full_name, rml_team, ip, ab) VALUES ?;SHOW WARNINGS;';
         const queryParams = [playerArr];

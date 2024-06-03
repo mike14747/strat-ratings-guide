@@ -5,9 +5,8 @@
     "main": "server.js",
     "scripts": {
         "build": "rimraf dist && npx tsc",
-        "start": "nodemon server.js",
+        "start": "npm dist/server.js",
         "dev": "nodemon --exec ts-node server.ts",
-        "server": "nodemon server.js",
         "test": "mocha --exit"
     },
     "repository": {
