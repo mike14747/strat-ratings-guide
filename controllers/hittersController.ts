@@ -85,6 +85,7 @@ router.post('/multi-team', fileUpload(), async (req, res, next) => {
 
         const [realTeams] = await getAllRealTeams();
         const xlsxData = await processMultiTeamHittersXLSX();
+        if (!xlsxData) throw new Error('There was an error parsing data from the uploaded file.');
         await multiTeamHittersSchema.validateAsync(xlsxData);
         const processedMultiTeamHitters = processMultiTeamHittersInsertData(xlsxData, realTeams);
 

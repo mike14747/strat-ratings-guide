@@ -3,7 +3,16 @@ import * as fs from 'fs';
 import * as path from 'path';
 import type { RealTeam } from '../../types';
 
-export function processMultiTeamHittersInsertData(xlsxData, realTeams: RealTeam[]) {
+type XlsxData = {
+    [key: string]: string | number,
+    Year: number,
+    Name: string,
+    Bats: string,
+    Tm: string,
+    AB: number,
+}
+
+export function processMultiTeamHittersInsertData(xlsxData: XlsxData[], realTeams: RealTeam[]) {
     return xlsxData.map(row => {
         const foundTeam = realTeams.find(team => team.bbref_abbrev === row.Tm);
         if (!foundTeam) throw new RangeError(`No match found for the bbref abbreviation (${row.Tm}) in the .xlsx file!`);
@@ -26,18 +35,28 @@ export async function processMultiTeamHittersXLSX() {
         const workbook = new ExcelJS.Workbook();
         await workbook.xlsx.readFile(path.join(__dirname, '../uploads/multi_team_hitters.xlsx'));
 
-        const xlsxData = [];
-        const headingRow = [];
+        const xlsxData: XlsxData[] = [];
+        const headingRow: string[] = [];
 
         const worksheet = workbook.getWorksheet('multi_team_hitters');
+        if (!worksheet) return null;
 
         worksheet.eachRow((row, rowNumber) => {
             if (rowNumber === 1) {
-                row.eachCell(cell => headingRow.push(cell.value));
+                row.eachCell(cell => {
+                    if (typeof (cell.value) !== 'string') {
+                        throw new TypeError(`Header row cell was expected to be a "string", but was instead: "${cell.value}"... a "${typeof (cell.value)}" type.`);
+                    }
+                    headingRow.push(cell.value);
+                });
             } else {
-                const rowObject = {};
+                const rowObject = {} as XlsxData;
                 row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-                    rowObject[headingRow[colNumber - 1]] = cell.value;
+                    if (typeof (cell.value) !== 'string' || typeof (cell.value) !== 'number') {
+                        throw new TypeError(`Cell in row/column: "${rowNumber}/${colNumber}" was expected to be a "string | number", but was instead: ${cell.value}... a "${typeof (cell.value)}" type.`);
+                    } else {
+                        rowObject[headingRow[colNumber - 1]] = cell.value;
+                    }
                 });
                 xlsxData.push(rowObject);
             }
@@ -47,7 +66,10 @@ export async function processMultiTeamHittersXLSX() {
 
         return xlsxData;
     } catch (error) {
-        console.log(error);
-        return null;
+        if (error instanceof Error) {
+            console.error(error.name + ': ' + error.message);
+        } else {
+            console.error('An unknown error occurred:', error);
+        }
     }
 }

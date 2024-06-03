@@ -83,7 +83,10 @@ export async function processCardedPlayersXLSX() {
 
         return xlsxData;
     } catch (error) {
-        console.log(error);
-        return null;
+        if (error instanceof Error) {
+            console.error(error.name + ': ' + error.message);
+        } else {
+            console.error('An unknown error occurred:', error);
+        }
     }
 }
