@@ -48,11 +48,3 @@ export async function addMultiTeamPitchersData(pitcherArr: (string | number)[][]
         return [[[], { affectedRows: 0 }], null];
     }
 }
-
-export async function getPitchersDataByYearAndId(year: number, id: number) {
-    const queryString = 'SELECT p.*, b.st_si_l, b.st_si_r, b.st_hr_l, b.st_hr_r, r.rml_team_name FROM pitcher_ratings AS p LEFT JOIN bp_ratings AS b ON p.year=b.year && p.real_team_id=b.real_team_id LEFT JOIN rml_teams AS r ON p.rml_team_id=r.id WHERE p.year=? && p.pitcher_id=? ORDER BY name ASC, p.real_team ASC, p.name ASC;';
-    const queryParams = [year, id];
-    return await pool.query(queryString, queryParams)
-        .then(([rows]) => [rows, null])
-        .catch(error => [null, error]);
-}

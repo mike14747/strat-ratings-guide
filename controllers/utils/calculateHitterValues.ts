@@ -1,6 +1,7 @@
 import { OB_VALUE, TB_VALUE, CLUTCH_ADJUST_VALUE } from './constants';
 import { bpHRAdjCalculate, bpSiAdjCalculate } from './bpCalculateFunctions';
 import { roundTo } from './roundTo';
+import type { HitterDataFromDB, MultiTeamHitterDataFromDB } from '../../types/index';
 
 function processWColumn(w: string, bpsi: number) {
     let wCol = '';
@@ -15,7 +16,7 @@ function wOPSCalculate(ob: number, tb: number, dp: number, wAdj: number) {
     return ((OB_VALUE * ob) + (TB_VALUE * tb) - (OB_VALUE * 20 * dp / 108)) - wAdj;
 }
 
-function ballparkCalculations(hitter) {
+function ballparkCalculations(hitter: HitterDataFromDB) {
     let bpAdjVsL = 0;
     let bpSiAdjVsL = 0;
     let clAdjVsL = 0;
@@ -87,7 +88,7 @@ function ballparkCalculations(hitter) {
     };
 }
 
-function multiBallparkCalculations(hitter, partials) {
+function multiBallparkCalculations(hitter: HitterDataFromDB, partials: MultiTeamHitterDataFromDB[]) {
     let bpAdjVsL = 0;
     let bpSiAdjVsL = 0;
     let clAdjVsL = 0;
@@ -179,7 +180,7 @@ function multiBallparkCalculations(hitter, partials) {
     };
 }
 
-function withoutBPCalculations(hitter) {
+function withoutBPCalculations(hitter: HitterDataFromDB) {
     return {
         hit_v_l: `~${roundTo(parseFloat(hitter.hit_v_l) + hitter.bp_si_v_l, 1)}`,
         ob_v_l: `~${roundTo(parseFloat(hitter.ob_v_l) + hitter.bp_si_v_l, 1)}`,
@@ -194,7 +195,7 @@ function withoutBPCalculations(hitter) {
     };
 }
 
-function mainCalculations(hitter, partials = []) {
+function mainCalculations(hitter: HitterDataFromDB, partials: MultiTeamHitterDataFromDB[] = []) {
     if (hitter.real_team_id !== 1) {
         return ballparkCalculations(hitter);
     } else {
@@ -204,9 +205,9 @@ function mainCalculations(hitter, partials = []) {
     }
 }
 
-export function calculateHitterValues(hittersArr, multiData) {
+export function calculateHitterValues(hittersArr: HitterDataFromDB[], multiData: MultiTeamHitterDataFromDB[]) {
     try {
-        const hittersTeamsAndABPerTeam = JSON.parse(JSON.stringify(multiData));
+        const hittersTeamsAndABPerTeam: MultiTeamHitterDataFromDB[] = JSON.parse(JSON.stringify(multiData));
 
         const hittersCalculated = hittersArr.map(h => {
             let result;

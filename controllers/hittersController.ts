@@ -42,6 +42,7 @@ router.get('/:year', async (req, res, next) => {
         const [data, error] = await getHittersDataByYear(parseInt(req.params.year));
         const [multiData, multiError] = await getMultiTeamHittersPartialByYear(parseInt(req.params.year));
         data && multiData ? res.json(calculateHitterValues(data, multiData)) : next(error || multiError);
+        // data && multiData ? res.json({ data, multiData }) : next(error || multiError);
     } catch (error) {
         next(error);
     }

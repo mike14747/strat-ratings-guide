@@ -1,12 +1,13 @@
 import { OB_VALUE, TB_VALUE, BALK_VALUE, WP_VALUE } from './constants';
 import { bpHRAdjCalculate, bpSiAdjCalculate } from './bpCalculateFunctions';
 import { roundTo } from './roundTo';
+import type { PitcherDataFromDB, MultiTeamPitcherDataFromDB } from '../../types';
 
-function processBpColumn(bpsi) {
+function processBpColumn(bpsi: number) {
     return bpsi === 0 ? '*' : '';
 }
 
-function gbpWopsCalculate(fielding) {
+function gbpWopsCalculate(fielding: string) {
     const gbpHits = (parseInt(fielding.charAt(0)) - 1) * 0.1 * 2;
     const gbpErrors = parseInt(fielding.substring(2, 4)) * 0.0180 * 2;
     const gbpTwoBaseErrorTotalBaseAdj = TB_VALUE * gbpErrors / 20;
@@ -18,11 +19,11 @@ function gbpWopsCalculate(fielding) {
     return gbpWopsOnHitsOnly + gbpWopsOnErrorsOnly + gbpWopsOnHitAndError + gbpTwoBaseErrorTotalBaseAdj;
 }
 
-function wOPSCalculate(ob, tb, dp, gbp, bk, wp) {
+function wOPSCalculate(ob: number, tb: number, dp: number, gbp: number, bk: number, wp: number) {
     return (OB_VALUE * ob) + (TB_VALUE * tb) - (OB_VALUE * 20 * dp / 108) + gbp + (BALK_VALUE * bk) + (WP_VALUE * wp);
 }
 
-function ballparkCalculations(pitcher) {
+function ballparkCalculations(pitcher: PitcherDataFromDB) {
     let bpAdjVsL = 0;
     let bpSiAdjVsL = 0;
     let bpAdjVsR = 0;
@@ -73,7 +74,7 @@ function ballparkCalculations(pitcher) {
     };
 }
 
-function multiBallparkCalculations(pitcher, partials) {
+function multiBallparkCalculations(pitcher: PitcherDataFromDB, partials: MultiTeamPitcherDataFromDB[]) {
     let bpAdjVsL = 0;
     let bpSiAdjVsL = 0;
     let bpAdjVsR = 0;
@@ -98,10 +99,10 @@ function multiBallparkCalculations(pitcher, partials) {
         bpAdjVsL = bpHRAdjCalculate(t.st_hr_l);
         bpSiAdjVsL = bpSiAdjCalculate(t.st_si_l);
         if (pitcher.bp_si_v_l === 0) bpSiAdjVsL = 0;
-        bpSiVsL += bpSiAdjVsL * t.ip / parseFloat(pitcher.ip);
-        tempbpHrVsL = bpAdjVsL * pitcher.bp_hr_v_l * t.ip / parseFloat(pitcher.ip);
+        bpSiVsL += bpSiAdjVsL * parseFloat(t.ip) / pitcher.ip;
+        tempbpHrVsL = bpAdjVsL * pitcher.bp_hr_v_l * parseFloat(t.ip) / pitcher.ip;
         bpHrVsL += tempbpHrVsL;
-        tempbpHitVsL = pitcher.bp_si_v_l * t.ip / parseFloat(pitcher.ip);
+        tempbpHitVsL = pitcher.bp_si_v_l * parseFloat(t.ip) / pitcher.ip;
         bpHitVsL += tempbpHrVsL + tempbpHitVsL;
         bpTbVsL += (4 * tempbpHrVsL) + tempbpHitVsL;
 
@@ -109,10 +110,10 @@ function multiBallparkCalculations(pitcher, partials) {
         bpAdjVsR = bpHRAdjCalculate(t.st_hr_r);
         bpSiAdjVsR = bpSiAdjCalculate(t.st_si_r);
         if (pitcher.bp_si_v_r === 0) bpSiAdjVsR = 0;
-        bpSiVsR += bpSiAdjVsR * t.ip / parseFloat(pitcher.ip);
-        tempbpHrVsR = bpAdjVsR * pitcher.bp_hr_v_r * t.ip / parseFloat(pitcher.ip);
+        bpSiVsR += bpSiAdjVsR * parseFloat(t.ip) / pitcher.ip;
+        tempbpHrVsR = bpAdjVsR * pitcher.bp_hr_v_r * parseFloat(t.ip) / pitcher.ip;
         bpHrVsR += tempbpHrVsR;
-        tempbpHitVsR = pitcher.bp_si_v_r * t.ip / parseFloat(pitcher.ip);
+        tempbpHitVsR = pitcher.bp_si_v_r * parseFloat(t.ip) / pitcher.ip;
         bpHitVsR += tempbpHrVsR + tempbpHitVsR;
         bpTbVsR += (4 * tempbpHrVsR) + tempbpHitVsR;
         // end ballpark calculations
@@ -144,7 +145,7 @@ function multiBallparkCalculations(pitcher, partials) {
     };
 }
 
-function withoutBPCalculations(pitcher) {
+function withoutBPCalculations(pitcher: PitcherDataFromDB) {
     return {
         hit_v_l: `~${roundTo(parseFloat(pitcher.hit_v_l) + pitcher.bp_si_v_l, 1)}`,
         ob_v_l: `~${roundTo(parseFloat(pitcher.ob_v_l) + pitcher.bp_si_v_l, 1)}`,
@@ -159,7 +160,7 @@ function withoutBPCalculations(pitcher) {
     };
 }
 
-function mainCalculations(pitcher, partials = []) {
+function mainCalculations(pitcher: PitcherDataFromDB, partials: MultiTeamPitcherDataFromDB[] = []) {
     if (pitcher.real_team_id !== 1) {
         return ballparkCalculations(pitcher);
     } else {
@@ -169,9 +170,9 @@ function mainCalculations(pitcher, partials = []) {
     }
 }
 
-export function calculatePitcherValues(pitchersArr, multiData) {
+export function calculatePitcherValues(pitchersArr: PitcherDataFromDB[], multiData: MultiTeamPitcherDataFromDB[]) {
     try {
-        const pitchersTeamsAndIPPerTeam = JSON.parse(JSON.stringify(multiData));
+        const pitchersTeamsAndIPPerTeam: MultiTeamPitcherDataFromDB[] = JSON.parse(JSON.stringify(multiData));
 
         const PitchersCalculated = pitchersArr.map(p => {
             let result;

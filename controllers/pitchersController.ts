@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
-import { getSeasonsListWithPitcherData, getPitchersDataByYearAndId, getMultiTeamPitchersPartialByYear, getPitchersDataByYear, addNewPitchersData, addMultiTeamPitchersData } from '../models/pitchers';
+import { getSeasonsListWithPitcherData, getMultiTeamPitchersPartialByYear, getPitchersDataByYear, addNewPitchersData, addMultiTeamPitchersData } from '../models/pitchers';
 import { getAllRmlTeams } from '../models/rmlTeam';
 import { getAllRealTeams } from '../models/realTeam';
 import { getAllCardedPlayers } from '../models/cardedPlayers';
@@ -32,16 +32,6 @@ router.get('/create-multi-team-csv', async (_req, res, next) => {
 
         const csv = converter.json2csv(pitchersOnIndividualTeams);
         return csv ? res.status(200).send(csv) : res.status(500).end();
-    } catch (error) {
-        next(error);
-    }
-});
-
-router.get('/:id/season/:year', async (req, res, next) => {
-    try {
-        const [data, error] = await getPitchersDataByYearAndId(parseInt(req.params.year), parseInt(req.params.id));
-        const [multiData, multiError] = await getMultiTeamPitchersPartialByYear(parseInt(req.params.year));
-        return data && multiData ? res.json(calculatePitcherValues(data, multiData)) : next(error || multiError);
     } catch (error) {
         next(error);
     }
