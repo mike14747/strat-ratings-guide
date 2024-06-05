@@ -2,10 +2,11 @@ import ExcelJS from 'exceljs';
 import * as fs from 'fs';
 import * as path from 'path';
 import castCellTypes from './castCellTypes';
+import { assignCellValue } from './assignCellValue';
 import type { RealTeam, RmlTeam, CardedPlayer } from '../../types';
 
 type XlsxData = {
-    [key: string]: string | number | null,
+    // [key: string]: string | number | null,
     Year: number,
     TM: string,
     Location: string | null,
@@ -148,7 +149,7 @@ export async function processHittersXLSX() {
         const headingRow: string[] = [];
 
         const worksheet = workbook.getWorksheet('hitter_ratings');
-        if (!worksheet) return null;
+        if (!worksheet) throw new Error('The worksheet could not be found or read.');
 
         worksheet.eachRow((row, rowNumber) => {
             if (rowNumber === 1) {
@@ -169,13 +170,17 @@ export async function processHittersXLSX() {
 
                 const rowObject = {} as XlsxData;
                 row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-                    if (typeof (cell.value) !== 'string' || typeof (cell.value) !== 'number' || cell.value !== null || cell.value !== undefined) {
-                        throw new TypeError(`Cell in row/column: "${rowNumber}/${colNumber}" was expected to be a "string | number | null | undefined", but was instead: ${cell.value}... a "${typeof (cell.value)}" type.`);
+                    if (typeof (cell.value) !== 'string' && typeof (cell.value) !== 'number' && cell.value !== null) {
+                        throw new TypeError(`Data in row/column: "${rowNumber}/${colNumber}" was expected to be a "string | number | null | undefined", but was instead: "${cell.value}" was a "${typeof (cell.value)}" type.`);
                     } else {
-                        rowObject[headingRow[colNumber - 1]] = castCellTypes(rowNumber, colNumber, cell.value, castingTypes);
+                        const key = headingRow[colNumber - 1] as keyof XlsxData;
+                        assignCellValue(rowObject, key, castCellTypes(rowNumber, colNumber, cell.value, castingTypes) as XlsxData[typeof key]);
+
+                        // this is how I was doing it when I had an index signature
+                        // rowObject[headingRow[colNumber - 1]] = castCellTypes(rowNumber, colNumber, cell.value, castingTypes);
                     }
                 });
-                xlsxData.push(rowObject);
+                xlsxData.push(rowObject as XlsxData);
             }
         });
 

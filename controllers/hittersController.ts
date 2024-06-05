@@ -42,7 +42,6 @@ router.get('/:year', async (req, res, next) => {
         const [data, error] = await getHittersDataByYear(parseInt(req.params.year));
         const [multiData, multiError] = await getMultiTeamHittersPartialByYear(parseInt(req.params.year));
         data && multiData ? res.json(calculateHitterValues(data, multiData)) : next(error || multiError);
-        // data && multiData ? res.json({ data, multiData }) : next(error || multiError);
     } catch (error) {
         next(error);
     }
@@ -59,9 +58,12 @@ router.post('/', fileUpload(), async (req: Request, res: Response, next: NextFun
         });
 
         const [realTeams] = await getAllRealTeams();
+        if (!realTeams) throw new Error('Real team list could not be retrieved from the DB.');
         const [rmlTeamsArr] = await getAllRmlTeams();
+        if (!rmlTeamsArr) throw new Error('Rml teams array list could not be retrieved from the DB.');
         const rmlTeams = convertArrToObj(rmlTeamsArr);
         const [cardedPlayers] = await getAllCardedPlayers();
+        if (!cardedPlayers) throw new Error('Carded player list could not be retrieved from the DB.');
         const xlsxData = await processHittersXLSX();
         if (!xlsxData) throw new Error('There was an error parsing data from the uploaded file.');
         await hittersSchema.validateAsync(xlsxData);
@@ -85,6 +87,7 @@ router.post('/multi-team', fileUpload(), async (req, res, next) => {
         });
 
         const [realTeams] = await getAllRealTeams();
+        if (!realTeams) throw new Error('Real team list could not be retrieved from the DB.');
         const xlsxData = await processMultiTeamHittersXLSX();
         if (!xlsxData) throw new Error('There was an error parsing data from the uploaded file.');
         await multiTeamHittersSchema.validateAsync(xlsxData);
