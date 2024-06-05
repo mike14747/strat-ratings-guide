@@ -2,7 +2,7 @@
 
 Get the login system working.
 
-Convert the app to typescript.
+Convert the app to typescript. **Update**: This has been completed for the server-side.
 
 Add a bundler (Vite?).
 
