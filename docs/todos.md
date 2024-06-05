@@ -2,6 +2,12 @@
 
 Get the login system working.
 
+Convert the app to typescript.
+
+Add a bundler (Vite?).
+
+---
+
 ## Done
 
 Get the pitcher analysis page working as the hitter analysis page is.

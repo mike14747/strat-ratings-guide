@@ -4,9 +4,9 @@
     "description": "Converts Strat-O-Matic Baseball Ratings Guide to wOPS for hitters and pitchers",
     "main": "server.js",
     "scripts": {
-        "start": "nodemon server.js",
-        "dev": "nodemon server.js",
-        "server": "nodemon server.js",
+        "build": "rimraf dist && npx tsc",
+        "start": "npm dist/server.js",
+        "dev": "nodemon --exec ts-node server.ts",
         "test": "mocha --exit"
     },
     "repository": {
@@ -21,17 +21,26 @@
     },
     "homepage": "https://github.com/mike14747/strat-ratings-guide#readme",
     "devDependencies": {
+        "@types/express": "^4.17.21",
+        "@types/express-fileupload": "^1.5.0",
+        "@types/jsonwebtoken": "^9.0.6",
+        "@types/node": "^20.11.30",
+        "@typescript-eslint/eslint-plugin": "^7.4.0",
+        "@typescript-eslint/parser": "^7.4.0",
         "chai": "^5.0.3",
         "chai-http": "^4.4.0",
-        "eslint": "^8.56.0",
+        "eslint": "^8.57.0",
         "eslint-config-standard": "^17.1.0",
         "eslint-plugin-import": "^2.29.1",
         "eslint-plugin-node": "^11.1.0",
         "eslint-plugin-promise": "^6.1.1",
         "mocha": "^10.2.0",
-        "nodemon": "^3.0.3"
+        "nodemon": "^3.0.3",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.4.3"
     },
     "dependencies": {
+        "concurrently": "^8.2.2",
         "csv-parse": "^4.14.2",
         "dotenv": "^8.2.0",
         "exceljs": "^4.4.0",
@@ -41,6 +50,7 @@
         "joi": "^17.3.0",
         "json-2-csv": "^5.0.1",
         "jsonwebtoken": "^9.0.2",
-        "mysql2": "^2.2.5"
+        "mysql2": "^3.10.0",
+        "rimraf": "^5.0.5"
     }
 }
