@@ -82,7 +82,7 @@ router.post('/multi-team', fileUpload(), async (req, res, next) => {
         const file = req.files.file as UploadedFile;
 
         await ensureUploadsExists();
-        file.mv(path.join(__dirname, '/uploads/multi_team_xlsx'), error => {
+        file.mv(path.join(__dirname, '/uploads/multi_team_pitchers.xlsx'), error => {
             if (error) return next(error);
         });
 

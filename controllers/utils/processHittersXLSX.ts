@@ -6,7 +6,6 @@ import { assignCellValue } from './assignCellValue';
 import type { RealTeam, RmlTeam, CardedPlayer } from '../../types';
 
 type XlsxData = {
-    // [key: string]: string | number | null,
     Year: number,
     TM: string,
     Location: string | null,
@@ -47,6 +46,8 @@ type XlsxData = {
     FIELDING: string,
     rml_team_id: number | null,
 }
+
+type HeadingKey = keyof XlsxData;
 
 function convertPositionlFielding(rating: string) {
     return rating !== '' ? `${rating.charAt(0)}e${parseInt(rating.slice(1, 3))}` : '';
@@ -146,7 +147,7 @@ export async function processHittersXLSX() {
         await workbook.xlsx.readFile(path.join(__dirname, '../uploads/hitter_ratings.xlsx'));
 
         const xlsxData: XlsxData[] = [];
-        const headingRow: string[] = [];
+        const headingRow: HeadingKey[] = [];
 
         const worksheet = workbook.getWorksheet('hitter_ratings');
         if (!worksheet) throw new Error('The worksheet could not be found or read.');
@@ -154,10 +155,8 @@ export async function processHittersXLSX() {
         worksheet.eachRow((row, rowNumber) => {
             if (rowNumber === 1) {
                 row.eachCell(cell => {
-                    if (typeof (cell.value) !== 'string') {
-                        throw new TypeError(`Header row cell was expected to be a "string", but was instead: "${cell.value}"... a "${typeof (cell.value)}" type.`);
-                    }
-                    headingRow.push(cell.value);
+                    if (typeof (cell.value) !== 'string') throw new TypeError(`Header row cell was expected to be a "string", but was instead: "${cell.value}"... a "${typeof (cell.value)}" type.`);
+                    headingRow.push(cell.value as HeadingKey);
                 });
             } else {
                 const castingTypes = {
@@ -171,16 +170,16 @@ export async function processHittersXLSX() {
                 const rowObject = {} as XlsxData;
                 row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
                     if (typeof (cell.value) !== 'string' && typeof (cell.value) !== 'number' && cell.value !== null) {
-                        throw new TypeError(`Data in row/column: "${rowNumber}/${colNumber}" was expected to be a "string | number | null | undefined", but was instead: "${cell.value}" was a "${typeof (cell.value)}" type.`);
+                        throw new TypeError(`Data in row/column: "${rowNumber}/${colNumber}" was expected to be a "string | number | null", but was instead: "${cell.value}" was a "${typeof (cell.value)}" type.`);
                     } else {
                         const key = headingRow[colNumber - 1] as keyof XlsxData;
-                        assignCellValue(rowObject, key, castCellTypes(rowNumber, colNumber, cell.value, castingTypes) as XlsxData[typeof key]);
+                        assignCellValue(rowObject, key, castCellTypes(rowNumber, colNumber, cell.value, castingTypes));
 
                         // this is how I was doing it when I had an index signature
                         // rowObject[headingRow[colNumber - 1]] = castCellTypes(rowNumber, colNumber, cell.value, castingTypes);
                     }
                 });
-                xlsxData.push(rowObject as XlsxData);
+                xlsxData.push(rowObject);
             }
         });
 
