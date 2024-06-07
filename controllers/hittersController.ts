@@ -19,8 +19,8 @@ const router = express.Router();
 
 router.get('/season-list', async (_req, res, next) => {
     try {
-        const [data, error] = await getSeasonsListWithHitterData();
-        return data ? res.json(data) : next(error);
+        const data = await getSeasonsListWithHitterData();
+        res.json(data);
     } catch (error) {
         next(error);
     }
@@ -29,7 +29,6 @@ router.get('/season-list', async (_req, res, next) => {
 router.get('/create-multi-team-csv', async (_req, res, next) => {
     try {
         const hittersOnIndividualTeams = convertToCsv();
-
         const csv = converter.json2csv(hittersOnIndividualTeams);
         return csv ? res.status(200).send(csv) : res.status(500).end();
     } catch (error) {
@@ -39,9 +38,9 @@ router.get('/create-multi-team-csv', async (_req, res, next) => {
 
 router.get('/:year', async (req, res, next) => {
     try {
-        const [data, error] = await getHittersDataByYear(parseInt(req.params.year));
-        const [multiData, multiError] = await getMultiTeamHittersPartialByYear(parseInt(req.params.year));
-        data && multiData ? res.json(calculateHitterValues(data, multiData)) : next(error || multiError);
+        const data = await getHittersDataByYear(parseInt(req.params.year));
+        const multiData = await getMultiTeamHittersPartialByYear(parseInt(req.params.year));
+        res.json(calculateHitterValues(data, multiData));
     } catch (error) {
         next(error);
     }
@@ -72,8 +71,8 @@ router.post('/', fileUpload(), async (req: Request, res: Response, next: NextFun
         await hittersSchema.validateAsync(xlsxData);
         const processedHitters = processHittersInsertData(xlsxData, realTeams, rmlTeams, cardedPlayers);
 
-        const [data, error] = await addNewHittersData(processedHitters);
-        data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);
+        const result = await addNewHittersData(processedHitters);
+        res.status(201).json({ message: `Successfully added ${result.affectedRows} new hitter row(s) to the database!`, added: result.affectedRows });
     } catch (error) {
         next(error);
     }
@@ -96,8 +95,8 @@ router.post('/multi-team', fileUpload(), async (req, res, next) => {
         await multiTeamHittersSchema.validateAsync(xlsxData);
         const processedMultiTeamHitters = processMultiTeamHittersInsertData(xlsxData, realTeams);
 
-        const [data, error] = await addMultiTeamHittersData(processedMultiTeamHitters);
-        data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);
+        const result = await addMultiTeamHittersData(processedMultiTeamHitters);
+        res.status(201).json({ message: `Successfully added ${result.affectedRows} new multi-team hitter row(s) to the database!`, added: result.affectedRows });
     } catch (error) {
         next(error);
     }

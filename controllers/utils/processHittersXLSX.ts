@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import castCellTypes from './castCellTypes';
 import { assignCellValue } from './assignCellValue';
-import type { RealTeam, RmlTeam, CardedPlayer } from '../../types';
+import type { RealTeam, RmlTeam, CardedPlayer, HitterArrForDBImport } from '../../types';
 
 type XlsxData = {
     Year: number,
@@ -70,7 +70,7 @@ function convertBpToBpWAndBpSi(bp: string) {
     return {
         bp: isNaN(parseInt(bp.charAt(0)))
             ? 0
-            : bp.charAt(0),
+            : parseInt(bp.charAt(0)),
         w: bp.charAt(0) === 'w'
             ? 'w'
             : '',
@@ -90,55 +90,53 @@ export function processHittersInsertData(xlsxData: XlsxData[], realTeams: RealTe
         if (!foundTeam) throw new RangeError(`No match found for the strat abbreviation (${row.TM}) in the .xlsx file!`);
         const { real_team_abbrev: realTeam, id: realTeamId } = foundTeam;
 
-        const hitterObj = {
-            year: row.Year,
+        return [
+            row.Year, // year
             realTeam,
             realTeamId,
             hitterName,
             bats,
-            inj: row.INJ || row.INJ === 0 ? row.INJ : null,
-            ab: row.AB,
-            soVsL: row.SO_v_lhp,
-            bbVsL: Math.round(row.OB_v_lhp - row.HIT_v_lhp),
-            hitVsL: row.HIT_v_lhp,
-            obVsL: row.OB_v_lhp,
-            tbVsL: row.TB_v_lhp,
-            hrVsL: row.HR_v_lhp,
+            row.INJ || row.INJ === 0 ? row.INJ : null, // inj
+            row.AB, // ab
+            row.SO_v_lhp, // soVsL
+            Math.round(row.OB_v_lhp - row.HIT_v_lhp), // bbVsL
+            row.HIT_v_lhp, // hitVsL
+            row.OB_v_lhp, // obVsL
+            row.TB_v_lhp, // tbVsL
+            row.HR_v_lhp, // hrVsL
             bpVsL,
             wVsL,
             bpSiVsL,
-            clVsL: row.CL_v_lhp,
-            dpVsL: row.DP_v_lhp,
-            soVsR: row.SO_v_rhp,
-            bbVsR: Math.round(row.OB_v_rhp - row.HIT_v_rhp),
-            hitVsR: row.HIT_v_rhp,
-            obVsR: row.OB_v_rhp,
-            tbVsR: row.TB_v_rhp,
-            hrVsR: row.HR_v_rhp,
+            row.CL_v_lhp, // clVsL
+            row.DP_v_lhp, // dpVsL
+            row.SO_v_rhp, // soVsR
+            Math.round(row.OB_v_rhp - row.HIT_v_rhp), // bbVsR
+            row.HIT_v_rhp, // hitVsR
+            row.OB_v_rhp, // obVsR
+            row.TB_v_rhp, // tbVsR
+            row.HR_v_rhp, // hrVsR
             bpVsR,
             wVsR,
             bpSiVsR,
-            clVsR: row.CL_v_rhp,
-            dpVsR: row.DP_v_rhp,
-            stealing: row.STEALING,
-            stl: row.STL,
-            spd: row.SPD,
-            bunt: row.B,
-            hitRun: row.H,
-            dCA: convertPositionlFielding(row.d_CA),
-            d1B: convertPositionlFielding(row.d_1B),
-            d2B: convertPositionlFielding(row.d_2B),
-            d3B: convertPositionlFielding(row.d_3B),
-            dSS: convertPositionlFielding(row.d_SS),
-            dLF: convertPositionlFielding(row.d_LF),
-            dCF: convertPositionlFielding(row.d_CF),
-            dRF: convertPositionlFielding(row.d_RF),
-            fielding: row.FIELDING,
-            rmlTeamId: row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.abbrev_name.toLowerCase() === hitterName.toLowerCase() && item.year === row.Year && item.ab === row.AB))]?.rml_team] || null,
-        };
-
-        return Object.values(hitterObj);
-    });
+            row.CL_v_rhp, // clVsR
+            row.DP_v_rhp, // dpVsR
+            row.STEALING, // stealing
+            row.STL, // stl
+            row.SPD, // spd
+            row.B, // bunt
+            row.H, // hitRun
+            convertPositionlFielding(row.d_CA), // dCA
+            convertPositionlFielding(row.d_1B), // d1B
+            convertPositionlFielding(row.d_2B), // d2B
+            convertPositionlFielding(row.d_3B), // d3B
+            convertPositionlFielding(row.d_SS), // dSS
+            convertPositionlFielding(row.d_LF), // dLF
+            convertPositionlFielding(row.d_CF), // dCF
+            convertPositionlFielding(row.d_RF), // dRF
+            row.FIELDING, // fielding
+            row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.abbrev_name.toLowerCase() === hitterName.toLowerCase() && item.year === row.Year && item.ab === row.AB))]?.rml_team] || null, // rmlTeamId
+        ];
+    }) as HitterArrForDBImport[];
 }
 
 export async function processHittersXLSX() {

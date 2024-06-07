@@ -17,7 +17,7 @@ export async function getCardedPlayersByYear(year: number) {
 }
 
 export async function addNewCardedPlayerData(playerArr: CardedPlayerArrForDBImport[] = []) {
-    if (playerArr.length === 0) throw new Error('Carded player list being sent to the db was empty.');
+    if (playerArr.length === 0) throw new Error('Carded player array data being sent to the db was empty.');
 
     const queryString = 'TRUNCATE TABLE carded_players;INSERT INTO carded_players (year, abbrev_name, full_name, rml_team, ip, ab) VALUES ?;SHOW WARNINGS;';
     const queryParams = [playerArr];

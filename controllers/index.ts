@@ -10,7 +10,7 @@ router.get('/', (_req, res) => {
     res.status(200).send('Sending this from the /api root!');
 });
 
-// router.use('/hitters', hittersController);
+router.use('/hitters', hittersController);
 // router.use('/pitchers', pitchersController);
 router.use('/carded-players', cardedPlayersController);
 

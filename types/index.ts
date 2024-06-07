@@ -94,6 +94,53 @@ export type HitterDataFromDB = {
     rml_team_name: string | null,
 }
 
+export type HitterArrForDBImport = [
+    number,
+    string,
+    number | null,
+    string,
+    string,
+    number | null,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    string,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    string,
+    number,
+    number,
+    number,
+    string,
+    string,
+    number,
+    string,
+    string,
+    string,
+    string,
+    string,
+    string,
+    string,
+    string,
+    string,
+    string,
+    string,
+    number | null,
+]
+
 export type MultiTeamHitterDataFromDB = {
     real_team_id: number,
     hitter: string,
@@ -103,6 +150,14 @@ export type MultiTeamHitterDataFromDB = {
     st_hr_l: number,
     st_hr_r: number,
 }
+
+export type MultiTeamHitterArrForDBImport = [
+    number,
+    number,
+    string,
+    string,
+    number,
+]
 
 export type PitcherDataFromDB = {
     id: number,
@@ -146,6 +201,10 @@ export type PitcherDataFromDB = {
     rml_team_name: string,
 }
 
+export type PitcherArrForDBImport = [
+    number,
+]
+
 export type MultiTeamPitcherDataFromDB = {
     real_team_id: number,
     pitcher: string,
@@ -155,6 +214,10 @@ export type MultiTeamPitcherDataFromDB = {
     st_hr_l: number,
     st_hr_r: number,
 }
+
+export type MultiTeamPitcherArrForDBImport = [
+    number,
+]
 
 export type UserObjForLogin = {
     username: string,

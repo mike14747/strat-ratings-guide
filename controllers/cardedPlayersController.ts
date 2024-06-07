@@ -50,7 +50,7 @@ router.post('/', fileUpload(), async (req: Request, res: Response, next: NextFun
         ]);
 
         const result = await addNewCardedPlayerData(processedCardedPlayers);
-        res.status(201).json({ message: `Successfully added ${result.affectedRows} new hitter row(s) to the database!`, added: result.affectedRows });
+        res.status(201).json({ message: `Successfully added ${result.affectedRows} new carded player row(s) to the database!`, added: result.affectedRows });
     } catch (error) {
         next(error);
     }
