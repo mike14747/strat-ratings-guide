@@ -57,13 +57,20 @@ router.post('/', fileUpload(), async (req: Request, res: Response, next: NextFun
             if (error) return next(error);
         });
 
-        const [realTeams] = await getAllRealTeams();
-        if (!realTeams) throw new Error('Real team list could not be retrieved from the DB.');
-        const [rmlTeamsArr] = await getAllRmlTeams();
-        if (!rmlTeamsArr) throw new Error('Rml teams array list could not be retrieved from the DB.');
+        const [realTeams, rmlTeamsArr, cardedPlayers] = await Promise.all([
+            getAllRealTeams(),
+            getAllRmlTeams(),
+            getAllCardedPlayers(),
+        ]);
         const rmlTeams = convertArrToObj(rmlTeamsArr);
-        const [cardedPlayers] = await getAllCardedPlayers();
-        if (!cardedPlayers) throw new Error('Carded player list could not be retrieved from the DB.');
+
+        // const [realTeams] = await getAllRealTeams();
+        // if (!realTeams) throw new Error('Real team list could not be retrieved from the DB.');
+        // const [rmlTeamsArr] = await getAllRmlTeams();
+        // if (!rmlTeamsArr) throw new Error('Rml teams array list could not be retrieved from the DB.');
+        // const rmlTeams = convertArrToObj(rmlTeamsArr);
+        // const [cardedPlayers] = await getAllCardedPlayers();
+        // if (!cardedPlayers) throw new Error('Carded player list could not be retrieved from the DB.');
         const xlsxData = await processHittersXLSX();
         if (!xlsxData) throw new Error('There was an error parsing data from the uploaded file.');
         await hittersSchema.validateAsync(xlsxData);
@@ -86,7 +93,7 @@ router.post('/multi-team', fileUpload(), async (req, res, next) => {
             if (error) return next(error);
         });
 
-        const [realTeams] = await getAllRealTeams();
+        const realTeams = await getAllRealTeams();
         if (!realTeams) throw new Error('Real team list could not be retrieved from the DB.');
         const xlsxData = await processMultiTeamHittersXLSX();
         if (!xlsxData) throw new Error('There was an error parsing data from the uploaded file.');

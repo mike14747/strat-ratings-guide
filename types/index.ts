@@ -14,6 +14,15 @@ export type RmlTeam = {
     [key: string]: number,
 }
 
+export type RmlTeamObj = {
+    rml_team_name: string;
+    id: number;
+};
+
+export type RmlTeamsInOneObj = {
+    [key: string]: number;
+}
+
 export type CardedPlayer = {
     year: number,
     abbrev_name: string,

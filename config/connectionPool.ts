@@ -1,5 +1,7 @@
 import mysql, { PoolOptions } from 'mysql2/promise';
 
+export type RowDataPacket = mysql.RowDataPacket;
+
 const access: PoolOptions = {
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
