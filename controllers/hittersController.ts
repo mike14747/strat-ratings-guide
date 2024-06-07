@@ -62,15 +62,11 @@ router.post('/', fileUpload(), async (req: Request, res: Response, next: NextFun
             getAllRmlTeams(),
             getAllCardedPlayers(),
         ]);
-        const rmlTeams = convertArrToObj(rmlTeamsArr);
+        if (!realTeams) throw new Error('Real team list could not be retrieved from the DB.');
+        if (!rmlTeamsArr) throw new Error('Rml teams array list could not be retrieved from the DB.');
+        if (!cardedPlayers) throw new Error('Carded player list could not be retrieved from the DB.');
 
-        // const [realTeams] = await getAllRealTeams();
-        // if (!realTeams) throw new Error('Real team list could not be retrieved from the DB.');
-        // const [rmlTeamsArr] = await getAllRmlTeams();
-        // if (!rmlTeamsArr) throw new Error('Rml teams array list could not be retrieved from the DB.');
-        // const rmlTeams = convertArrToObj(rmlTeamsArr);
-        // const [cardedPlayers] = await getAllCardedPlayers();
-        // if (!cardedPlayers) throw new Error('Carded player list could not be retrieved from the DB.');
+        const rmlTeams = convertArrToObj(rmlTeamsArr);
         const xlsxData = await processHittersXLSX();
         if (!xlsxData) throw new Error('There was an error parsing data from the uploaded file.');
         await hittersSchema.validateAsync(xlsxData);

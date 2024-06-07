@@ -5,13 +5,14 @@ import { ensureUploadsExists } from './utils/ensureUploadsExists';
 import fileUpload, { UploadedFile } from 'express-fileupload';
 import { cardedPlayersSchema } from './validation/schema/cardedPlayersSchema';
 import { processCardedPlayersXLSX } from './utils/processCardedPlayersXLSX';
+import { CardedPlayerArrForDBImport } from '../types';
 
 const router = express.Router();
 
 router.get('/:year', async (req, res, next) => {
     try {
-        const [data, error] = await getCardedPlayersByYear(parseInt(req.params.year));
-        return data ? res.json(data) : next(error);
+        const data = await getCardedPlayersByYear(parseInt(req.params.year));
+        res.json(data);
     } catch (error) {
         next(error);
     }
@@ -19,8 +20,8 @@ router.get('/:year', async (req, res, next) => {
 
 router.get('/', async (_req, res, next) => {
     try {
-        const [data, error] = await getAllCardedPlayers();
-        return data ? res.json(data) : next(error);
+        const data = await getAllCardedPlayers();
+        res.json(data);
     } catch (error) {
         next(error);
     }
@@ -39,10 +40,17 @@ router.post('/', fileUpload(), async (req: Request, res: Response, next: NextFun
         const xlsxData = await processCardedPlayersXLSX();
         if (!xlsxData) throw new Error('There was an error parsing data from the uploaded file.');
         await cardedPlayersSchema.validateAsync(xlsxData);
-        const processedCardedPlayers = xlsxData.map(row => Object.values(row));
+        const processedCardedPlayers: CardedPlayerArrForDBImport[] = xlsxData.map(row => [
+            row.year,
+            row.abbrev_name,
+            row.full_name,
+            row.rml_team,
+            row.ip,
+            row.ab,
+        ]);
 
-        const [data, error] = await addNewCardedPlayerData(processedCardedPlayers);
-        data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new hitter row(s) to the database!`, added: data[1].affectedRows }) : next(error);
+        const result = await addNewCardedPlayerData(processedCardedPlayers);
+        res.status(201).json({ message: `Successfully added ${result.affectedRows} new hitter row(s) to the database!`, added: result.affectedRows });
     } catch (error) {
         next(error);
     }

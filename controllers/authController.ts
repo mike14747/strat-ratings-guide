@@ -11,9 +11,8 @@ const SECONDS_IN_ONE_MONTH = 60 * 60 * 24 * 30;
 router.post('/login', async (req: Request, res: Response, next: NextFunction) => {
     try {
         await loginSchema.validateAsync({ username: req.body.username, password: req.body.password });
-        const [data, error] = await getUserByUsername(req.body.username);
-        if (error) return next(error);
-        if (data && data.length === 1) {
+        const data = await getUserByUsername(req.body.username);
+        if (data?.length === 1) {
             const hashedPassword = hashPassword(req.body.password, data[0].salt);
             if (!hashedPassword) return res.status(400).json({ message: 'username and/or password are invalid!' });
 
@@ -43,7 +42,7 @@ router.get('/hash', async (_req: Request, res: Response) => {
 });
 
 router.get('/logout', (_req: Request, res: Response) => {
-    res.status(200).send('you hit the logged out endpoint');
+    res.status(200).send('you hit the logout endpoint');
 });
 
 export default router;

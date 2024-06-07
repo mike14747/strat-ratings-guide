@@ -32,6 +32,15 @@ export type CardedPlayer = {
     ab: number | null,
 }
 
+export type CardedPlayerArrForDBImport = [
+    number,
+    string,
+    string,
+    string,
+    number | null,
+    number | null,
+]
+
 export type HitterDataFromDB = {
     id: number,
     year: number,
@@ -145,4 +154,11 @@ export type MultiTeamPitcherDataFromDB = {
     st_si_r: number,
     st_hr_l: number,
     st_hr_r: number,
+}
+
+export type UserObjForLogin = {
+    username: string,
+    password: string,
+    salt: string,
+    admin: 0 | 1,
 }

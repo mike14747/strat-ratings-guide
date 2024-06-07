@@ -3,17 +3,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { assignCellValue } from './assignCellValue';
 import castCellTypes from './castCellTypes';
+import type { CardedPlayer } from '../../types';
 
-type XlsxData = {
-    year: number,
-    abbrev_name: string,
-    full_name: string,
-    rml_team: string,
-    ip: number | null,
-    ab: number | null,
-}
-
-type HeadingKey = keyof XlsxData;
+type HeadingKey = keyof CardedPlayer;
 
 function roundInnings(ip: number) {
     if (!ip) return null;
@@ -38,7 +30,7 @@ export async function processCardedPlayersXLSX() {
         if (!fileExits) throw new Error('Uploaded file cannot be found on the server.');
         await workbook.xlsx.readFile(path.join(__dirname, '../uploads/carded_players.xlsx'));
 
-        const xlsxData: XlsxData[] = [];
+        const xlsxData: CardedPlayer[] = [];
         const headingRow: HeadingKey[] = [];
 
         const worksheet = workbook.getWorksheet('carded_players');
@@ -59,34 +51,25 @@ export async function processCardedPlayersXLSX() {
                     possibleNull: [5], // 1
                 };
 
-                const rowObject = {} as XlsxData;
+                const rowObject = {} as CardedPlayer;
                 row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
                     if (typeof (cell.value) !== 'string' && typeof (cell.value) !== 'number') {
                         throw new TypeError(`Cell in row/column: "${rowNumber}/${colNumber}" was expected to be a "string | number", but was instead: ${cell.value}... a "${typeof (cell.value)}" type.`);
                     } else {
                         if (colNumber === 2) {
                             if (typeof (cell.value) !== 'string') throw new TypeError(`Cell in row/column: "${rowNumber}/${colNumber}" was expected to be a "non-empty string", but was instead: "${cell.value}" was a "${typeof (cell.value)}" type.`);
-                            const key = 'abbrev_name' as keyof XlsxData;
+                            const key = 'abbrev_name' as keyof CardedPlayer;
                             assignCellValue(rowObject, key, castCellTypes(rowNumber, colNumber, abbreviateName(cell.value), castingTypes));
-
-                            // this is how I was doing it when I had an index signature
-                            // rowObject.abbrev_name = abbreviateName(cell.value);
                         }
                         if (colNumber === 4) {
-                            const key = headingRow[colNumber - 1] as keyof XlsxData;
+                            const key = headingRow[colNumber - 1] as keyof CardedPlayer;
                             let cellValue: number | null = null;
                             if (typeof (cell.value) === 'string') cellValue = roundInnings(parseFloat(cell.value));
                             if (typeof (cell.value) === 'number') cellValue = roundInnings(cell.value);
                             assignCellValue(rowObject, key, castCellTypes(rowNumber, colNumber, cellValue, castingTypes));
-
-                            // this is how I was doing it when I had an index signature
-                            // rowObject[headingRow[colNumber - 1]] = roundInnings(cell.value);
                         } else {
-                            const key = headingRow[colNumber - 1] as keyof XlsxData;
+                            const key = headingRow[colNumber - 1] as keyof CardedPlayer;
                             assignCellValue(rowObject, key, castCellTypes(rowNumber, colNumber, cell.value, castingTypes));
-
-                            // this is how I was doing it when I had an index signature
-                            // rowObject[headingRow[colNumber - 1]] = castCellTypes(rowNumber, colNumber, cell.value, castingTypes);
                         }
                     }
                 });
