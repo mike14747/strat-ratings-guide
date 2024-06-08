@@ -2,7 +2,7 @@ import ExcelJS from 'exceljs';
 import * as fs from 'fs';
 import * as path from 'path';
 import { assignCellValue } from './assignCellValue';
-import type { RealTeam } from '../../types';
+import type { RealTeam, MultiTeamPitcherArrForDBImport } from '../../types';
 
 type XlsxData = {
     Year: number,
@@ -20,16 +20,14 @@ export function processMultiTeamPitchersInsertData(xlsxData: XlsxData[], realTea
         if (!foundTeam) throw new RangeError(`No match found for the bbref abbreviation (${row.Tm}) in the .xlsx file!`);
         const { id: realTeamId } = foundTeam;
 
-        const pitcherObj = {
-            year: row.Year,
+        return [
+            row.Year, // year
             realTeamId,
-            pitcher: row.Name,
-            throws: row.Throws,
-            ip: row.IP,
-        };
-
-        return Object.values(pitcherObj);
-    });
+            row.Name, // pitcher
+            row.Throws, // throws
+            row.IP, // ip
+        ];
+    }) as MultiTeamPitcherArrForDBImport[];
 }
 
 export async function processMultiTeamPitchersXLSX() {
@@ -57,9 +55,6 @@ export async function processMultiTeamPitchersXLSX() {
                     } else {
                         const key = headingRow[colNumber - 1] as keyof XlsxData;
                         assignCellValue(rowObject, key, cell.value);
-
-                        // this is how I was doing it when I had an index signature
-                        // rowObject[headingRow[colNumber - 1]] = cell.value;
                     }
                 });
                 xlsxData.push(rowObject);

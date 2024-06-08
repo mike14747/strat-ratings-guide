@@ -11,7 +11,7 @@ router.get('/', (_req, res) => {
 });
 
 router.use('/hitters', hittersController);
-// router.use('/pitchers', pitchersController);
+router.use('/pitchers', pitchersController);
 router.use('/carded-players', cardedPlayersController);
 
 router.use((_req: Request, _res: Response, next: NextFunction) => {

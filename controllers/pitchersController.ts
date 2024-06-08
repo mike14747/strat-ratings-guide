@@ -19,8 +19,8 @@ const router = express.Router();
 
 router.get('/season-list', async (_req, res, next) => {
     try {
-        const [data, error] = await getSeasonsListWithPitcherData();
-        return data ? res.json(data) : next(error);
+        const data = await getSeasonsListWithPitcherData();
+        res.json(data);
     } catch (error) {
         next(error);
     }
@@ -39,9 +39,9 @@ router.get('/create-multi-team-csv', async (_req, res, next) => {
 
 router.get('/:year', async (req, res, next) => {
     try {
-        const [data, error] = await getPitchersDataByYear(parseInt(req.params.year));
-        const [multiData, multiError] = await getMultiTeamPitchersPartialByYear(parseInt(req.params.year));
-        return data && multiData ? res.json(calculatePitcherValues(data, multiData)) : next(error || multiError);
+        const data = await getPitchersDataByYear(parseInt(req.params.year));
+        const multiData = await getMultiTeamPitchersPartialByYear(parseInt(req.params.year));
+        res.json(calculatePitcherValues(data, multiData));
     } catch (error) {
         next(error);
     }
@@ -57,20 +57,23 @@ router.post('/', fileUpload(), async (req: Request, res: Response, next: NextFun
             if (error) return next(error);
         });
 
-        const [realTeams] = await getAllRealTeams();
+        const [realTeams, rmlTeamsArr, cardedPlayers] = await Promise.all([
+            getAllRealTeams(),
+            getAllRmlTeams(),
+            getAllCardedPlayers(),
+        ]);
         if (!realTeams) throw new Error('Real team list could not be retrieved from the DB.');
-        const [rmlTeamsArr] = await getAllRmlTeams();
         if (!rmlTeamsArr) throw new Error('Rml teams array list could not be retrieved from the DB.');
-        const rmlTeams = convertArrToObj(rmlTeamsArr);
-        const [cardedPlayers] = await getAllCardedPlayers();
         if (!cardedPlayers) throw new Error('Carded player list could not be retrieved from the DB.');
+
+        const rmlTeams = convertArrToObj(rmlTeamsArr);
         const xlsxData = await processPitchersXLSX();
         if (!xlsxData) throw new Error('There was an error parsing data from the uploaded file.');
         await pitchersSchema.validateAsync(xlsxData);
         const processedPitchers = processPitchersInsertData(xlsxData, realTeams, rmlTeams, cardedPlayers);
 
-        const [data, error] = await addNewPitchersData(processedPitchers);
-        return data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new pitcher row(s) to the database!`, added: data[1].affectedRows }) : next(error);
+        const result = await addNewPitchersData(processedPitchers);
+        res.status(201).json({ message: `Successfully added ${result.affectedRows} new pitcher row(s) to the database!`, added: result.affectedRows });
     } catch (error) {
         next(error);
     }
@@ -86,15 +89,15 @@ router.post('/multi-team', fileUpload(), async (req, res, next) => {
             if (error) return next(error);
         });
 
-        const [realTeams] = await getAllRealTeams();
+        const realTeams = await getAllRealTeams();
         if (!realTeams) throw new Error('Real team list could not be retrieved from the DB.');
         const xlsxData = await processMultiTeamPitchersXLSX();
         if (!xlsxData) throw new Error('There was an error parsing data from the uploaded file.');
         await multiTeamPitchersSchema.validateAsync(xlsxData);
         const processedMultiTeamPitchers = processMultiTeamPitchersInsertData(xlsxData, realTeams);
 
-        const [data, error] = await addMultiTeamPitchersData(processedMultiTeamPitchers);
-        return data ? res.status(201).json({ message: `Successfully added ${data[1].affectedRows} new pitcher row(s) to the database!`, added: data[1].affectedRows }) : next(error);
+        const result = await addMultiTeamPitchersData(processedMultiTeamPitchers);
+        res.status(201).json({ message: `Successfully added ${result.affectedRows} new multi-team pitcher row(s) to the database!`, added: result.affectedRows });
     } catch (error) {
         next(error);
     }

@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import castCellTypes from './castCellTypes';
 import { assignCellValue } from './assignCellValue';
-import type { RealTeam, RmlTeam, CardedPlayer } from '../../types';
+import type { RealTeam, RmlTeam, CardedPlayer, PitcherArrForDBImport } from '../../types';
 
 type XlsxData = {
     Year: number,
@@ -75,44 +75,42 @@ export function processPitchersInsertData(xlsxData: XlsxData[], realTeams: RealT
         if (!foundTeam) throw new RangeError(`No match found for the strat abbreviation (${row.TM}) in the csv file!`);
         const { real_team_abbrev: realTeam, id: realTeamId } = foundTeam;
 
-        const pitcherObj = {
-            year: row.Year,
+        return [
+            row.Year, // year
             realTeam,
             realTeamId,
             pitcherName,
             throws,
-            ip: row.IP,
-            soVsL: row.SO_v_l,
-            bbVsL: row.BB_v_l,
-            hitVsL: row.HIT_v_l,
-            obVsL: row.OB_v_l,
-            tbVsL: row.TB_v_l,
-            hrVsL: row.HR_v_l,
+            row.IP, // ip
+            row.SO_v_l, // soVsL
+            row.BB_v_l, // bbVsL
+            row.HIT_v_l, // hitVsL
+            row.OB_v_l, // obVsL
+            row.TB_v_l, // tbVsL
+            row.HR_v_l, // hrVsL
             bpVsL,
             bpSiVsL,
-            dpVsL: row.DP_v_l,
-            soVsR: row.SO_v_r,
-            bbVsR: row.BB_v_r,
-            hitVsR: row.HIT_v_r,
-            obVsR: row.OB_v_r,
-            tbVsR: row.TB_v_r,
-            hrVsR: row.HR_v_r,
+            row.DP_v_l, // dpVsL
+            row.SO_v_r, // soVsR
+            row.BB_v_r, // bbVsR
+            row.HIT_v_r, // hitVsR
+            row.OB_v_r, // obVsR
+            row.TB_v_r, // tbVsR
+            row.HR_v_r, // hrVsR
             bpVsR,
             bpSiVsR,
-            dpVsR: row.DP_v_r,
-            hold: row.HO,
-            endurance: row.ENDURANCE,
-            field: row.FIELD.replace('\'', '').replace('-', 'e').replace(' ', ''),
-            balk: row.BK,
-            wp: row.WP,
-            batting: row.BAT_B,
-            stl: row.STL,
-            spd: row.SPD,
-            rmlTeamId: row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.abbrev_name.toLowerCase() === pitcherName.toLowerCase() && item.year === row.Year && item.ip === row.IP))]?.rml_team] || null,
-        };
-
-        return Object.values(pitcherObj);
-    });
+            row.DP_v_r, // dpVsR
+            row.HO, // hold
+            row.ENDURANCE, // endurance
+            row.FIELD.replace('\'', '').replace('-', 'e').replace(' ', ''), // field
+            row.BK, // balk
+            row.WP, // wp
+            row.BAT_B, // battinstlg
+            row.STL, // stl
+            row.SPD, // spd
+            row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.abbrev_name.toLowerCase() === pitcherName.toLowerCase() && item.year === row.Year && item.ip === row.IP))]?.rml_team] || null, // rmlTeamId
+        ];
+    }) as PitcherArrForDBImport[];
 }
 
 export async function processPitchersXLSX() {

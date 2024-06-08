@@ -203,6 +203,38 @@ export type PitcherDataFromDB = {
 
 export type PitcherArrForDBImport = [
     number,
+    string,
+    number | null,
+    string,
+    string,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    string,
+    string,
+    number,
+    number,
+    string,
+    string,
+    number,
+    number | null,
 ]
 
 export type MultiTeamPitcherDataFromDB = {
@@ -217,6 +249,10 @@ export type MultiTeamPitcherDataFromDB = {
 
 export type MultiTeamPitcherArrForDBImport = [
     number,
+    number,
+    string,
+    string,
+    number,
 ]
 
 export type UserObjForLogin = {
@@ -224,4 +260,8 @@ export type UserObjForLogin = {
     password: string,
     salt: string,
     admin: 0 | 1,
+}
+
+export type SeasonList = {
+    'year': number,
 }

@@ -1,5 +1,5 @@
 import { getDb, type RowDataPacket, type ResultSetHeader } from '../config/connectionPool';
-import type { HitterDataFromDB, HitterArrForDBImport, MultiTeamHitterDataFromDB, MultiTeamHitterArrForDBImport } from '../types';
+import type { HitterDataFromDB, HitterArrForDBImport, MultiTeamHitterDataFromDB, MultiTeamHitterArrForDBImport, SeasonList } from '../types';
 const pool = getDb();
 
 export async function getHittersDataByYear(year: number) {
@@ -20,7 +20,7 @@ export async function getSeasonsListWithHitterData() {
     const queryString = 'SELECT DISTINCT(year) FROM hitter_ratings ORDER BY year DESC;';
     const queryParams: never[] = [];
     const [rows] = await pool.query<RowDataPacket[]>(queryString, queryParams);
-    return rows;
+    return rows as SeasonList[];
 }
 
 export async function addNewHittersData(hitterArr: HitterArrForDBImport[] = []) {
@@ -33,7 +33,7 @@ export async function addNewHittersData(hitterArr: HitterArrForDBImport[] = []) 
 }
 
 export async function addMultiTeamHittersData(hitterArr: MultiTeamHitterArrForDBImport[] = []) {
-    if (hitterArr.length === 0) throw new Error('Hitter array data being sent to the db was empty.');
+    if (hitterArr.length === 0) throw new Error('Multi-team hitter array data being sent to the db was empty.');
 
     const queryString = 'TRUNCATE TABLE multi_team_hitters;INSERT INTO multi_team_hitters (year, real_team_id, hitter, bats, ab) VALUES ?;';
     const queryParams = [hitterArr];
