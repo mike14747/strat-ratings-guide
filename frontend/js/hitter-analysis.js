@@ -1,9 +1,8 @@
 function displayError() {
-    const element = document.getElementById('error-message');
-    if (element) element.textContent = 'An error occurred fetching data!';
+    document.getElementById('error-message').textContent = 'An error occurred fetching data!';
 }
 
-function tableToText(tableRows: HTMLTableSectionElement) {
+function tableToText(tableRows) {
     let tableText = '';
     const rows = tableRows.querySelectorAll('tr');
 
@@ -22,11 +21,9 @@ function tableToText(tableRows: HTMLTableSectionElement) {
 // eslint-disable-next-line no-unused-vars
 async function copyContent() {
     const tableRows = document.getElementById('data-rows');
-    if (tableRows) {
-        const tableText = tableToText(tableRows);
+    const tableText = tableToText(tableRows);
 
-        await navigator.clipboard.writeText(tableText);
-    }
+    await navigator.clipboard.writeText(tableText);
 }
 
 async function getData() {
@@ -43,20 +40,17 @@ async function getData() {
     const latestSeason = Math.max(...seasonList);
 
     const urlParams = new URLSearchParams(window.location.search);
-    let selectedSeason = urlParams.get('season') || latestSeason;
-    if (typeof (selectedSeason) === 'string') selectedSeason = parseInt(selectedSeason);
+    const selectedSeason = urlParams.get('season') || latestSeason;
 
     if (!selectedSeason) {
         displayError();
         return;
     }
 
-    const pageHeading = document.getElementById('page-heading');
-    if (pageHeading) pageHeading.innerHTML = `Hitter Analysis (${selectedSeason})`;
+    document.getElementById('page-heading').innerHTML = `Hitter Analysis (${selectedSeason})`;
 
     // start season-dropdown properties
-    const seasonDropdownContainer = document.getElementById('season-dropdown');
-    if (seasonDropdownContainer) seasonDropdownContainer.innerHTML = '<season-dropdown-component id="seasonDropdown"></season-dropdown-component>';
+    document.getElementById('season-dropdown').innerHTML = '<season-dropdown-component id="seasonDropdown"></season-dropdown-component>';
 
     const data = {
         type: 'hitter',
@@ -65,18 +59,17 @@ async function getData() {
     };
 
     const seasonDropdown = document.getElementById('seasonDropdown');
-    if (seasonDropdown) seasonDropdown.data = data;
+    seasonDropdown.data = data;
     // end season-dropdown properties
 
-    const url2 = `/api/hitters/${selectedSeason}`;
+    const url2 = `/api/hitters/${parseInt(selectedSeason)}`;
     const dataJSON = await fetch(url2).then((res) => res.json().catch((error) => console.error(error)));
 
     if (!dataJSON) {
         displayError();
         return;
     } else if (dataJSON.length === 0) {
-        const errorMessage = document.getElementById('error-message')
-        if (errorMessage) errorMessage.textContent = 'An error occurred fetching data!';
+        document.getElementById('error-message').textContent = 'An error occurred fetching data!';
         return;
     }
 
@@ -84,8 +77,7 @@ async function getData() {
 
     // const copyIcon = '<svg height="1.50rem" width="1.50rem" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23 15H11.707l2.646 2.646-.707.707L9.793 14.5l3.854-3.854.707.707L11.707 14H23zm-13-5H6v1h4zm-4 5h2v-1H6zM3 4h3V3h3a2 2 0 0 1 4 0h3v1h3v9h-1V5h-2v2H6V5H4v16h14v-5h1v6H3zm4 2h8V4h-3V2.615A.615.615 0 0 0 11.386 2h-.771a.615.615 0 0 0-.615.615V4H7zM6 19h4v-1H6z"/><path fill="none" d="M0 0h24v24H0z"/></svg>';
 
-    const copyBtnContainer = document.getElementById('copy-button-container')
-    if (copyBtnContainer) copyBtnContainer.innerHTML = `<button title="Copy to Clipboard" class="btn-copy" onclick="copyContent()">${copyIcon}</button>`;
+    document.getElementById('copy-button-container').innerHTML = `<button title="Copy to Clipboard" class="btn-copy" onclick="copyContent()">${copyIcon}</button>`;
 
     const thLabels = ['Year', 'Team', 'Hitter', 'Bats', 'INJ', 'AB', 'SO v L', 'BB v L', 'Hit v L', 'OB v L', 'TB v L', 'HR v L', 'wSI v L', 'DP v L', 'wOPS v L', 'SO v R', 'BB v R', 'Hit v R', 'OB v R', 'TB v R', 'HR v R', 'wSI v R', 'DP v R', 'wOPS v R', 'Stealing', 'Speed', 'Bunt', 'H&R', 'CA', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'Fielding', 'RML Team'];
 
@@ -141,7 +133,7 @@ async function getData() {
     const tableContent = `<table class="table small"><thead><tr>${thHTML}</tr></thead><tbody id="data-rows">${tableData}</tbody></table>`;
 
     const tableContainer = document.getElementById('table-container');
-    if (tableContainer) tableContainer.innerHTML = tableContent;
+    tableContainer.innerHTML = tableContent;
 }
 
 getData();
