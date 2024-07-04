@@ -2,7 +2,7 @@
 
 Get the login system working.
 
-Convert the app to typescript. **Update**: This has been completed for the server-side.
+Convert the frontend of the app to typescript.
 
 Add a bundler (Vite?).
 
@@ -39,3 +39,5 @@ Should I move the cardedPlayers.js data into the database? Done... I moved it.
 Figure out how to make hitter injury ratings 0 instead of null when they played in every game.
 
 Figure out how to make the "Copy Data" button not add an extra tab and row to the end of the columns and rows.
+
+Convert the server-side of the app to typescript.
