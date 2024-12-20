@@ -18,6 +18,7 @@ export default function castCellTypes(rowNumber: number, colNumber: number, valu
     } else if (castingOptions.castStrings.includes(colNumber)) {
         return value || value === 0 ? value.toString() : '';
     } else if (castingOptions.possibleNull.includes(colNumber)) {
+        if (value === 0) return 0;
         if (!value) return null;
         if (typeof value === 'number' && Number.isInteger(value)) return value;
         if (typeof value === 'string' && /^\d+$/.test(value)) return parseInt(value, 10);

@@ -27,13 +27,15 @@ I've added the following:
 
 #### Using this new feature
 
+You can't just copy/paste the data from the Master Roster file to **carded_players.xlsx** because it will include null values for empty IP and AB cells.
+
 To get the necessary data from the Master Roster file to paste into **carded_players.xlsx**, sort the Master Roster file by "Carded", then by "Name" and use this formula on row 2 of the first column to the right of the "Carded" column:
 
 ```text
-=IF(INDEX($A$2:$Z$860, ROW($A$1:$A$859), {1,3,19,25})<>"", INDEX($A$2:$Z$860, ROW($A$1:$A$859), {1,3,19,25}), "")
+=IF(INDEX($A$2:$Z$852, ROW($A$1:$A$851), {1,3,19,25})<>"", INDEX($A$2:$Z$852, ROW($A$1:$A$851), {1,3,19,25}), "")
 ```
 
-**NOTE**: You'll need to adjust the above formula based upon how many carded players are in each season's Master Roster file. The above formula is set for having 859 carded players.
+**NOTE**: You'll need to adjust the above formula based upon how many carded players are in each season's Master Roster file. The above formula is set for having 851 carded players.
 
 Highlight the formatted column data then copy/paste into the cardedPlayed array in: **/controllers/utils/cardedPlayers.js**. Each player's **abbrevName** will automatically be calculated.
 
