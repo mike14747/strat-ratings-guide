@@ -26,10 +26,12 @@ Those files will include the following sheets:
 
 **NOTE**: The number of columns of data coming from baseball-reference may change from year to year, so the **formatted** columns in the files may need to be tweaked each year. Also, it seems like baseball-reference changed their naming of team for multi-team hitters and pitchers recently... going from **TOT** to **2TM**, **3TM**, **etc**. I prefer to change all those to **TOT** after I get the data.
 
+**TIP**: The player names need to be formatted properly in the **Original_with_TOT** sheet only. After it's done in that sheet, the data will get moved to the **Carded** sheet where the list will be pruned to include only the carded players. Player names in the **Original_with_Ind_Teams** sheet don't matter because the only things of importance in this sheet are their baseball-reference ID (Player-additional), their real team and AB/IP.
+
 It will take some work to get the player names in the **Player** column formatted properly. Why?
 
 -   They will be in First Name Last Name format with a possible asterisk or pound sign after them.
--   The symbols (or lack of a symbol) need to be converted to the hand they bat.
+-   The symbols (or lack of a symbol) after their name need to be converted to the hand they bat/pitch.
 -   They may have non-breaking spaces that need to be converted to regular spaces.
 -   They may have accented characters that need to be converted to regular letters.
 -   Here's an example of some of the above:
@@ -38,15 +40,35 @@ It will take some work to get the player names in the **Player** column formatte
 José Ramírez#
 ```
 
+For both files, you should check with the previous year's files to see how I do the formulas that check to see if all the BB_Ref_Ids are present in the **Carded** sheet... among other columns that check/format things.
+
 ---
 
-*Convert accented characters in cells to regular letters*
+_Convert accented characters in cells to regular letters_
 
 This [YouTube Link](https://www.youtube.com/watch?v=UXnwu5cLD8I) explains how to do it.
 
+And here is the **VBA code** you'll need when following the above video:
+
+```text
+Function StripAccent(thestring As String)
+Dim A As String * 1
+Dim B As String * 1
+Dim i As Integer
+Const AccChars= "ŠŽšžŸÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðñòóôõöùúûüýÿ"
+Const RegChars= "SZszYAAAAAACEEEEIIIIDNOOOOOUUUUYaaaaaaceeeeiiiidnooooouuuuyy"
+For i = 1 To Len(AccChars)
+A = Mid(AccChars, i, 1)
+B = Mid(RegChars, i, 1)
+thestring = Replace(thestring, A, B)
+Next
+StripAccent = thestring
+End Function
+```
+
 ---
 
-*Convert spaces*
+_Convert spaces_
 
 Convert non-breaking spaces to regular spaces (plus trim extra white space):
 
@@ -56,7 +78,7 @@ Convert non-breaking spaces to regular spaces (plus trim extra white space):
 
 ---
 
-*Extract bats/throws data from names*
+_Extract bats/throws data from names_
 
 Convert baseball-reference **bats/throws** (\*, # or nothing) to L,S or R:
 
@@ -66,7 +88,7 @@ Convert baseball-reference **bats/throws** (\*, # or nothing) to L,S or R:
 
 ---
 
-*Formatting names*
+_Formatting names_
 
 Change names from **FirstName LastName** to **LastName, FirstName**.
 
@@ -235,7 +257,7 @@ For all the following files that will be uploading data, make sure to name the s
 
 -   It's no longer necessary to rename the **Location** column to **real_team_id**, since that is now calculated by the app when uploading data. This is confirmed to be true. In fact, changing the name from **Location** will now generate an error from the Joi schema validation.
 -   It's also no longer necessary to change the **TM** column to reflect my preferred team abbreviations (eg: ARIZ instead of ARN) since that is now converted by the app when uploading data.
--   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. I had some issues with St Louis in the past... (falsely?) thinking they used to be listed as **STN** instead of **SLN** in the past. Also, I removed the extra St Louis row (real_team_id = 32) from **real_teams.xlsx** file and change the original (real_team_id = 27) St Louis to SLN.
+-   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. I had some issues with St Louis in the past... (falsely?) thinking they used to be listed as **STN** instead of **SLN** in the past. Also, I removed the extra St Louis row (real_team_id = 32) from the **real_teams.xlsx** file and changed the original (real_team_id = 27) St Louis to SLN.
 
 > **IMPORTANT** (for both **Hitters.xlsx** and **Pitchers.xlsx**): Every hitter and pitcher that played for multiple teams needs to have their **TM** column manually set to **TOT**.
 >
@@ -309,5 +331,10 @@ In these cases, just add their **rml_team_id** manually before reuploading the d
 
 ### Uploading the data into the database
 
--   The files that need to be uploaded are **/data/hitter_ratings.xlsx** and **/data/pitcher_ratings.xlsx**.
--   Both files must have the proper columns... as just described earlier.
+The files that need to be uploaded are **/data/hitter_ratings.xlsx** and **/data/pitcher_ratings.xlsx**.
+
+Both files must have the proper columns... as just described earlier.
+
+They get uploaded by running the app and uploading the files on the appropriate pages.
+
+The carded players, multi-team hitter and pitcher data should have uploaded well in advance of the ratings disk arriving.
