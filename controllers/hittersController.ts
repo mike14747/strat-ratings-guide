@@ -12,7 +12,8 @@ import { calculateHitterValues } from './utils/calculateHitterValues';
 import { hittersSchema } from './validation/schema/hittersSchema';
 import { multiTeamHittersSchema } from './validation/schema/multiTeamHittersSchema';
 import { convertToCsv } from './utils/convertMultiTeamHittersToCsv';
-import converter from 'json-2-csv';
+import * as converter from 'json-2-csv';
+
 import { convertArrToObj } from './utils/rmlTeamArrToObj';
 
 const router = express.Router();

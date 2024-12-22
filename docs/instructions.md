@@ -1,14 +1,80 @@
 # Instructions for handling new Ratings Disks
 
+**NOTE**: It's best to view this file in a preview pane in VS Code. Having the color headings and blockquote sections will make it easier to follow.
+
 ## Pre Ratings Disk Preparation
 
 ### Keeping RML team names current in the database
 
 Keep an eye on **/config/rml_teams.sql**... making sure it is current with RML team name changes from the previous season.
 
-There are some duplicate teams in the **rml_teams** table (eg: **Twins** and **Twins-old**). As of January-2024, comments by each of the duplicate teams have been added to **/config/ratings_guide_db(seeds).sql**.
+There are some duplicate teams in the **rml_teams** table (eg: **Twins** and **Twins-old**). As of January-2024, comments by each of the duplicate teams have been added to **/data/ratings_guide_db(seeds).sql**.
 
-The **/config/ratings_guide_db(seeds).sql** file will get imported into the database once the new ballpark data (BP singles/homers for each team) arrives in the ratings disk, so there's no need to import it in advance.
+The **/config/ratings_guide_db(seeds).sql** file will get imported into the database once the new ballpark data (BP singles/homers for each team) arrives in the ratings disk, so there's no need to import it in advance. Import it by executing the contents of the file in MySQL Workbench.
+
+---
+
+### Hitter_Stats_202x.xlsx and Pitcher_Stats_202x.xlsx files
+
+Add **Hitter_Stats_202x.xlsx** and **Pitcher_Stats_202x.xlsx** files to the current RML season folder... the one they'll apply to.
+
+Those files will include the following sheets:
+
+-   Original_with_TOT
+-   Original_with_Ind_Teams
+-   Carded
+
+**NOTE**: The number of columns of data coming from baseball-reference may change from year to year, so the **formatted** columns in the files may need to be tweaked each year. Also, it seems like baseball-reference changed their naming of team for multi-team hitters and pitchers recently... going from **TOT** to **2TM**, **3TM**, **etc**. I prefer to change all those to **TOT** after I get the data.
+
+It will take some work to get the player names in the **Player** column formatted properly. Why?
+
+-   They will be in First Name Last Name format with a possible asterisk or pound sign after them.
+-   The symbols (or lack of a symbol) need to be converted to the hand they bat.
+-   They may have non-breaking spaces that need to be converted to regular spaces.
+-   They may have accented characters that need to be converted to regular letters.
+-   Here's an example of some of the above:
+
+```text
+José Ramírez#
+```
+
+---
+
+*Convert accented characters in cells to regular letters*
+
+This [YouTube Link](https://www.youtube.com/watch?v=UXnwu5cLD8I) explains how to do it.
+
+---
+
+*Convert spaces*
+
+Convert non-breaking spaces to regular spaces (plus trim extra white space):
+
+```text
+=TRIM(SUBSTITUTE(A2,CHAR(160)," "))
+```
+
+---
+
+*Extract bats/throws data from names*
+
+Convert baseball-reference **bats/throws** (\*, # or nothing) to L,S or R:
+
+```text
+=IF(ISNUMBER(SEARCH("~\_", AG2)), "L", IF(ISNUMBER(SEARCH("~#", AG2)), "S", "R"))
+```
+
+---
+
+*Formatting names*
+
+Change names from **FirstName LastName** to **LastName, FirstName**.
+
+This will format all names that have a single space and will yield “N/A” for those with 0 spaces or more than 1 space (eg: Bryan De La Cruz). Those will need to be done manually.
+
+```text
+=IF(LEN(AG2)-LEN(SUBSTITUTE(AG2," ",""))=1,RIGHT(AG2,LEN(AG2)-FIND(" ",AG2))&", "&LEFT(AG2, FIND(" ",AG2)-1),"N/A")
+```
 
 ---
 
@@ -27,17 +93,17 @@ I've added the following:
 
 #### Using this new feature
 
-You can't just copy/paste the data from the Master Roster file to **carded_players.xlsx** because it will include null values for empty IP and AB cells.
+You can't just copy/paste the data from the **Master Roster** file to **carded_players.xlsx** because it will include null values for empty IP and AB cells.
 
-To get the necessary data from the Master Roster file to paste into **carded_players.xlsx**, sort the Master Roster file by "Carded", then by "Name" and use this formula on row 2 of the first column to the right of the "Carded" column:
+To get the necessary data from the **Master Roster** file to paste into **carded_players.xlsx**, sort the Master Roster file by "Carded", then by "Name" and use this formula on row 2 of the first column to the right of the "Carded" column:
 
 ```text
 =IF(INDEX($A$2:$Z$852, ROW($A$1:$A$851), {1,3,19,25})<>"", INDEX($A$2:$Z$852, ROW($A$1:$A$851), {1,3,19,25}), "")
 ```
 
-**NOTE**: You'll need to adjust the above formula based upon how many carded players are in each season's Master Roster file. The above formula is set for having 851 carded players.
+**NOTE**: You'll need to adjust the above formula based upon how many carded players are in each season's Master Roster file. The above formula is set for having 851 carded players. There are some 852 numbers in that formula because line 1 is the header row.
 
-Highlight the formatted column data then copy/paste into the cardedPlayed array in: **/controllers/utils/cardedPlayers.js**. Each player's **abbrevName** will automatically be calculated.
+Highlight the formatted column data, then copy/paste into the cardedPlayed array in: **/controllers/utils/cardedPlayers.js**. Each player's **abbrevName** will automatically be calculated.
 
 Each time a significant number of RML team changes occur (eg: after drafts), this process can be repeated.
 
@@ -66,22 +132,23 @@ Each time a significant number of RML team changes occur (eg: after drafts), thi
 
 At the conclusion of each MLB season... far before the ratings disk is set to arrive, the multi-team hitter/pitcher data can be compiled.
 
-Typically, I add **Hitter_Stats_202x.xlsx** and **Pitcher_Stats_202x.xlsx** files following the current RML season folder.
+Typically, I add **Hitter_Stats_202x.xlsx** and **Pitcher_Stats_202x.xlsx** files to the current RML season folder... the one they'll apply to.
+
+**NOTE**: The number of columns of data coming from baseball-reference may change from year to year, so the **formatted** columns in the files may need to be tweaked each year. Also, it seems like baseball-reference changed their naming of team for multi-team hitters and pitchers recently... going from **TOT** to **2TM, 3TM, etc**. I prefer to change all those to **TOT** after I get the data.
 
 Those files will include the following sheets:
 
 -   Original_with_TOT
 -   Original_with_Ind_Teams
 -   Carded
--   TOT (this will just be a list of hitters and pitchers whose team is TOT, with their Name, Tm and AB/IP)
 
 > **UPDATE**: On January 8, 2024 I finished a new route and function to generate the above multi-team hitter AB/IP (respectively) on their individual teams.
 >
-> To use this route/function, you'll first need to update the data objects in **/controllers/utils/convertMultiTeamHittersToXLSX.js** and **/controllers/utils/convertMultiTeamPitchersToXLSX.js** using the current season's data from the **Original_with_Ind_Teams** and **Carded** sheets of **Hitter_Stats_202x.xlsx** and **Pitcher_Stats_202x.xlsx**.
+> To use this route/function, you'll first need to update the data in **/controllers/utils/convertMultiTeamHittersToXLSX.js** and **/controllers/utils/convertMultiTeamPitchersToXLSX.js** using the current season's data from the **Original_with_Ind_Teams** and **Carded** sheets of **Hitter_Stats_202x.xlsx** and **Pitcher_Stats_202x.xlsx**. When getting data from the **Carded** sheets, you only need to copy/paste the data for hitters and pitchers with **TOT** as their team.
 >
-> After that, you can run the server-only **npm run server**, then access these routes: **http://localhost:3001/api/hitters/create-multi-team-csv** and **http://localhost:3001/api/pitchers/create-multi-team-csv** using Postman to get the generated csv data for each.
+> After that, you can run the app, then access these routes: **http://localhost:3000/api/hitters/create-multi-team-csv** and **http://localhost:3000/api/pitchers/create-multi-team-csv** using Postman to get the generated csv data for each.
 >
-> Paste the data into **/data/multi_team_hitters.xlsx** and **/data/multi_team_pitchers.xlsx**... followed by converting the text to columns.
+> Paste special (as text) the data into **/data/multi_team_hitters.xlsx** and **/data/multi_team_pitchers.xlsx**... followed by converting the text to columns (if necessary).
 
 Each hitter/pitcher name will need to be changed to match the exact name Strat uses in the ratings guide (since that will be how the ratings guide links the multi-team hitters to this data). Strat's name format is **last name, comma, then first initial**... without a space after the comma... eg: **Doe,J**. Strat does include spaces in last names for some players (eg: De Los Santos,E).
 
@@ -101,9 +168,9 @@ The final data needs to have these columns (and a row for each team played for):
 -   Tm
 -   AB
 
--   Keep the [Baseball Reference](https://www.baseball-reference.com/) team names as they are... they will be converted to **real_team_id** by the app before getting loaded into the database.
+Keep the [Baseball Reference](https://www.baseball-reference.com/) team names as they are... they will be converted to **real_team_id** by the app before getting loaded into the database.
 
--   The **Bats** column data can be extracted from the hitter's name from [Baseball Reference](https://www.baseball-reference.com/). They use the following system:
+The **Bats** column data can be extracted from the hitter's name from [Baseball Reference](https://www.baseball-reference.com/). They use the following system:
 
     -   '\*' after their name means L
     -   '#' after their name means S
@@ -129,11 +196,11 @@ The final data needs to have these columns (and a row for each team played for):
 -   Tm
 -   IP
 
--   Keep the [Baseball Reference](https://www.baseball-reference.com/) team names as they are... they will be converted to **real_team_id** by the app before getting loaded into the database.
+Keep the [Baseball Reference](https://www.baseball-reference.com/) team names as they are... they will be converted to **real_team_id** by the app before getting loaded into the database.
 
--   Each pitcher's name will need to be changed to match the exact name Strat uses in the ratings guide (since that will be how the ratings guide links the multi-team pitchers to this data). Strat's name format is **last name, comma, then first initial**... without a space after the comma... eg: _Doe,J_.
+Each pitcher's name will need to be changed to match the exact name Strat uses in the ratings guide (since that will be how the ratings guide links the multi-team pitchers to this data). Strat's name format is **last name, comma, then first initial**... without a space after the comma... eg: _Doe,J_.
 
--   The **Throws** column data can be extracted from the pitcher's name from [Baseball Reference](https://www.baseball-reference.com/). They use the following system:
+The **Throws** column data can be extracted from the pitcher's name from [Baseball Reference](https://www.baseball-reference.com/). They use the following system:
 
     -   '\*' after their name means L
     -   '#' after their name means S
@@ -154,7 +221,7 @@ For all the following files that will be uploading data, make sure to name the s
 
 ---
 
-## Once the Ratings Disk arrives
+## <span style="color: #b22222;">Once the Ratings Disk arrives
 
 ### New ballpark data into the database
 
@@ -164,7 +231,7 @@ For all the following files that will be uploading data, make sure to name the s
 
 ---
 
-### NOTES for both Hitters.xlsx and Pitchers.xlsx
+### Notes for both Hitters.xlsx and Pitchers.xlsx
 
 -   It's no longer necessary to rename the **Location** column to **real_team_id**, since that is now calculated by the app when uploading data. This is confirmed to be true. In fact, changing the name from **Location** will now generate an error from the Joi schema validation.
 -   It's also no longer necessary to change the **TM** column to reflect my preferred team abbreviations (eg: ARIZ instead of ARN) since that is now converted by the app when uploading data.
@@ -240,7 +307,7 @@ In these cases, just add their **rml_team_id** manually before reuploading the d
 
 ---
 
-### Uploading the data into the database.
+### Uploading the data into the database
 
 -   The files that need to be uploaded are **/data/hitter_ratings.xlsx** and **/data/pitcher_ratings.xlsx**.
 -   Both files must have the proper columns... as just described earlier.

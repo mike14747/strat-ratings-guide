@@ -12,7 +12,7 @@ import fileUpload, { UploadedFile } from 'express-fileupload';
 import { pitchersSchema } from './validation/schema/pitchersSchema';
 import { multiTeamPitchersSchema } from './validation/schema/multiTeamPitchersSchema';
 import { convertToCsv } from './utils/convertMultiTeamPitchersToCsv';
-import converter from 'json-2-csv';
+import * as converter from 'json-2-csv';
 import { convertArrToObj } from './utils/rmlTeamArrToObj';
 
 const router = express.Router();
@@ -29,7 +29,6 @@ router.get('/season-list', async (_req, res, next) => {
 router.get('/create-multi-team-csv', async (_req, res, next) => {
     try {
         const pitchersOnIndividualTeams = convertToCsv();
-
         const csv = converter.json2csv(pitchersOnIndividualTeams);
         return csv ? res.status(200).send(csv) : res.status(500).end();
     } catch (error) {

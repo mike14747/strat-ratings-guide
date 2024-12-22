@@ -1,0 +1,131 @@
+:root {
+    --mg-beige: #f5f5dc;
+    --mg-blue: #214fc6;
+    --mg-cream: #fffdd0;
+    --mg-dark: #232323;
+    --mg-green-light: #87a96b; /* asparagus */
+    --mg-green: #177245; /* dark spring green */
+    --mg-green-dark: #195905; /* lincoln green */
+    --mg-gray: #808080; /* html gray */
+    --mg-gray-1: #f5f5f5; /* html whitesmoke */
+    --mg-gray-2: #d3d3d3; /* html lightgray */
+    --mg-gray-3: #c0c0c0; /* html silver */
+    --mg-gray-4: #a9a9a9; /* html darkgray... it's a bug that its lighter than regular gray */
+    --mg-gray-5: #808080; /* html gray */
+    --mg-gray-6: #585858;
+    --mg-gray-7: #232323;
+    --mg-ivory: #fffff0;
+    --mg-light: #ffffff;
+    --mg-light-white: #fffffc;
+    --mg-orange: #ff7518; /* html pumpkin */
+    --mg-orange-dark: #c75000;
+    --mg-orange-soft: #fcd581;
+    --mg-purple: #6f42c1;
+    --mg-red: #b22222; /* html firebrick */
+    --mg-red-dark: #8b0000;
+    --mg-slate: #708090; /* html slate gray */
+    --mg-yellow: #fff44f; /* html lemon */
+    --mg-yellow-pale: #ffffd5;
+
+    /* start font sizes */
+
+    --step--2-base: 0.694rem;
+    --step--1-base: 0.833rem;
+    --step-0-base: 1rem;
+    --step-1-base: 1.2rem;
+    --step-2-base: 1.44rem;
+    --step-3-base: 1.728rem;
+    --step-4-base: 2.074rem;
+    --step-5-base: 2.488rem;
+
+    --step--2: clamp(0.69rem, 0.65rem + 0.15vw, 0.83rem);
+    --step--1: clamp(0.83rem, 0.78rem + 0.19vw, 1rem);
+    --step-0: clamp(1rem, 0.93rem + 0.22vw, 1.2rem);
+    --step-1: clamp(1.2rem, 1.12rem + 0.27vw, 1.44rem);
+    --step-2: clamp(1.44rem, 1.34rem + 0.32vw, 1.73rem);
+    --step-3: clamp(1.73rem, 1.61rem + 0.38vw, 2.07rem);
+    --step-4: clamp(2.07rem, 1.94rem + 0.46vw, 2.49rem);
+    --step-5: clamp(2.49rem, 2.32rem + 0.55vw, 2.99rem);
+
+    /* end font sizes */
+}
+
+body {
+    font-family: Calibri, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+    margin: 3rem;
+    padding: 0;
+    font-size: 1rem;
+    font-size: var(--step-0-base);
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--mg-dark);
+}
+
+h1 {
+    font-size: var(--step-4-base);
+    font-size: var(--step-4);
+}
+
+h2 {
+    font-size: var(--step-3-base);
+    font-size: var(--step-3);
+    color: var(--mg-red);
+}
+
+h3 {
+    font-size: var(--step-2-base);
+    font-size: var(--step-2);
+    color: var(--mg-green);
+}
+
+h4 {
+    font-size: var(--step-1-base);
+    font-size: var(--step-1);
+    color: var(--mg-blue);
+}
+
+h5 {
+    font-size: var(--step-0-base);
+    font-size: var(--step-0);
+    color: var(--mg-orange-dark);
+}
+
+h6 {
+    font-size: var(--step-0-base);
+    font-size: var(--step-0);
+    color: var(--mg-purple);
+}
+
+p {
+    font-size: var(--step-0-base);
+    font-size: var(--step-0);
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+blockquote {
+    text-align: left;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    border-left: 8px solid var(--mg-orange);
+    background-color: var(--mg-cream);
+    font-size: 1.2rem;
+    font-size: var(--step-1);
+}
+
+blockquote > p:last-child {
+    margin-bottom: 0;
+}
+
+li {
+    font-size: var(--step-0-base);
+    font-size: var(--step-0);
+}
+
+em {
+    font-size: var(--step-1-base);
+    font-size: var(--step-1);
+    color: var(--mg-slate);
+    font-weight: bolder;
+    font-style: normal;
+}
