@@ -64,12 +64,14 @@ body {
 h1 {
     font-size: var(--step-4-base);
     font-size: var(--step-4);
+    border-bottom: 2px solid var(--mg-slate) !important;
 }
 
 h2 {
     font-size: var(--step-3-base);
     font-size: var(--step-3);
     color: var(--mg-red);
+    border: 0;
 }
 
 h3 {
