@@ -61,6 +61,17 @@ body {
     color: var(--mg-dark);
 }
 
+h1,
+h2,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0 0 0.5rem 0;
+    padding: 0.25rem 0;
+}
+
 h1 {
     font-size: var(--step-4-base);
     font-size: var(--step-4);
