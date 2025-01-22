@@ -80,63 +80,20 @@ function convertBpToBpWAndBpSi(bp: string) {
     };
 }
 
-// ------------------------------
-
-interface Row {
-    Year: number;
-    AB?: number | null;
-    IP?: number | null;
-}
-
-// Create a lookup table for cardedPlayers
-const createLookupTable = (cardedPlayers: CardedPlayer[]): Map<string, string> => {
-    const lookup = new Map<string, string>();
-
+export function processHittersInsertData(xlsxData: XlsxData[], realTeams: RealTeam[], rmlTeams: RmlTeam, cardedPlayers: CardedPlayer[]) {
+    // create a lookup table for cardedPlayers
+    const cardedLookupTable = new Map<string, string>();
     cardedPlayers.forEach(player => {
-        const key = `${player.year}-${player.abbrev_name.toLowerCase()}-${player.ip ?? player.ab}`;
-        lookup.set(key, player.rml_team);
+        const key = `${player.year}-${player.abbrev_name.toLowerCase()}-${player.ab ?? 'data_missing'}`;
+        cardedLookupTable.set(key, player.rml_team);
     });
 
-    return lookup;
-};
+    // function to find rml_team using the lookup table
+    const getRmlTeam = (lookup: Map<string, string>, year: number, hitterName: string, AB: number): string | null => {
+        const key = `${year}-${hitterName.toLowerCase()}-${AB}`;
+        return lookup.get(key) || null;
+    };
 
-// Function to find rml_team using the lookup table
-const getRmlTeam = (lookup: Map<string, string>, row: Row, hitterName: string): string | null => {
-    const key = `${row.Year}-${hitterName.toLowerCase()}-${row.AB ?? row.IP}`;
-    return lookup.get(key) || null;
-};
-
-// Example usage
-const cardedPlayers: CardedPlayer[] = [
-    {
-        year: 2023,
-        abbrev_name: 'Rodon,C',
-        full_name: 'Rodon, Carlos',
-        rml_team: 'Blaze',
-        ip: 143,
-        ab: null,
-    },
-    {
-        year: 2024,
-        abbrev_name: 'Alonso,P',
-        full_name: 'Alonso, Pete',
-        rml_team: 'Blaze',
-        ip: null,
-        ab: 594,
-    },
-];
-
-const row: Row = { Year: 2024, AB: 594 }; // Example row
-const hitterName = 'Alonso,P'; // Example name
-
-const cardedLookup = createLookupTable(cardedPlayers);
-const rmlTeam = getRmlTeam(cardedLookup, row, hitterName);
-
-console.log(rmlTeam); // Output: Blaze
-
-// ------------------------------
-
-export function processHittersInsertData(xlsxData: XlsxData[], realTeams: RealTeam[], rmlTeams: RmlTeam, cardedPlayers: CardedPlayer[]) {
     return xlsxData.map(row => {
         const { hitterName, bats } = convertNameToNameAndBats(row.HITTERS);
         const { bp: bpVsL, w: wVsL, bpsi: bpSiVsL } = convertBpToBpWAndBpSi(row.BP_v_lhp);
@@ -145,6 +102,10 @@ export function processHittersInsertData(xlsxData: XlsxData[], realTeams: RealTe
         const foundTeam = realTeams.find(team => team.strat_abbrev === row.TM);
         if (!foundTeam) throw new RangeError(`No match found for the strat abbreviation (${row.TM}) in the .xlsx file!`);
         const { real_team_abbrev: realTeam, id: realTeamId } = foundTeam;
+
+        // get the rml_team_id using the new Map
+        const rmlTeam = getRmlTeam(cardedLookupTable, row.Year, hitterName, row.AB);
+        const rmlTeamId = rmlTeam ? rmlTeams[rmlTeam] : null;
 
         return [
             row.Year, // year
@@ -190,7 +151,8 @@ export function processHittersInsertData(xlsxData: XlsxData[], realTeams: RealTe
             convertPositionlFielding(row.d_CF), // dCF
             convertPositionlFielding(row.d_RF), // dRF
             row.FIELDING, // fielding
-            row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.abbrev_name.toLowerCase() === hitterName.toLowerCase() && item.year === row.Year && item.ab === row.AB))]?.rml_team] || null, // rmlTeamId
+            // row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.abbrev_name.toLowerCase() === hitterName.toLowerCase() && item.year === row.Year && item.ab === row.AB))]?.rml_team] || null, // rml_team_id
+            row.rml_team_id || rmlTeamId, // rml_team_id
         ];
     }) as HitterArrForDBImport[];
 }

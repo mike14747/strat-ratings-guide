@@ -65,6 +65,19 @@ function convertBpToBpAndBpSi(bp: string) {
 }
 
 export function processPitchersInsertData(xlsxData: XlsxData[], realTeams: RealTeam[], rmlTeams: RmlTeam, cardedPlayers: CardedPlayer[]) {
+    // create a lookup table for cardedPlayers
+    const cardedLookupTable = new Map<string, string>();
+    cardedPlayers.forEach(player => {
+        const key = `${player.year}-${player.abbrev_name.toLowerCase()}-${player.ip ?? 'data_missing'}`;
+        cardedLookupTable.set(key, player.rml_team);
+    });
+
+    // function to find rml_team using the lookup table
+    const getRmlTeam = (lookup: Map<string, string>, year: number, pitcherName: string, IP: number): string | null => {
+        const key = `${year}-${pitcherName.toLowerCase()}-${IP}`;
+        return lookup.get(key) || null;
+    };
+
     return xlsxData.map(row => {
         const { pitcherName, throws } = convertNameToNameAndThrows(row.PITCHERS);
 
@@ -74,6 +87,10 @@ export function processPitchersInsertData(xlsxData: XlsxData[], realTeams: RealT
         const foundTeam = realTeams.find(team => team.strat_abbrev === row.TM);
         if (!foundTeam) throw new RangeError(`No match found for the strat abbreviation (${row.TM}) in the csv file!`);
         const { real_team_abbrev: realTeam, id: realTeamId } = foundTeam;
+
+        // get the rml_team_id using the new Map
+        const rmlTeam = getRmlTeam(cardedLookupTable, row.Year, pitcherName, row.IP);
+        const rmlTeamId = rmlTeam ? rmlTeams[rmlTeam] : null;
 
         return [
             row.Year, // year
@@ -108,7 +125,8 @@ export function processPitchersInsertData(xlsxData: XlsxData[], realTeams: RealT
             row.BAT_B, // battinstlg
             row.STL, // stl
             row.SPD, // spd
-            row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.abbrev_name.toLowerCase() === pitcherName.toLowerCase() && item.year === row.Year && item.ip === row.IP))]?.rml_team] || null, // rmlTeamId
+            // row.rml_team_id || rmlTeams[cardedPlayers[cardedPlayers.findIndex((item) => (item.abbrev_name.toLowerCase() === pitcherName.toLowerCase() && item.year === row.Year && item.ip === row.IP))]?.rml_team] || null, // rmlTeamId
+            row.rml_team_id || rmlTeamId, // rml_team_id
         ];
     }) as PitcherArrForDBImport[];
 }
