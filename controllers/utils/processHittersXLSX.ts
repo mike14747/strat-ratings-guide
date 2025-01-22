@@ -80,6 +80,62 @@ function convertBpToBpWAndBpSi(bp: string) {
     };
 }
 
+// ------------------------------
+
+interface Row {
+    Year: number;
+    AB?: number | null;
+    IP?: number | null;
+}
+
+// Create a lookup table for cardedPlayers
+const createLookupTable = (cardedPlayers: CardedPlayer[]): Map<string, string> => {
+    const lookup = new Map<string, string>();
+
+    cardedPlayers.forEach(player => {
+        const key = `${player.year}-${player.abbrev_name.toLowerCase()}-${player.ip ?? player.ab}`;
+        lookup.set(key, player.rml_team);
+    });
+
+    return lookup;
+};
+
+// Function to find rml_team using the lookup table
+const getRmlTeam = (lookup: Map<string, string>, row: Row, hitterName: string): string | null => {
+    const key = `${row.Year}-${hitterName.toLowerCase()}-${row.AB ?? row.IP}`;
+    return lookup.get(key) || null;
+};
+
+// Example usage
+const cardedPlayers: CardedPlayer[] = [
+    {
+        year: 2023,
+        abbrev_name: 'Rodon,C',
+        full_name: 'Rodon, Carlos',
+        rml_team: 'Blaze',
+        ip: 143,
+        ab: null,
+    },
+    {
+        year: 2024,
+        abbrev_name: 'Alonso,P',
+        full_name: 'Alonso, Pete',
+        rml_team: 'Blaze',
+        ip: null,
+        ab: 594,
+    },
+];
+
+const row: Row = { Year: 2024, AB: 594 }; // Example row
+const hitterName = 'Alonso,P'; // Example name
+
+const cardedLookup = createLookupTable(cardedPlayers);
+const rmlTeam = getRmlTeam(cardedLookup, row, hitterName);
+
+console.log(rmlTeam); // Output: Blaze
+
+// ------------------------------
+
 export function processHittersInsertData(xlsxData: XlsxData[], realTeams: RealTeam[], rmlTeams: RmlTeam, cardedPlayers: CardedPlayer[]) {
     return xlsxData.map(row => {
         const { hitterName, bats } = convertNameToNameAndBats(row.HITTERS);
