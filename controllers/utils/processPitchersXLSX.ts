@@ -4,6 +4,8 @@ import * as path from 'path';
 import castCellTypes from './castCellTypes';
 import { assignCellValue } from './assignCellValue';
 import type { RealTeam, RmlTeam, CardedPlayer, PitcherArrForDBImport } from '../../types';
+import createCardedPlayerLookupTable from './createCardedPlayerLookupTable';
+import getRmlTeam from './getRMLTeam';
 
 type XlsxData = {
     Year: number,
@@ -65,18 +67,7 @@ function convertBpToBpAndBpSi(bp: string) {
 }
 
 export function processPitchersInsertData(xlsxData: XlsxData[], realTeams: RealTeam[], rmlTeams: RmlTeam, cardedPlayers: CardedPlayer[]) {
-    // create a lookup table for cardedPlayers
-    const cardedLookupTable = new Map<string, string>();
-    cardedPlayers.forEach(player => {
-        const key = `${player.year}-${player.abbrev_name.toLowerCase()}-${player.ip ?? 'data_missing'}`;
-        cardedLookupTable.set(key, player.rml_team);
-    });
-
-    // function to find rml_team using the lookup table
-    const getRmlTeam = (lookup: Map<string, string>, year: number, pitcherName: string, IP: number): string | null => {
-        const key = `${year}-${pitcherName.toLowerCase()}-${IP}`;
-        return lookup.get(key) || null;
-    };
+    const cardedLookupTable = createCardedPlayerLookupTable(cardedPlayers, 'ip');
 
     return xlsxData.map(row => {
         const { pitcherName, throws } = convertNameToNameAndThrows(row.PITCHERS);
