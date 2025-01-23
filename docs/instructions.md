@@ -318,11 +318,12 @@ Column names for the **/data/pitcher_ratings.xlsx** file must use these exact co
 
 ### Adding some RML team ids for RML teams that show up as blank
 
-After viewing the processed rating guide data in a browser, you'll see that there will likely be 10-20 players with no RML teams assigned to them. This will be due to difference in names between the Ratings Guide and my name abbreviations... eg:
+After viewing the processed rating guide data in a browser, you'll see that there will likely be 10-20 players with no RML teams assigned to them. This could be due to a difference in names between the Ratings Guide and my name abbreviations... eg:
 
 -   Dejong,P vs DeJong,P
 -   Bradley Jr,J vs Bradley,J
 -   D'Arnaud,T vs d'Arnaud,T
+-   Woods-Richard,S vs Woods Richardson,S
 -   and maybe even some with no apparent reason
 
 In these cases, just add their **rml_team_id** manually before reuploading the data.
