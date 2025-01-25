@@ -92,7 +92,7 @@ async function getData() {
             <td class="text-left">${player.real_team}</td>
             <td class="text-left">${player.name}</td>
             <td>${player.bats}</td>
-            <td>${player.injury}</td>
+            <td>${player.injury ?? ''}</td>
             <td>${player.ab}</td>
             <td>${player.so_v_l}</td>
             <td>${player.bb_v_l}</td>
