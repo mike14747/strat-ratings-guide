@@ -88,7 +88,7 @@ async function getData() {
         `<tr>
             <td>${player.year}</td>
             <td class="text-left">${player.real_team}</td>
-            <td class="text-left">${player.name}</td>
+            <td class="text-left ${!player.wops_v_l || !player.wops_v_r ? 'missing-data' : ''}">${player.name}</td>
             <td>${player.throws}</td>
             <td>${player.ip}</td>
             <td>${player.so_v_l}</td>
@@ -117,7 +117,7 @@ async function getData() {
             <td>${player.batting_b}</td>
             <td>${player.stl}</td>
             <td>${player.spd}</td>
-            <td class="text-left">${player.rml_team_name}</td>
+            <td class="text-left ${!player.rml_team_name ? 'missing-data' : ''}">${player.rml_team_name}</td>
         </tr>`
     ));
     const tableData = tableDataArr.join('');

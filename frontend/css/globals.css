@@ -483,7 +483,7 @@ button.btn:focus {
 }
 
 button.btn-copy {
-    padding: 0.50rem 0.75rem;
+    padding: 0.5rem 0.75rem;
     background-color: var(--mg-light);
     cursor: pointer;
     border: 1px solid var(--mg-gray-4);
@@ -604,3 +604,9 @@ i {
 }
 
 /* start season dropdown styles */
+
+.missing-data {
+    background-color: var(--mg-red);
+    color: var(--mg-light);
+    font-weight: bold;
+}
