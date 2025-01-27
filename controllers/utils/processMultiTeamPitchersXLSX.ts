@@ -23,7 +23,7 @@ export function processMultiTeamPitchersInsertData(xlsxData: XlsxData[], realTea
         return [
             row.Year, // year
             realTeamId,
-            row.Name, // pitcher
+            row.Name.trim(), // pitcher
             row.Throws, // throws
             row.IP, // ip
         ];

@@ -33,7 +33,7 @@ router.post('/', fileUpload(), async (req: Request, res: Response, next: NextFun
         const file = req.files.file as UploadedFile;
 
         await ensureUploadsExists();
-        await file.mv(path.join(__dirname, '/uploads/carded_players.xlsx'), error => {
+        file.mv(path.join(__dirname, '/uploads/carded_players.xlsx'), error => {
             if (error) return next(error);
         });
 
@@ -42,9 +42,9 @@ router.post('/', fileUpload(), async (req: Request, res: Response, next: NextFun
         await cardedPlayersSchema.validateAsync(xlsxData);
         const processedCardedPlayers: CardedPlayerArrForDBImport[] = xlsxData.map(row => [
             row.year,
-            row.abbrev_name,
-            row.full_name,
-            row.rml_team,
+            row.abbrev_name.trim(),
+            row.full_name.trim(),
+            row.rml_team.trim(),
             row.ip,
             row.ab,
         ]);

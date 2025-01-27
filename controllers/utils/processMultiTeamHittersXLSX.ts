@@ -23,7 +23,7 @@ export function processMultiTeamHittersInsertData(xlsxData: XlsxData[], realTeam
         return [
             row.Year, // year
             realTeamId,
-            row.Name, // hitter
+            row.Name.trim(), // hitter
             row.Bats, // bats
             row.AB, // ab
         ];
