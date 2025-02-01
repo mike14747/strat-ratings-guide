@@ -87,6 +87,14 @@ Assuming OB and TB values of 1.259 and 0.7407, the impact of using a tired pitch
 2021 PA/Team/INN: 4.2665
 2021 opponent's PA where their defense is on the field vs each offensive PA: 10.11
 
+**Average of 2015-2024 (10-year average):**
+PA/Team/INN: **4.263**
+Opponent's PA where their defense is on the field vs each offensive PA: is this number 9 or 10.11? I'm now thinking it's 9.
+PA/lineup_slot (excluding the abbreviated 2020 season): **681.31**
+Defensive Innings per Offensive PA (avg for #5 hitter): **2.11**
+Innings/Team/Year (excluding the abbreviated 2020 season): **1439.92**
+PA/Team per 1458 Innings: **6214.77**
+
 Example of a 3B:
 
 -   They will get a GB(X)3B rolled 87.22 times per season (1458 INN and 6280 rolls per season as a base... which would give them 697.78 PA).
