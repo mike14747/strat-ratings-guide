@@ -94,7 +94,7 @@ Example of a 3B:
 -   A 3e21 will add (1.26 / 216) * 10.11 OB per each of their offensive PA.
 -   A 3e21 will add (1.58 / 216) * 10.11 TB per each of their offensive PA.
 -   A 3e21 will add (0.56 / 216) * 10.11 DP per each of their offensive PA.
--   They are going to allow 39.69 base runners, 46.03 total bases and 2.82 DP per season (1458 INN and 6280 rolls per season as a base.
+-   They are going to allow 39.69 base runners, 46.03 total bases and 2.82 DP per season (1458 INN and 6280 rolls per season as a base).
 
 The effect of pitcher's defense on their wOPS:
 
