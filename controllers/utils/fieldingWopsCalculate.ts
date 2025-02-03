@@ -84,31 +84,27 @@ export function fieldingWopsCalculate(position: keyof Positions, defRating: DefR
     const eNum: number = parseInt(defRating.substring(2, 4));
     const hitDPValues: PositionRangeRatings[RangeRating] = positions[position].rangeRatings[rangeRating];
 
-    // const fieldingHits = (parseInt(defRating.charAt(0)) - 1) * 0.1 * 2;
     const fieldingHitPercent = (hitDPValues.si + hitDPValues.do + hitDPValues.tr);
     const fieldingHits = positionValues.chances * (hitDPValues.si + hitDPValues.do + hitDPValues.tr);
     const fieldingHitsTotalBases = positionValues.chances * (hitDPValues.si + (2 * hitDPValues.do) + (3 * hitDPValues.tr));
 
-    // const fieldingErrors = parseInt(defRating.substring(2, 4)) * 0.0180 * 2;
     const fieldingErrorPercent = positionValues.errorFactor * eNum;
     const fieldingErrors = positionValues.chances * positionValues.errorFactor * eNum;
     const fieldingErrorsTotalBases = fieldingErrors + (1 * positionValues.errorTypeRates.e2) + (2 * positionValues.errorTypeRates.e3);
 
-    const dp = (positionValues.chances * hitDPValues.gba) * (1 - (positionValues.errorFactor * eNum));
+    // gba chances when there is not an error
+    const dp = ((positionValues.chances * hitDPValues.gba) * (1 - (positionValues.errorFactor * eNum))) * (1 - fieldingErrorPercent);
     const dpEffect = OB_VALUE * 20 * dp / 108;
 
-    console.log({ fieldingHitPercent, fieldingHits, fieldingHitsTotalBases, fieldingErrorPercent, fieldingErrors, fieldingErrorsTotalBases, dp, dpEffect });
+    const outPercent = ((1 - fieldingHitPercent) * (1 - fieldingErrorPercent)).toFixed(3);
 
-    // const fieldingTwoBaseErrorTotalBaseAdj = TB_VALUE * fieldingErrors / 20;
-    // const fieldingWopsOnHitsOnly = OB_VALUE * ((((2 - fieldingErrors) / 2) * (fieldingHits / 2)) * 2) + TB_VALUE * ((((2 - fieldingErrors) / 2) * (fieldingHits / 2)) * 2);
-    // const fieldingWopsOnErrorsOnly = OB_VALUE * ((((2 - fieldingHits) / 2) * (fieldingErrors / 2)) * 2) + TB_VALUE * ((((2 - fieldingHits) / 2) * (fieldingErrors / 2)) * 2);
-    // const fieldingWopsOnHitAndError = OB_VALUE * (((fieldingHits / 2) * (fieldingErrors / 2)) * 2) + 2 * TB_VALUE * (((fieldingHits / 2) * (fieldingErrors / 2)) * 2);
+    // console.log({ fieldingHitPercent, fieldingHits, fieldingHitsTotalBases, fieldingErrorPercent, fieldingErrors, fieldingErrorsTotalBases, dp, dpEffect });
 
-    // return fieldingWopsOnHitsOnly + fieldingWopsOnErrorsOnly + fieldingWopsOnHitAndError + fieldingTwoBaseErrorTotalBaseAdj;
+    console.log({ position, defRating, outPercent, fieldingHits, fieldingErrors, dp });
 
     const fieldingWopsOnHitsOnly = OB_VALUE * (fieldingHits * (1 - fieldingErrorPercent)) + TB_VALUE * (fieldingHitsTotalBases * (1 - fieldingErrorPercent));
     const fieldingWopsOnErrorsOnly = OB_VALUE * (fieldingErrors * (1 - fieldingHitPercent)) + TB_VALUE * (fieldingErrorsTotalBases * (1 - fieldingHitPercent));
     const fieldingWopsOnHitAndError = OB_VALUE * (positionValues.chances * fieldingHitPercent * fieldingErrorPercent) + TB_VALUE * ((fieldingHitPercent * fieldingHitsTotalBases) + (fieldingErrorPercent * fieldingErrorsTotalBases));
 
-    return (fieldingWopsOnHitsOnly + fieldingWopsOnErrorsOnly + fieldingWopsOnHitAndError - dpEffect).toFixed(1);
+    return (9 * (fieldingWopsOnHitsOnly + fieldingWopsOnErrorsOnly + fieldingWopsOnHitAndError - dpEffect)).toFixed(1);
 }
