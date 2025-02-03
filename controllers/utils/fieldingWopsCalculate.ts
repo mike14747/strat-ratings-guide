@@ -1,11 +1,7 @@
 import { OB_VALUE, TB_VALUE } from './constants';
 
 type PositionRangeRatings = {
-    1: { si: number, do: number, tr: number, gba: number },
-    2: { si: number, do: number, tr: number, gba: number },
-    3: { si: number, do: number, tr: number, gba: number },
-    4: { si: number, do: number, tr: number, gba: number },
-    5: { si: number, do: number, tr: number, gba: number },
+    [key in '1' | '2' | '3' | '4' | '5']: { si: number, do: number, tr: number, gba: number };
 };
 
 type Positions = {
@@ -19,6 +15,21 @@ type Positions = {
     RF: { chances: number, errorFactor: number, errorTypeRates: { e1: number, e2: number, e3: number }, rangeRatings: PositionRangeRatings },
     P: { chances: number, errorFactor: number, errorTypeRates: { e1: number, e2: number, e3: number }, rangeRatings: PositionRangeRatings },
 };
+
+type DefRating =
+    `1e${number}`
+    | `1e${number}${number}`
+    | `2e${number}`
+    | `2e${number}${number}`
+    | `3e${number}`
+    | `3e${number}${number}`
+    | `4e${number}`
+    | `4e${number}${number}`
+    | `5e${number}`
+    | `5e${number}${number}`
+;
+
+type RangeRating = '1'| '2' | '3' | '4' | '5';
 
 const catcherRangeRatings: PositionRangeRatings = {
     1: { si: 0, do: 0, tr: 0, gba: 0.10 },
@@ -64,19 +75,40 @@ const positions: Positions = {
     P: { chances: 2, errorFactor: 0.0180, errorTypeRates: { e1: 0.9486, e2: 0.0514, e3: 0 }, rangeRatings: pitcherRangeRatings },
 };
 
-console.log({ positions });
+export function fieldingWopsCalculate(position: keyof Positions, defRating: DefRating) {
+    if (!(position in positions)) throw new Error(`Invalid position: ${position}. The only valid positions are: 'CA, 1B, 2B, 3B, SS, LF, CF, RF, P'... and they are case sensitive.`);
+    if (!/^[1-5]e\d{1,2}$/.test(defRating)) throw new Error(`The value passed (${defRating}) was in not proper format for a defensive rating.`);
 
-export function fieldingWopsCalculate(position: string, defRating: string) {
-    console.log(position);
-    const fieldingHits = (parseInt(defRating.charAt(0)) - 1) * 0.1 * 2;
-    const fieldingErrors = parseInt(defRating.substring(2, 4)) * 0.0180 * 2;
-    const fieldingTwoBaseErrorTotalBaseAdj = TB_VALUE * fieldingErrors / 20;
+    const positionValues: Positions[keyof Positions] = positions[position];
+    const rangeRating: RangeRating = defRating.charAt(0) as RangeRating;
+    const eNum: number = parseInt(defRating.substring(2, 4));
+    const hitDPValues: PositionRangeRatings[RangeRating] = positions[position].rangeRatings[rangeRating];
 
-    const fieldingWopsOnHitsOnly = OB_VALUE * ((((2 - fieldingErrors) / 2) * (fieldingHits / 2)) * 2) + TB_VALUE * ((((2 - fieldingErrors) / 2) * (fieldingHits / 2)) * 2);
-    const fieldingWopsOnErrorsOnly = OB_VALUE * ((((2 - fieldingHits) / 2) * (fieldingErrors / 2)) * 2) + TB_VALUE * ((((2 - fieldingHits) / 2) * (fieldingErrors / 2)) * 2);
-    const fieldingWopsOnHitAndError = OB_VALUE * (((fieldingHits / 2) * (fieldingErrors / 2)) * 2) + 2 * TB_VALUE * (((fieldingHits / 2) * (fieldingErrors / 2)) * 2);
+    // const fieldingHits = (parseInt(defRating.charAt(0)) - 1) * 0.1 * 2;
+    const fieldingHitPercent = (hitDPValues.si + hitDPValues.do + hitDPValues.tr);
+    const fieldingHits = positionValues.chances * (hitDPValues.si + hitDPValues.do + hitDPValues.tr);
+    const fieldingHitsTotalBases = positionValues.chances * (hitDPValues.si + (2 * hitDPValues.do) + (3 * hitDPValues.tr));
 
-    // find a way to incorporate DP chances
+    // const fieldingErrors = parseInt(defRating.substring(2, 4)) * 0.0180 * 2;
+    const fieldingErrorPercent = positionValues.errorFactor * eNum;
+    const fieldingErrors = positionValues.chances * positionValues.errorFactor * eNum;
+    const fieldingErrorsTotalBases = fieldingErrors + (1 * positionValues.errorTypeRates.e2) + (2 * positionValues.errorTypeRates.e3);
 
-    return fieldingWopsOnHitsOnly + fieldingWopsOnErrorsOnly + fieldingWopsOnHitAndError + fieldingTwoBaseErrorTotalBaseAdj;
+    const dp = (positionValues.chances * hitDPValues.gba) * (1 - (positionValues.errorFactor * eNum));
+    const dpEffect = OB_VALUE * 20 * dp / 108;
+
+    console.log({ fieldingHitPercent, fieldingHits, fieldingHitsTotalBases, fieldingErrorPercent, fieldingErrors, fieldingErrorsTotalBases, dp, dpEffect });
+
+    // const fieldingTwoBaseErrorTotalBaseAdj = TB_VALUE * fieldingErrors / 20;
+    // const fieldingWopsOnHitsOnly = OB_VALUE * ((((2 - fieldingErrors) / 2) * (fieldingHits / 2)) * 2) + TB_VALUE * ((((2 - fieldingErrors) / 2) * (fieldingHits / 2)) * 2);
+    // const fieldingWopsOnErrorsOnly = OB_VALUE * ((((2 - fieldingHits) / 2) * (fieldingErrors / 2)) * 2) + TB_VALUE * ((((2 - fieldingHits) / 2) * (fieldingErrors / 2)) * 2);
+    // const fieldingWopsOnHitAndError = OB_VALUE * (((fieldingHits / 2) * (fieldingErrors / 2)) * 2) + 2 * TB_VALUE * (((fieldingHits / 2) * (fieldingErrors / 2)) * 2);
+
+    // return fieldingWopsOnHitsOnly + fieldingWopsOnErrorsOnly + fieldingWopsOnHitAndError + fieldingTwoBaseErrorTotalBaseAdj;
+
+    const fieldingWopsOnHitsOnly = OB_VALUE * (fieldingHits * (1 - fieldingErrorPercent)) + TB_VALUE * (fieldingHitsTotalBases * (1 - fieldingErrorPercent));
+    const fieldingWopsOnErrorsOnly = OB_VALUE * (fieldingErrors * (1 - fieldingHitPercent)) + TB_VALUE * (fieldingErrorsTotalBases * (1 - fieldingHitPercent));
+    const fieldingWopsOnHitAndError = OB_VALUE * (positionValues.chances * fieldingHitPercent * fieldingErrorPercent) + TB_VALUE * ((fieldingHitPercent * fieldingHitsTotalBases) + (fieldingErrorPercent * fieldingErrorsTotalBases));
+
+    return (fieldingWopsOnHitsOnly + fieldingWopsOnErrorsOnly + fieldingWopsOnHitAndError - dpEffect).toFixed(1);
 }

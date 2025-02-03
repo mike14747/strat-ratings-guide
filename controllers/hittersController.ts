@@ -13,10 +13,21 @@ import { hittersSchema } from './validation/schema/hittersSchema';
 import { multiTeamHittersSchema } from './validation/schema/multiTeamHittersSchema';
 import { convertToCsv } from './utils/convertMultiTeamHittersToCsv';
 import * as converter from 'json-2-csv';
+import { fieldingWopsCalculate } from './utils/fieldingWopsCalculate';
 
 import { convertArrToObj } from './utils/rmlTeamArrToObj';
 
 const router = express.Router();
+
+router.get('/test', (_req, res, next) => {
+    try {
+        // res.status(200).json({ message: 'successfully accessed the test route' });
+        const result = fieldingWopsCalculate('SS', '1e8');
+        res.json({ result });
+    } catch (error) {
+        next(error);
+    }
+});
 
 router.get('/season-list', async (_req, res, next) => {
     try {
