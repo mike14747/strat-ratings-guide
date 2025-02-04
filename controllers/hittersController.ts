@@ -13,7 +13,7 @@ import { hittersSchema } from './validation/schema/hittersSchema';
 import { multiTeamHittersSchema } from './validation/schema/multiTeamHittersSchema';
 import { convertToCsv } from './utils/convertMultiTeamHittersToCsv';
 import * as converter from 'json-2-csv';
-import { fieldingWopsCalculate } from './utils/fieldingWopsCalculate';
+import { calculateObTbDpFromArr, fieldingWopsCalculate } from './utils/fieldingWopsCalculate';
 
 import { convertArrToObj } from './utils/rmlTeamArrToObj';
 
@@ -24,6 +24,15 @@ router.get('/test', (_req, res, next) => {
         // res.status(200).json({ message: 'successfully accessed the test route' });
         const result = fieldingWopsCalculate('SS', '1e8');
         res.json({ result });
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.post('/fielding-pos-def', (req, res, next) => {
+    try {
+        const csv = converter.json2csv(calculateObTbDpFromArr(req.body));
+        return csv ? res.status(200).send(csv) : res.status(500).end();
     } catch (error) {
         next(error);
     }

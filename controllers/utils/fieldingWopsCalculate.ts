@@ -1,36 +1,27 @@
 import { OB_VALUE, TB_VALUE } from './constants';
 
+// types
+
 type PositionRangeRatings = {
     [key in '1' | '2' | '3' | '4' | '5']: { si: number, do: number, tr: number, gba: number };
 };
 
 type Positions = {
-    CA: { chances: number, errorFactor: number, errorTypeRates: { e1: number, e2: number, e3: number }, rangeRatings: PositionRangeRatings },
-    '1B': { chances: number, errorFactor: number, errorTypeRates: { e1: number, e2: number, e3: number }, rangeRatings: PositionRangeRatings },
-    '2B': { chances: number, errorFactor: number, errorTypeRates: { e1: number, e2: number, e3: number }, rangeRatings: PositionRangeRatings },
-    '3B': { chances: number, errorFactor: number, errorTypeRates: { e1: number, e2: number, e3: number }, rangeRatings: PositionRangeRatings },
-    SS: { chances: number, errorFactor: number, errorTypeRates: { e1: number, e2: number, e3: number }, rangeRatings: PositionRangeRatings },
-    LF: { chances: number, errorFactor: number, errorTypeRates: { e1: number, e2: number, e3: number }, rangeRatings: PositionRangeRatings },
-    CF: { chances: number, errorFactor: number, errorTypeRates: { e1: number, e2: number, e3: number }, rangeRatings: PositionRangeRatings },
-    RF: { chances: number, errorFactor: number, errorTypeRates: { e1: number, e2: number, e3: number }, rangeRatings: PositionRangeRatings },
-    P: { chances: number, errorFactor: number, errorTypeRates: { e1: number, e2: number, e3: number }, rangeRatings: PositionRangeRatings },
+    [key in 'CA' | '1B' | '2B' | '3B' | 'SS' | 'LF' | 'CF' | 'RF' | 'P']: { chances: number, errorFactor: number, errorTypeRates: { e1: number, e2: number, e3: number }, rangeRatings: PositionRangeRatings };
 };
 
-type DefRating =
-    `1e${number}`
-    | `1e${number}${number}`
-    | `2e${number}`
-    | `2e${number}${number}`
-    | `3e${number}`
-    | `3e${number}${number}`
-    | `4e${number}`
-    | `4e${number}${number}`
-    | `5e${number}`
-    | `5e${number}${number}`
-;
+type DefRating = `1e${number}` | `1e${number}${number}` | `2e${number}` | `2e${number}${number}` | `3e${number}` | `3e${number}${number}` | `4e${number}` | `4e${number}${number}` | `5e${number}` | `5e${number}${number}`;
 
-type RangeRating = '1'| '2' | '3' | '4' | '5';
+type RangeRating = '1' | '2' | '3' | '4' | '5';
 
+type ArrayItems = {
+    position: keyof Positions,
+    defRating: DefRating,
+};
+
+// ------------------------------
+
+// constants
 const catcherRangeRatings: PositionRangeRatings = {
     1: { si: 0, do: 0, tr: 0, gba: 0.10 },
     2: { si: 0, do: 0, tr: 0, gba: 0.05 },
@@ -74,6 +65,39 @@ const positions: Positions = {
     RF: { chances: 2, errorFactor: 0.0180, errorTypeRates: { e1: 0.2015, e2: 0.7538, e3: 0.0508 }, rangeRatings: ofRangeRatings },
     P: { chances: 2, errorFactor: 0.0180, errorTypeRates: { e1: 0.9486, e2: 0.0514, e3: 0 }, rangeRatings: pitcherRangeRatings },
 };
+
+// ------------------------------
+
+// functions
+
+export function calculateObTbDpFromArr(posENumArr: ArrayItems[]) {
+    return posENumArr.map(item => {
+        const { position, defRating } = item;
+        if (!(position in positions)) throw new Error(`Invalid position: ${position}. The only valid positions are: 'CA, 1B, 2B, 3B, SS, LF, CF, RF, P'... and they are case sensitive.`);
+        if (!/^[1-5]e\d{1,2}$/.test(defRating)) throw new Error(`The value passed (${defRating}) was in not proper format for a defensive rating.`);
+
+        const positionValues: Positions[keyof Positions] = positions[position];
+        const rangeRating: RangeRating = defRating.charAt(0) as RangeRating;
+        const eNum: number = parseInt(defRating.substring(2, 4));
+        const hitDPValues: PositionRangeRatings[RangeRating] = positions[position].rangeRatings[rangeRating];
+
+        const fieldingHitPercent = (hitDPValues.si + hitDPValues.do + hitDPValues.tr);
+        // const fieldingHits = positionValues.chances * (hitDPValues.si + hitDPValues.do + hitDPValues.tr);
+        const fieldingHitsTotalBases = positionValues.chances * (hitDPValues.si + (2 * hitDPValues.do) + (3 * hitDPValues.tr));
+
+        const fieldingErrorPercent = positionValues.errorFactor * eNum;
+        // const fieldingErrors = positionValues.chances * positionValues.errorFactor * eNum;
+        const fieldingErrorsTotalBases = positionValues.chances * ((fieldingErrorPercent * positionValues.errorTypeRates.e1) + (2 * fieldingErrorPercent * positionValues.errorTypeRates.e2) + (3 * fieldingErrorPercent * positionValues.errorTypeRates.e3));
+
+        const ob = (1 - ((1 - fieldingHitPercent) * (1 - fieldingErrorPercent))).toFixed(3);
+
+        const tb = (fieldingHitsTotalBases + fieldingErrorsTotalBases).toFixed(3);
+
+        // gba chances when there is not an error
+        const dp = (((positionValues.chances * hitDPValues.gba) * (1 - (positionValues.errorFactor * eNum))) * (1 - fieldingErrorPercent)).toFixed(3);
+        return { position, defRating, ob, tb, dp };
+    });
+}
 
 export function fieldingWopsCalculate(position: keyof Positions, defRating: DefRating) {
     if (!(position in positions)) throw new Error(`Invalid position: ${position}. The only valid positions are: 'CA, 1B, 2B, 3B, SS, LF, CF, RF, P'... and they are case sensitive.`);
