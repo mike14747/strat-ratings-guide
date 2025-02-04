@@ -99,9 +99,9 @@ Example of a 3B:
 
 -   They will get a GB(X)3B rolled 87.22 times per season (1458 INN and 6280 rolls per season as a base... which would give them 697.78 PA).
 -   A 3e21 will add 1.26 OB, 1.58 TB and 0.56 DP chances to each roll on the pitcher's card.
--   A 3e21 will add (1.26 / 216) * 10.11 OB per each of their offensive PA.
--   A 3e21 will add (1.58 / 216) * 10.11 TB per each of their offensive PA.
--   A 3e21 will add (0.56 / 216) * 10.11 DP per each of their offensive PA.
+-   A 3e21 will add (1.26 / 216) \* 10.11 OB per each of their offensive PA.
+-   A 3e21 will add (1.58 / 216) \* 10.11 TB per each of their offensive PA.
+-   A 3e21 will add (0.56 / 216) \* 10.11 DP per each of their offensive PA.
 -   They are going to allow 39.69 base runners, 46.03 total bases and 2.82 DP per season (1458 INN and 6280 rolls per season as a base).
 
 The effect of pitcher's defense on their wOPS:
@@ -115,5 +115,7 @@ The effect of pitcher's defense on their wOPS:
 -   2e20 will add 1.776 to their wOPS
 -   3e10 will add 1.442 to their wOPS
 -   1e0 will add 0 to their wOPS (this means I haven't incorporated DPs pitcher's defense into their wOPS)
+
+**UPDATE**: On 2025-02-04 I incorporated functions to calculate all positions played into the effect of their defense on their wOPS... including for pitchers, which also now includes their DPs.
 
 ---

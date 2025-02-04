@@ -1,7 +1,8 @@
 import { OB_VALUE, TB_VALUE, CLUTCH_ADJUST_VALUE } from './constants';
 import { bpHRAdjCalculate, bpSiAdjCalculate } from './bpCalculateFunctions';
 import { roundTo } from './roundTo';
-import type { HitterDataFromDB, MultiTeamHitterDataFromDB } from '../../types/index';
+import { fieldingWopsCalculate } from './fieldingWopsCalculate';
+import type { HitterDataFromDB, MultiTeamHitterDataFromDB, Positions, DefRating } from '../../types/index';
 
 function processWColumn(w: string, bpsi: number) {
     let wCol = '';
@@ -70,9 +71,9 @@ function ballparkCalculations(hitter: HitterDataFromDB) {
 
     // start wOPS calculations
     const wAdjVsL = hitter.w_v_l === 'w' ? TB_VALUE * 9 : 0;
-    const wopsVsL = roundTo(wOPSCalculate(obVsL, tbVsL, hitter.dp_v_l, wAdjVsL), 1);
+    const wopsVsL = wOPSCalculate(obVsL, tbVsL, hitter.dp_v_l, wAdjVsL);
     const wAdjVsR = hitter.w_v_r === 'w' ? TB_VALUE * 9 : 0;
-    const wopsVsR = roundTo(wOPSCalculate(obVsR, tbVsR, hitter.dp_v_r, wAdjVsR), 1);
+    const wopsVsR = wOPSCalculate(obVsR, tbVsR, hitter.dp_v_r, wAdjVsR);
 
     return {
         hit_v_l: roundTo(parseFloat(hitter.hit_v_l) + bpHitVsL + bpSiVsL, 1),
@@ -162,9 +163,9 @@ function multiBallparkCalculations(hitter: HitterDataFromDB, partials: MultiTeam
 
     // start wOPS calculations
     const wAdjVsL = hitter.w_v_l === 'w' ? TB_VALUE * 9 : 0;
-    const wopsVsL = roundTo(wOPSCalculate(obVsL, tbVsL, hitter.dp_v_l, wAdjVsL), 1);
+    const wopsVsL = wOPSCalculate(obVsL, tbVsL, hitter.dp_v_l, wAdjVsL);
     const wAdjVsR = hitter.w_v_r === 'w' ? TB_VALUE * 9 : 0;
-    const wopsVsR = roundTo(wOPSCalculate(obVsR, tbVsR, hitter.dp_v_r, wAdjVsR), 1);
+    const wopsVsR = wOPSCalculate(obVsR, tbVsR, hitter.dp_v_r, wAdjVsR);
 
     return {
         hit_v_l: roundTo(parseFloat(hitter.hit_v_l) + bpHitVsL + bpSiVsL, 1),
@@ -210,12 +211,27 @@ export function calculateHitterValues(hittersArr: HitterDataFromDB[], multiData:
         const hittersTeamsAndABPerTeam: MultiTeamHitterDataFromDB[] = JSON.parse(JSON.stringify(multiData));
 
         const hittersCalculated = hittersArr.map(h => {
-            let result;
+            let result: { hit_v_l: string; ob_v_l: string; tb_v_l: string; hr_v_l: string; hit_v_r: string; ob_v_r: string; tb_v_r: string; hr_v_r: string; wopsVsL: number; wopsVsR: number; } | { hit_v_l: string; ob_v_l: string; tb_v_l: string; hr_v_l: string; hit_v_r: string; ob_v_r: string; tb_v_r: string; hr_v_r: string; wopsVsL: string; wopsVsR: string; };
             if (h.real_team_id === 1) {
                 const partialTeams = hittersTeamsAndABPerTeam.filter(hp => hp.hitter.toLowerCase() === h.name.toLowerCase());
                 result = mainCalculations(h, partialTeams);
             } else {
                 result = mainCalculations(h);
+            }
+
+            function formatDefWops(position: keyof Positions, defRating: DefRating) {
+                if (!defRating) {
+                    return '';
+                }
+                if (typeof result.wopsVsL === 'string' && typeof result.wopsVsR === 'string') {
+                    return `~${fieldingWopsCalculate(position, defRating)}`;
+                }
+                if (typeof result.wopsVsL === 'string' || typeof result.wopsVsR === 'string') {
+                    return '';
+                }
+                const wopsL = roundTo(result.wopsVsL + fieldingWopsCalculate(position, defRating), 1);
+                const wopsR = roundTo(result.wopsVsR + fieldingWopsCalculate(position, defRating), 1);
+                return `${wopsL}/${wopsR}`;
             }
 
             return {
@@ -233,7 +249,7 @@ export function calculateHitterValues(hittersArr: HitterDataFromDB[], multiData:
                 hr_v_l: result.hr_v_l,
                 w_v_l: processWColumn(h.w_v_l, h.bp_si_v_l),
                 dp_v_l: h.dp_v_l,
-                wops_v_l: result.wopsVsL,
+                wops_v_l: typeof (result.wopsVsL) === 'string' ? '' : roundTo(result.wopsVsL, 1),
                 so_v_r: h.so_v_r,
                 bb_v_r: h.bb_v_r,
                 hit_v_r: result.hit_v_r,
@@ -242,7 +258,7 @@ export function calculateHitterValues(hittersArr: HitterDataFromDB[], multiData:
                 hr_v_r: result.hr_v_r,
                 w_v_r: processWColumn(h.w_v_r, h.bp_si_v_r),
                 dp_v_r: h.dp_v_r,
-                wops_v_r: result.wopsVsR,
+                wops_v_r: typeof (result.wopsVsR) === 'string' ? '' : roundTo(result.wopsVsR, 1),
                 stealing: h.stealing,
                 spd: h.spd,
                 bunt: h.bunt,
@@ -255,6 +271,14 @@ export function calculateHitterValues(hittersArr: HitterDataFromDB[], multiData:
                 d_lf: h.d_lf,
                 d_cf: h.d_cf,
                 d_rf: h.d_rf,
+                def_wops_ca: formatDefWops('CA', h.d_ca as DefRating),
+                def_wops_1b: formatDefWops('1B', h.d_1b as DefRating),
+                def_wops_2b: formatDefWops('2B', h.d_2b as DefRating),
+                def_wops_3b: formatDefWops('3B', h.d_3b as DefRating),
+                def_wops_ss: formatDefWops('SS', h.d_ss as DefRating),
+                def_wops_lf: formatDefWops('LF', h.d_lf as DefRating),
+                def_wops_cf: formatDefWops('CF', h.d_cf as DefRating),
+                def_wops_rf: formatDefWops('RF', h.d_rf as DefRating),
                 fielding: h.fielding,
                 rml_team_name: h.rml_team_name || '',
             };

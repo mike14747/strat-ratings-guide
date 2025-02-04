@@ -79,7 +79,7 @@ async function getData() {
 
     document.getElementById('copy-button-container').innerHTML = `<button title="Copy to Clipboard" class="btn-copy" onclick="copyContent()">${copyIcon}</button>`;
 
-    const thLabels = ['Year', 'Team', 'Hitter', 'Bats', 'INJ', 'AB', 'SO v L', 'BB v L', 'Hit v L', 'OB v L', 'TB v L', 'HR v L', 'wSI v L', 'DP v L', 'wOPS v L', 'SO v R', 'BB v R', 'Hit v R', 'OB v R', 'TB v R', 'HR v R', 'wSI v R', 'DP v R', 'wOPS v R', 'Stealing', 'Speed', 'Bunt', 'H&R', 'CA', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'Fielding', 'RML Team'];
+    const thLabels = ['Year', 'Team', 'Hitter', 'Bats', 'INJ', 'AB', 'SO v L', 'BB v L', 'Hit v L', 'OB v L', 'TB v L', 'HR v L', 'wSI v L', 'DP v L', 'wOPS v L', 'SO v R', 'BB v R', 'Hit v R', 'OB v R', 'TB v R', 'HR v R', 'wSI v R', 'DP v R', 'wOPS v R', 'Stealing', 'Speed', 'Bunt', 'H&R', 'CA', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'de_CA', 'de_1B', 'de_2B', 'de_3B', 'de_SS', 'de_LF', 'de_CF', 'de_RF', 'Fielding', 'RML Team'];
 
     const thHTMLArr = thLabels.map(th => {
         return `<th>${th}</th>`;
@@ -124,6 +124,14 @@ async function getData() {
             <td>${player.d_lf}</td>
             <td>${player.d_cf}</td>
             <td>${player.d_rf}</td>
+            <td>${player.def_wops_ca}</td>
+            <td>${player.def_wops_1b}</td>
+            <td>${player.def_wops_2b}</td>
+            <td>${player.def_wops_3b}</td>
+            <td>${player.def_wops_ss}</td>
+            <td>${player.def_wops_lf}</td>
+            <td>${player.def_wops_cf}</td>
+            <td>${player.def_wops_rf}</td>
             <td class="text-left">${player.fielding}</td>
             <td class="text-left ${!player.rml_team_name ? 'missing-data' : ''}">${player.rml_team_name}</td>
         </tr>`

@@ -21,8 +21,7 @@ const router = express.Router();
 
 router.get('/test', (_req, res, next) => {
     try {
-        // res.status(200).json({ message: 'successfully accessed the test route' });
-        const result = fieldingWopsCalculate('SS', '1e8');
+        const result = fieldingWopsCalculate('P', '1e0');
         res.json({ result });
     } catch (error) {
         next(error);

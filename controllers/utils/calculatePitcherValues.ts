@@ -1,23 +1,25 @@
 import { OB_VALUE, TB_VALUE, BALK_VALUE, WP_VALUE } from './constants';
 import { bpHRAdjCalculate, bpSiAdjCalculate } from './bpCalculateFunctions';
 import { roundTo } from './roundTo';
-import type { PitcherDataFromDB, MultiTeamPitcherDataFromDB } from '../../types';
+import { fieldingWopsCalculate } from './fieldingWopsCalculate';
+import type { PitcherDataFromDB, MultiTeamPitcherDataFromDB, DefRating } from '../../types';
 
 function processBpColumn(bpsi: number) {
     return bpsi === 0 ? '*' : '';
 }
 
-function gbpWopsCalculate(fielding: string) {
-    const gbpHits = (parseInt(fielding.charAt(0)) - 1) * 0.1 * 2;
-    const gbpErrors = parseInt(fielding.substring(2, 4)) * 0.0180 * 2;
-    const gbpTwoBaseErrorTotalBaseAdj = TB_VALUE * gbpErrors / 20;
+// old function for calculating the impact of pitcher defense on their wOPS
+// function gbpWopsCalculate(fielding: string) {
+//     const gbpHits = (parseInt(fielding.charAt(0)) - 1) * 0.1 * 2;
+//     const gbpErrors = parseInt(fielding.substring(2, 4)) * 0.0180 * 2;
+//     const gbpTwoBaseErrorTotalBaseAdj = TB_VALUE * gbpErrors / 20;
 
-    const gbpWopsOnHitsOnly = OB_VALUE * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2) + TB_VALUE * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2);
-    const gbpWopsOnErrorsOnly = OB_VALUE * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2) + TB_VALUE * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2);
-    const gbpWopsOnHitAndError = OB_VALUE * (((gbpHits / 2) * (gbpErrors / 2)) * 2) + 2 * TB_VALUE * (((gbpHits / 2) * (gbpErrors / 2)) * 2);
+//     const gbpWopsOnHitsOnly = OB_VALUE * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2) + TB_VALUE * ((((2 - gbpErrors) / 2) * (gbpHits / 2)) * 2);
+//     const gbpWopsOnErrorsOnly = OB_VALUE * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2) + TB_VALUE * ((((2 - gbpHits) / 2) * (gbpErrors / 2)) * 2);
+//     const gbpWopsOnHitAndError = OB_VALUE * (((gbpHits / 2) * (gbpErrors / 2)) * 2) + 2 * TB_VALUE * (((gbpHits / 2) * (gbpErrors / 2)) * 2);
 
-    return gbpWopsOnHitsOnly + gbpWopsOnErrorsOnly + gbpWopsOnHitAndError + gbpTwoBaseErrorTotalBaseAdj;
-}
+//     return gbpWopsOnHitsOnly + gbpWopsOnErrorsOnly + gbpWopsOnHitAndError + gbpTwoBaseErrorTotalBaseAdj;
+// }
 
 function wOPSCalculate(ob: number, tb: number, dp: number, gbp: number, bk: number, wp: number) {
     return (OB_VALUE * ob) + (TB_VALUE * tb) - (OB_VALUE * 20 * dp / 108) + gbp + (BALK_VALUE * bk) + (WP_VALUE * wp);
@@ -54,7 +56,7 @@ function ballparkCalculations(pitcher: PitcherDataFromDB) {
     const tbVsR = parseFloat(pitcher.tb_v_r) + bpTbVsR + bpSiVsR;
 
     // fielding (GB(p)X) impact on wOPS
-    const gbpWops = gbpWopsCalculate(pitcher.fielding);
+    const gbpWops = fieldingWopsCalculate('P', pitcher.fielding as DefRating);
 
     // start wOPS calculations
     const wopsVsL = roundTo(wOPSCalculate(obVsL, tbVsL, pitcher.dp_v_l, gbpWops, pitcher.balk, pitcher.wp), 1);
@@ -125,7 +127,7 @@ function multiBallparkCalculations(pitcher: PitcherDataFromDB, partials: MultiTe
     const tbVsR = parseFloat(pitcher.tb_v_r) + bpTbVsR + bpSiVsR;
 
     // fielding (GB(p)X) impact on wOPS
-    const gbpWops = gbpWopsCalculate(pitcher.fielding);
+    const gbpWops = fieldingWopsCalculate('P', pitcher.fielding as DefRating);
 
     // start wOPS calculations
     const wopsVsL = roundTo(wOPSCalculate(obVsL, tbVsL, pitcher.dp_v_l, gbpWops, pitcher.balk, pitcher.wp), 1);

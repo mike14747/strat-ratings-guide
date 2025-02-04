@@ -1,5 +1,7 @@
 # Todos
 
+Move the calculation for pitcher defensive impact on wOPS from the function in calculatePitcherValues.ts to use the new fieldingWopsCalculate.ts function.
+
 Fix the bug in why the database is storing hitters with a zero injury rating as 'null'. Also, set the frontend to display a blank value in the injury cell for seasons that predated the ratings guide having injury ratings.
 
 Get the login system working.

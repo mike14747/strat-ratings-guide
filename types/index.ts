@@ -265,3 +265,20 @@ export type UserObjForLogin = {
 export type SeasonList = {
     'year': number,
 }
+
+export type PositionRangeRatings = {
+    [key in '1' | '2' | '3' | '4' | '5']: { si: number, do: number, tr: number, gba: number };
+};
+
+export type Positions = {
+    [key in 'CA' | '1B' | '2B' | '3B' | 'SS' | 'LF' | 'CF' | 'RF' | 'P']: { chances: number, errorFactor: number, errorTypeRates: { e1: number, e2: number, e3: number }, rangeRatings: PositionRangeRatings };
+};
+
+export type DefRating = `1e${number}` | `1e${number}${number}` | `2e${number}` | `2e${number}${number}` | `3e${number}` | `3e${number}${number}` | `4e${number}` | `4e${number}${number}` | `5e${number}` | `5e${number}${number}`;
+
+export type RangeRating = '1' | '2' | '3' | '4' | '5';
+
+export type FieldingArrayItems = {
+    position: keyof Positions,
+    defRating: DefRating,
+};
