@@ -220,18 +220,12 @@ export function calculateHitterValues(hittersArr: HitterDataFromDB[], multiData:
             }
 
             function formatDefWops(position: keyof Positions, defRating: DefRating) {
-                if (!defRating) {
-                    return '';
-                }
-                if (typeof result.wopsVsL === 'string' && typeof result.wopsVsR === 'string') {
-                    return `~${fieldingWopsCalculate(position, defRating)}`;
-                }
-                if (typeof result.wopsVsL === 'string' || typeof result.wopsVsR === 'string') {
-                    return '';
-                }
-                const wopsL = roundTo(result.wopsVsL + fieldingWopsCalculate(position, defRating), 1);
-                const wopsR = roundTo(result.wopsVsR + fieldingWopsCalculate(position, defRating), 1);
-                return `${wopsL}/${wopsR}`;
+                if (!defRating) return { wopsL: '', wopsR: '' };
+                if (![result.wopsVsL, result.wopsVsR].every((value) => typeof value === 'number')) return { wopsL: `~${fieldingWopsCalculate(position, defRating)}`, wopsR: `~${fieldingWopsCalculate(position, defRating)}` };
+
+                const wopsL = roundTo((result.wopsVsL as number) + fieldingWopsCalculate(position, defRating), 1);
+                const wopsR = roundTo((result.wopsVsR as number) + fieldingWopsCalculate(position, defRating), 1);
+                return { wopsL, wopsR };
             }
 
             return {
@@ -271,14 +265,22 @@ export function calculateHitterValues(hittersArr: HitterDataFromDB[], multiData:
                 d_lf: h.d_lf,
                 d_cf: h.d_cf,
                 d_rf: h.d_rf,
-                def_wops_ca: formatDefWops('CA', h.d_ca as DefRating),
-                def_wops_1b: formatDefWops('1B', h.d_1b as DefRating),
-                def_wops_2b: formatDefWops('2B', h.d_2b as DefRating),
-                def_wops_3b: formatDefWops('3B', h.d_3b as DefRating),
-                def_wops_ss: formatDefWops('SS', h.d_ss as DefRating),
-                def_wops_lf: formatDefWops('LF', h.d_lf as DefRating),
-                def_wops_cf: formatDefWops('CF', h.d_cf as DefRating),
-                def_wops_rf: formatDefWops('RF', h.d_rf as DefRating),
+                def_wops_ca_v_l: formatDefWops('CA', h.d_ca as DefRating).wopsL,
+                def_wops_ca_v_r: formatDefWops('CA', h.d_ca as DefRating).wopsR,
+                def_wops_1b_v_l: formatDefWops('1B', h.d_1b as DefRating).wopsL,
+                def_wops_1b_v_r: formatDefWops('1B', h.d_1b as DefRating).wopsR,
+                def_wops_2b_v_l: formatDefWops('2B', h.d_2b as DefRating).wopsL,
+                def_wops_2b_v_r: formatDefWops('2B', h.d_2b as DefRating).wopsR,
+                def_wops_3b_v_l: formatDefWops('3B', h.d_3b as DefRating).wopsL,
+                def_wops_3b_v_r: formatDefWops('3B', h.d_3b as DefRating).wopsR,
+                def_wops_ss_v_l: formatDefWops('SS', h.d_ss as DefRating).wopsL,
+                def_wops_ss_v_r: formatDefWops('SS', h.d_ss as DefRating).wopsR,
+                def_wops_lf_v_l: formatDefWops('LF', h.d_lf as DefRating).wopsL,
+                def_wops_lf_v_r: formatDefWops('LF', h.d_lf as DefRating).wopsR,
+                def_wops_cf_v_l: formatDefWops('CF', h.d_cf as DefRating).wopsL,
+                def_wops_cf_v_r: formatDefWops('CF', h.d_cf as DefRating).wopsR,
+                def_wops_rf_v_l: formatDefWops('RF', h.d_rf as DefRating).wopsL,
+                def_wops_rf_v_r: formatDefWops('RF', h.d_rf as DefRating).wopsR,
                 fielding: h.fielding,
                 rml_team_name: h.rml_team_name || '',
             };

@@ -2,7 +2,6 @@ import { OB_VALUE, TB_VALUE } from './constants';
 import positionMap from './positionMap';
 import { PositionRangeRatings, Positions, DefRating, RangeRating, FieldingArrayItems } from '../../types';
 
-// constants
 const catcherRangeRatings: PositionRangeRatings = {
     1: { si: 0, do: 0, tr: 0, gba: 0.10 },
     2: { si: 0, do: 0, tr: 0, gba: 0.05 },
@@ -47,10 +46,6 @@ const positions: Positions = {
     P: { chances: 2, errorFactor: 0.0180, errorTypeRates: { e1: 0.9500, e2: 0.0500, e3: 0 }, rangeRatings: pitcherRangeRatings },
 };
 
-// ------------------------------
-
-// functions
-
 export function calculateObTbDpFromArr(posENumArr: FieldingArrayItems[]) {
     return posENumArr.map(item => {
         const { position, defRating } = item;
@@ -70,7 +65,6 @@ export function calculateObTbDpFromArr(posENumArr: FieldingArrayItems[]) {
         const fieldingErrors = positionValues.chances * positionValues.errorFactor * eNum;
         const fieldingErrorsTotalBases = positionValues.chances * ((fieldingErrorPercent * positionValues.errorTypeRates.e1) + (2 * fieldingErrorPercent * positionValues.errorTypeRates.e2) + (3 * fieldingErrorPercent * positionValues.errorTypeRates.e3));
 
-        // const ob = ((fieldingHits + fieldingErrors) - (the times there's a hit and an error)),toFixed(3);
         const ob = ((fieldingHits + fieldingErrors) - (positionValues.chances * (fieldingHitPercent * fieldingErrorPercent))).toFixed(3);
 
         const tb = (fieldingHitsTotalBases + fieldingErrorsTotalBases).toFixed(3);
@@ -93,5 +87,5 @@ export function fieldingWopsCalculate(position: keyof Positions, defRating: DefR
     if (position === 'P') return (OB_VALUE * obTbDpValues.ob) + (TB_VALUE * obTbDpValues.tb) - (OB_VALUE * 20 * obTbDpValues.dp / 108);
 
     const defWOps = (OB_VALUE * 20 * obTbDpValues.dp / 108) - (OB_VALUE * obTbDpValues.ob) - (TB_VALUE * obTbDpValues.tb);
-    return Number((9 * defWOps).toFixed(2));
+    return Number((4.5 * defWOps).toFixed(2));
 }
