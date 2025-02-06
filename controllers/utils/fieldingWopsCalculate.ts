@@ -57,10 +57,12 @@ export function calculateObTbDpFromArr(posENumArr: FieldingArrayItems[]) {
         const eNum: number = parseInt(defRating.substring(2, 4));
         const hitDPValues: PositionRangeRatings[RangeRating] = positions[position].rangeRatings[rangeRating];
 
+        // fielding hits allowed calculations
         const fieldingHitPercent = (hitDPValues.si + hitDPValues.do + hitDPValues.tr);
         const fieldingHits = positionValues.chances * (hitDPValues.si + hitDPValues.do + hitDPValues.tr);
         const fieldingHitsTotalBases = positionValues.chances * (hitDPValues.si + (2 * hitDPValues.do) + (3 * hitDPValues.tr));
 
+        // fielding errors allowed calculations
         const fieldingErrorPercent = positionValues.errorFactor * eNum;
         const fieldingErrors = positionValues.chances * positionValues.errorFactor * eNum;
         const fieldingErrorsTotalBases = positionValues.chances * ((fieldingErrorPercent * positionValues.errorTypeRates.e1) + (2 * fieldingErrorPercent * positionValues.errorTypeRates.e2) + (3 * fieldingErrorPercent * positionValues.errorTypeRates.e3));
@@ -82,7 +84,7 @@ export function fieldingWopsCalculate(position: keyof Positions, defRating: DefR
     const ratingKey = `${position}-${defRating}`;
     const obTbDpValues = positionMap.get(ratingKey);
 
-    if (!obTbDpValues) throw new Error(`${position} with the defensive rating of ${defRating} could not matched with anything on record.`);
+    if (!obTbDpValues) throw new Error(`${position} with the defensive rating of "${defRating}" could not matched with anything on record.`);
 
     if (position === 'P') return (OB_VALUE * obTbDpValues.ob) + (TB_VALUE * obTbDpValues.tb) - (OB_VALUE * 20 * obTbDpValues.dp / 108);
 
