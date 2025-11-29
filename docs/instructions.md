@@ -117,15 +117,13 @@ I've added the following:
 
 You can't just copy/paste the data from the **Master Roster** file to **carded_players.xlsx** because it will include null values for empty IP and AB cells.
 
-To get the necessary data from the **Master Roster** file to paste into **carded_players.xlsx**, sort the Master Roster file by "Carded", then by "Name" and use this formula on row 2 of the first column to the right of the "Carded" column:
+To get the necessary data from the **Master Roster** file to paste into **carded_players.xlsx**, sort the Master Roster file by "Carded", then by "Name" and use this formula on row 2 of the first column to the right of the all used columns:
 
 ```text
-=IF(INDEX($A$2:$Z$852, ROW($A$1:$A$851), {1,3,19,25})<>"", INDEX($A$2:$Z$852, ROW($A$1:$A$851), {1,3,19,25}), "")
+=IF(INDEX($A$2:$Z$855, ROW($A$1:$A$854), {1,3,19,25})<>"", INDEX($A$2:$Z$855, ROW($A$1:$A$854), {1,3,19,25}), "")
 ```
 
-**NOTE**: You'll need to adjust the above formula based upon how many carded players are in each season's Master Roster file. The above formula is set for having 851 carded players. There are some 852 numbers in that formula because line 1 is the header row.
-
-Highlight the formatted column data, then copy/paste into the cardedPlayed array in: **/controllers/utils/cardedPlayers.js**. Each player's **abbrevName** will automatically be calculated.
+**NOTE**: You'll need to adjust the above formula based upon how many carded players are in each season's Master Roster file. The above formula is set for having 854 carded players. There are 855 numbers in that formula because line 1 is the header row.
 
 Each time a significant number of RML team changes occur (eg: after drafts), this process can be repeated.
 
@@ -138,7 +136,7 @@ Each time a significant number of RML team changes occur (eg: after drafts), thi
 
 > Try to update the Ratings Disk data in **/data/hitter_ratings.xlsx** and **/data/pitcher_ratings.xlsx** when the issues are with names not matching.
 >
-> Usually, you'll be updating the **Master Roster** (and thus **/controllers/utils/cardedPlayers.js**) when the issues are with AB or IP not matching.
+> Usually, you'll be updating the **Master Roster** (and thus **/data/carded_players.xlsx**) when the issues are with AB or IP not matching.
 
 **NOTE**: If you ever make changes to **/data/carded_players.xlsx**, you'll need to re-upload the hitter and pitcher ratings because the process of uploading them sets their RML teams... which may have changed in the carded player update.
 
@@ -338,7 +336,7 @@ Both files must have the proper columns... as just described earlier.
 
 They get uploaded by running the app and uploading the files on the appropriate pages.
 
-The carded players, multi-team hitter and pitcher data should have uploaded well in advance of the ratings disk arriving.
+The carded players, multi-team hitter and multi-team pitcher data should have uploaded well in advance of the ratings disk arriving.
 
 ## Converting ballpark data
 
