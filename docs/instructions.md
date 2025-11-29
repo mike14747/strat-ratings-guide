@@ -172,6 +172,8 @@ Those files will include the following sheets:
 
 Each hitter/pitcher name will need to be changed to match the exact name Strat uses in the ratings guide (since that will be how the ratings guide links the multi-team hitters to this data). Strat's name format is **last name, comma, then first initial**... without a space after the comma... eg: **Doe,J**. Strat does include spaces in last names for some players (eg: De Los Santos,E).
 
+**NOTE**: If you have errors when trying to use the: **Upload Multi-Team Pitcher Data** and/or **Upload Multi-Team Pitcher Data** features/functions in the app, it might be because players who played for the Athletics had the **ATH** team abbreviation in 2025 and will need to be manually changed to **OAK** before uploading the hitter and pitcher files.
+
 ---
 
 ### Multi-team hitters
