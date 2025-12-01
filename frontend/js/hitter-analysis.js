@@ -79,7 +79,7 @@ async function getData() {
 
     document.getElementById('copy-button-container').innerHTML = `<button title="Copy to Clipboard" class="btn-copy" onclick="copyContent()">${copyIcon}</button>`;
 
-    const thLabels = ['Year', 'Team', 'Hitter', 'Bats', 'INJ', 'AB', 'SOvL', 'BBvL', 'HitvL', 'OBvL', 'TBvL', 'HRvL', 'wSIvL', 'DPvL', 'wOPSvL', 'SOvR', 'BBvR', 'HitvR', 'OBvR', 'TBvR', 'HRvR', 'wSIvR', 'DPvR', 'wOPSvR', 'Stealing', 'Speed', 'Bunt', 'H&R', 'CA', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'CAvL', 'CA_R', '1BvL', '1B_R', '2BvL', '2B_R', '3BvL', '3B_R', 'SSvL', 'SS_R', 'devLFvL', 'devLF_R', 'CFvL', 'CF_R', 'RFvL', 'RF_R', 'Fielding', 'RML Team'];
+    const thLabels = ['Year', 'Team', 'Hitter', 'Bats', 'INJ', 'AB', 'SOvL', 'BBvL', 'HitvL', 'OBvL', 'TBvL', 'HRvL', 'wSIvL', 'DPvL', 'wOPSvL', 'SOvR', 'BBvR', 'HitvR', 'OBvR', 'TBvR', 'HRvR', 'wSIvR', 'DPvR', 'wOPSvR', 'Stealing', 'Speed', 'Bunt', 'H&R', 'CA', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'CAvL', 'CA_R', '1BvL', '1B_R', '2BvL', '2B_R', '3BvL', '3B_R', 'SSvL', 'SS_R', 'LFvL', 'LF_R', 'CFvL', 'CF_R', 'RFvL', 'RF_R', 'Fielding', 'RML Team'];
 
     const thHTMLArr = thLabels.map(th => {
         return `<th>${th}</th>`;
