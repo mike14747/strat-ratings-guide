@@ -243,7 +243,7 @@ For all the following files that will be uploading data, make sure to name the s
 
 ---
 
-## <span style="color: #b22222;">Once the Ratings Disk arrives
+## Once the Ratings Disk arrives
 
 ### New ballpark data into the database
 
@@ -251,13 +251,153 @@ For all the following files that will be uploading data, make sure to name the s
 -   The formatted data column needs to be added to **/config/ratings_guide_db(seeds).sql**.
 -   Add the entire **/config/ratings_guide_db(seeds).sql** file into the **ratings_guide_db** database with MySQL Workbench using copy/paste/execute.
 
+To do the above:
+
+-   Paste the contents of the new ballpark data text file from the ratings disk into the below variable '**data**'... replacing whaat is already there from a previous year.
+-   Run the code in Quokka.
+-   Copy what is console logged.
+-   Paste the data into a text file.
+-   Remove all single quotes from the beginning and end of each line.
+-   Import the data into: **bp_ratings.xlsx**... into an area to the right of the columns in the file next to the year for which the data applies.
+-   Double check that the teams are in the same order as the ones already in the file.
+-   Copy the single and homerun data into the proper columns.
+-   Add the data from this file to: **ratings_guide_db(seeds).sql**.
+-   Add the contents of **ratings_guide_db(seeds).sql** to the database via **Workbench**.
+
+```js
+const teams = {
+    Arizona: 'ARIZ',
+    Atlanta: 'ATL',
+    Baltimore: 'BAL',
+    Boston: 'BOS',
+    'Chicago(AL)': 'CHI(A)',
+    'Chicago(NL)': 'CHI(N)',
+    Cincinnati: 'CIN',
+    Cleveland: 'CLE',
+    Colorado: 'COL',
+    Detroit: 'DET',
+    Houston: 'HOU',
+    KansasCity: 'KC',
+    'LosAngeles(AL)': 'LA(A)',
+    'LosAngeles(NL)': 'LA(N)',
+    Miami: 'MIA',
+    Milwaukee: 'MIL',
+    Minnesota: 'MIN',
+    'NewYork(AL)': 'NY(A)',
+    'NewYork(NL)': 'NY(N)',
+    Oakland: 'OAK',
+    Philadelphia: 'PHI',
+    Pittsburgh: 'PIT',
+    SanDiego: 'SD',
+    SanFrancisco: 'SF',
+    Seattle: 'SEA',
+    StLouis: 'STL',
+    TampaBay: 'TB',
+    Texas: 'TEX',
+    Toronto: 'TOR',
+    Washington: 'WASH',
+};
+
+const data = `
+Arizona          L Single* 1-16  Lineout(2b) 17-20   L Homerun 1-2   Flyball(rf) B 3-20 R Single* 1-16  Lineout(ss) 17-20   R Homerun 1-2   Flyball(lf) B 3-20
+
+Atlanta          L Single* 1-10  Lineout(2b) 11-20   L Homerun 1-9   Flyball(rf) B 10-20 R Single* 1-7   Lineout(ss) 8-20    R Homerun 1-9   Flyball(lf) B 10-20
+
+Baltimore        L Single* 1-9   Lineout(2b) 10-20   L Homerun 1-11  Flyball(rf) B 12-20 R Single* 1-12  Lineout(ss) 13-20   R Homerun 1-2   Flyball(lf) B 3-20
+
+Boston           L Single* 1-19  Lineout(2b) 20      L Homerun 1-5   Flyball(rf) B 6-20 R Single* 1-19  Lineout(ss) 20      R Homerun 1-11  Flyball(lf) B 12-20
+
+Chicago (AL)     L Single* 1-5   Lineout(2b) 6-20    L Homerun 1-15  Flyball(rf) B 16-20 R Single* 1-5   Lineout(ss) 6-20    R Homerun 1-12  Flyball(lf) B 13-20
+
+Chicago (NL)     L Single* 1-14  Lineout(2b) 15-20   L Homerun 1-10  Flyball(rf) B 11-20 R Single* 1-8   Lineout(ss) 9-20    R Homerun 1-10  Flyball(lf) B 11-20
+
+Cincinnati       L Single* 1-6   Lineout(2b) 7-20    L Homerun 1-19  Flyball(rf) B 20 R Single* 1-9   Lineout(ss) 10-20   R Homerun 1-19  Flyball(lf) B 20
+
+Cleveland        L Single* 1-5   Lineout(2b) 6-20    L Homerun 1-8   Flyball(rf) B 9-20 R Single* 1-8   Lineout(ss) 9-20    R Homerun 1-8   Flyball(lf) B 9-20
+
+Colorado         L Single* 1-19  Lineout(2b) 20      L Homerun 1-9   Flyball(rf) B 10-20 R Single* 1-19  Lineout(ss) 20      R Homerun 1-15  Flyball(lf) B 16-20
+
+Detroit          L Single* 1-11  Lineout(2b) 12-20   L Homerun 1-7   Flyball(rf) B 8-20 R Single* 1-11  Lineout(ss) 12-20   R Homerun 1-10  Flyball(lf) B 11-20
+
+Houston          L Single* 1-10  Lineout(2b) 11-20   L Homerun 1-6   Flyball(rf) B 7-20 R Single* 1-7   Lineout(ss) 8-20    R Homerun 1-9   Flyball(lf) B 10-20
+
+Kansas City      L Single* 1-19  Lineout(2b) 20      L Homerun 1-3   Flyball(rf) B 4-20 R Single* 1-19  Lineout(ss) 20      R Homerun 1-6   Flyball(lf) B 7-20
+
+Los Angeles(AL)  L Single* 1-4   Lineout(2b) 5-20    L Homerun 1-13  Flyball(rf) B 14-20 R Single* 1-7   Lineout(ss) 8-20    R Homerun 1-13  Flyball(lf) B 14-20
+
+Los Angeles(NL)  L Single* 1-1   Lineout(2b) 2-20    L Homerun 1-14  Flyball(rf) B 15-20 R Single* 1-4   Lineout(ss) 5-20    R Homerun 1-17  Flyball(lf) B 18-20
+
+Miami            L Single* 1-11  Lineout(2b) 12-20   L Homerun 1-7   Flyball(rf) B 8-20 R Single* 1-11  Lineout(ss) 12-20   R Homerun 1-7   Flyball(lf) B 8-20
+
+Milwaukee        L Single* 1-2   Lineout(2b) 3-20    L Homerun 1-14  Flyball(rf) B 15-20 R Single* 1-5   Lineout(ss) 6-20    R Homerun 1-11  Flyball(lf) B 12-20
+
+Minnesota        L Single* 1-10  Lineout(2b) 11-20   L Homerun 1-12  Flyball(rf) B 13-20 R Single* 1-7   Lineout(ss) 8-20    R Homerun 1-6   Flyball(lf) B 7-20
+
+New York (AL)    L Single* 1-1   Lineout(2b) 2-20    L Homerun 1-17  Flyball(rf) B 18-20 R Single* 1-4   Lineout(ss) 5-20    R Homerun 1-11  Flyball(lf) B 12-20
+
+New York (NL)    L Single* 1-1   Lineout(2b) 2-20    L Homerun 1-14  Flyball(rf) B 15-20 R Single* 1-1   Lineout(ss) 2-20    R Homerun 1-8   Flyball(lf) B 9-20
+
+Oakland          L Single* 1-5   Lineout(2b) 6-20    L Homerun 1-4   Flyball(rf) B 5-20 R Single* 1-5   Lineout(ss) 6-20    R Homerun 1-4   Flyball(lf) B 5-20
+
+Philadelphia     L Single* 1-5   Lineout(2b) 6-20    L Homerun 1-11  Flyball(rf) B 12-20 R Single* 1-5   Lineout(ss) 6-20    R Homerun 1-11  Flyball(lf) B 12-20
+
+Pittsburgh       L Single* 1-14  Lineout(2b) 15-20   L Homerun 1-4   Flyball(rf) B 5-20 R Single* 1-14  Lineout(ss) 15-20   R Homerun 1-4   Flyball(lf) B 5-20
+
+San Diego        L Single* 1-4   Lineout(2b) 5-20    L Homerun 1-7   Flyball(rf) B 8-20 R Single* 1-1   Lineout(ss) 2-20    R Homerun 1-7   Flyball(lf) B 8-20
+
+San Francisco    L Single* 1-11  Lineout(2b) 12-20   L Homerun 1-4   Flyball(rf) B 5-20 R Single* 1-11  Lineout(ss) 12-20   R Homerun 1-4   Flyball(lf) B 5-20
+
+Seattle          L Single* 1-1   Lineout(2b) 2-20    L Homerun 1-8   Flyball(rf) B 9-20 R Single* 1-1   Lineout(ss) 2-20    R Homerun 1-8   Flyball(lf) B 9-20
+
+St. Louis        L Single* 1-8   Lineout(2b) 9-20    L Homerun 1-6   Flyball(rf) B 7-20 R Single* 1-8   Lineout(ss) 9-20    R Homerun 1-6   Flyball(lf) B 7-20
+
+Tampa Bay        L Single* 1-2   Lineout(2b) 3-20    L Homerun 1-5   Flyball(rf) B 6-20 R Single* 1-2   Lineout(ss) 3-20    R Homerun 1-8   Flyball(lf) B 9-20
+
+Texas            L Single* 1-10  Lineout(2b) 11-20   L Homerun 1-16  Flyball(rf) B 17-20 R Single* 1-7   Lineout(ss) 8-20    R Homerun 1-13  Flyball(lf) B 14-20
+
+Toronto          L Single* 1-1   Lineout(2b) 2-20    L Homerun 1-3   Flyball(rf) B 4-20 R Single* 1-1   Lineout(ss) 2-20    R Homerun 1-9   Flyball(lf) B 10-20
+
+Washington       L Single* 1-11  Lineout(2b) 12-20   L Homerun 1-10  Flyball(rf) B 11-20 R Single* 1-5   Lineout(ss) 6-20    R Homerun 1-10  Flyball(lf) B 11-20
+`;
+
+const teamData = data
+    .split('\n')
+    .map((line) => {
+        // Match team names and ranges for each line
+        const match = line.match(
+            /^([A-Za-z.\s\(\)]+)\s+L\s+Single\* (\d+)-(\d+).*?L\s+Homerun (\d+)-(\d+).*?R\s+Single\* (\d+)-(\d+).*?R\s+Homerun (\d+)-(\d+)/
+        );
+        if (match) {
+            const teamName = match[1].trim().replace(/[\s.]+/g, ''); // Clean up team name (remove spaces and periods)
+
+            // Extract the second number from each range in the correct order
+            const numbers = [
+                match[3], // L Single second number
+                match[7], // R Single second number
+                match[5], // L Homerun second number
+                match[9], // R Homerun second number
+            ];
+
+            // Return the team name and numbers in the desired format
+            return [teamName, ...numbers];
+        }
+    })
+    .filter(Boolean); // Filter out null/undefined matches
+
+const formattedOutput = teamData.map((item) => {
+    const teamName = item[0];
+    const numbers = item.slice(1).join(','); // Join numbers with spaces
+    console.log(`${teams[teamName]},${numbers}`);
+});
+```
+
 ---
 
 ### Notes for both Hitters.xlsx and Pitchers.xlsx
 
 -   It's no longer necessary to rename the **Location** column to **real_team_id**, since that is now calculated by the app when uploading data. This is confirmed to be true. In fact, changing the name from **Location** will now generate an error from the Joi schema validation.
 -   It's also no longer necessary to change the **TM** column to reflect my preferred team abbreviations (eg: ARIZ instead of ARN) since that is now converted by the app when uploading data.
--   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. I had some issues with St Louis in the past... (falsely?) thinking they used to be listed as **STN** instead of **SLN** in the past. Also, I removed the extra St Louis row (real_team_id = 32) from the **real_teams.xlsx** file and changed the original (real_team_id = 27) St Louis to SLN.
+-   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. I had some issues with St Louis in the past... (falsely?) thinking they used to be listed as **STN** instead of **SLN** in the past. Also, I removed the extra St Louis row (real_team_id = 32) from the **real_teams.xlsx** file and changed the original (real_team_id = 27) St Louis to SLN. Also, Oakland likely won't appear since (as of 2025) the team is in the process of moving.
 
 > **IMPORTANT** (for both **Hitters.xlsx** and **Pitchers.xlsx**): Every hitter and pitcher that played for multiple teams needs to have their **TM** column manually set to **TOT**.
 >
@@ -339,104 +479,3 @@ Both files must have the proper columns... as just described earlier.
 They get uploaded by running the app and uploading the files on the appropriate pages.
 
 The carded players, multi-team hitter and multi-team pitcher data should have uploaded well in advance of the ratings disk arriving.
-
-## Converting ballpark data
-
-```js
-const data = `
-Arizona          L Single* 1-16  Lineout(2b) 17-20   L Homerun 1-2   Flyball(rf) B 3-20 R Single* 1-16  Lineout(ss) 17-20   R Homerun 1-2   Flyball(lf) B 3-20
-
-Atlanta          L Single* 1-10  Lineout(2b) 11-20   L Homerun 1-9   Flyball(rf) B 10-20 R Single* 1-7   Lineout(ss) 8-20    R Homerun 1-9   Flyball(lf) B 10-20
-
-Baltimore        L Single* 1-9   Lineout(2b) 10-20   L Homerun 1-11  Flyball(rf) B 12-20 R Single* 1-12  Lineout(ss) 13-20   R Homerun 1-2   Flyball(lf) B 3-20
-
-Boston           L Single* 1-19  Lineout(2b) 20      L Homerun 1-5   Flyball(rf) B 6-20 R Single* 1-19  Lineout(ss) 20      R Homerun 1-11  Flyball(lf) B 12-20
-
-Chicago (AL)     L Single* 1-5   Lineout(2b) 6-20    L Homerun 1-15  Flyball(rf) B 16-20 R Single* 1-5   Lineout(ss) 6-20    R Homerun 1-12  Flyball(lf) B 13-20
-
-Chicago (NL)     L Single* 1-14  Lineout(2b) 15-20   L Homerun 1-10  Flyball(rf) B 11-20 R Single* 1-8   Lineout(ss) 9-20    R Homerun 1-10  Flyball(lf) B 11-20
-
-Cincinnati       L Single* 1-6   Lineout(2b) 7-20    L Homerun 1-19  Flyball(rf) B 20 R Single* 1-9   Lineout(ss) 10-20   R Homerun 1-19  Flyball(lf) B 20
-
-Cleveland        L Single* 1-5   Lineout(2b) 6-20    L Homerun 1-8   Flyball(rf) B 9-20 R Single* 1-8   Lineout(ss) 9-20    R Homerun 1-8   Flyball(lf) B 9-20
-
-Colorado         L Single* 1-19  Lineout(2b) 20      L Homerun 1-9   Flyball(rf) B 10-20 R Single* 1-19  Lineout(ss) 20      R Homerun 1-15  Flyball(lf) B 16-20
-
-Detroit          L Single* 1-11  Lineout(2b) 12-20   L Homerun 1-7   Flyball(rf) B 8-20 R Single* 1-11  Lineout(ss) 12-20   R Homerun 1-10  Flyball(lf) B 11-20
-
-Houston          L Single* 1-10  Lineout(2b) 11-20   L Homerun 1-6   Flyball(rf) B 7-20 R Single* 1-7   Lineout(ss) 8-20    R Homerun 1-9   Flyball(lf) B 10-20
-
-Kansas City      L Single* 1-19  Lineout(2b) 20      L Homerun 1-3   Flyball(rf) B 4-20 R Single* 1-19  Lineout(ss) 20      R Homerun 1-6   Flyball(lf) B 7-20
-
-Los Angeles(AL)  L Single* 1-4   Lineout(2b) 5-20    L Homerun 1-13  Flyball(rf) B 14-20 R Single* 1-7   Lineout(ss) 8-20    R Homerun 1-13  Flyball(lf) B 14-20
-
-Los Angeles(NL)  L Single* 1-1   Lineout(2b) 2-20    L Homerun 1-14  Flyball(rf) B 15-20 R Single* 1-4   Lineout(ss) 5-20    R Homerun 1-17  Flyball(lf) B 18-20
-
-Miami            L Single* 1-11  Lineout(2b) 12-20   L Homerun 1-7   Flyball(rf) B 8-20 R Single* 1-11  Lineout(ss) 12-20   R Homerun 1-7   Flyball(lf) B 8-20
-
-Milwaukee        L Single* 1-2   Lineout(2b) 3-20    L Homerun 1-14  Flyball(rf) B 15-20 R Single* 1-5   Lineout(ss) 6-20    R Homerun 1-11  Flyball(lf) B 12-20
-
-Minnesota        L Single* 1-10  Lineout(2b) 11-20   L Homerun 1-12  Flyball(rf) B 13-20 R Single* 1-7   Lineout(ss) 8-20    R Homerun 1-6   Flyball(lf) B 7-20
-
-New York (AL)    L Single* 1-1   Lineout(2b) 2-20    L Homerun 1-17  Flyball(rf) B 18-20 R Single* 1-4   Lineout(ss) 5-20    R Homerun 1-11  Flyball(lf) B 12-20
-
-New York (NL)    L Single* 1-1   Lineout(2b) 2-20    L Homerun 1-14  Flyball(rf) B 15-20 R Single* 1-1   Lineout(ss) 2-20    R Homerun 1-8   Flyball(lf) B 9-20
-
-Oakland          L Single* 1-5   Lineout(2b) 6-20    L Homerun 1-4   Flyball(rf) B 5-20 R Single* 1-5   Lineout(ss) 6-20    R Homerun 1-4   Flyball(lf) B 5-20
-
-Philadelphia     L Single* 1-5   Lineout(2b) 6-20    L Homerun 1-11  Flyball(rf) B 12-20 R Single* 1-5   Lineout(ss) 6-20    R Homerun 1-11  Flyball(lf) B 12-20
-
-Pittsburgh       L Single* 1-14  Lineout(2b) 15-20   L Homerun 1-4   Flyball(rf) B 5-20 R Single* 1-14  Lineout(ss) 15-20   R Homerun 1-4   Flyball(lf) B 5-20
-
-San Diego        L Single* 1-4   Lineout(2b) 5-20    L Homerun 1-7   Flyball(rf) B 8-20 R Single* 1-1   Lineout(ss) 2-20    R Homerun 1-7   Flyball(lf) B 8-20
-
-San Francisco    L Single* 1-11  Lineout(2b) 12-20   L Homerun 1-4   Flyball(rf) B 5-20 R Single* 1-11  Lineout(ss) 12-20   R Homerun 1-4   Flyball(lf) B 5-20
-
-Seattle          L Single* 1-1   Lineout(2b) 2-20    L Homerun 1-8   Flyball(rf) B 9-20 R Single* 1-1   Lineout(ss) 2-20    R Homerun 1-8   Flyball(lf) B 9-20
-
-St. Louis        L Single* 1-8   Lineout(2b) 9-20    L Homerun 1-6   Flyball(rf) B 7-20 R Single* 1-8   Lineout(ss) 9-20    R Homerun 1-6   Flyball(lf) B 7-20
-
-Tampa Bay        L Single* 1-2   Lineout(2b) 3-20    L Homerun 1-5   Flyball(rf) B 6-20 R Single* 1-2   Lineout(ss) 3-20    R Homerun 1-8   Flyball(lf) B 9-20
-
-Texas            L Single* 1-10  Lineout(2b) 11-20   L Homerun 1-16  Flyball(rf) B 17-20 R Single* 1-7   Lineout(ss) 8-20    R Homerun 1-13  Flyball(lf) B 14-20
-
-Toronto          L Single* 1-1   Lineout(2b) 2-20    L Homerun 1-3   Flyball(rf) B 4-20 R Single* 1-1   Lineout(ss) 2-20    R Homerun 1-9   Flyball(lf) B 10-20
-
-Washington       L Single* 1-11  Lineout(2b) 12-20   L Homerun 1-10  Flyball(rf) B 11-20 R Single* 1-5   Lineout(ss) 6-20    R Homerun 1-10  Flyball(lf) B 11-20
-`;
-
-const teamData = data
-    .split('\n')
-    .map((line) => {
-        // Match team names and ranges for each line
-        const match = line.match(
-            /^([A-Za-z\s\(\)]+)\s+L\s+Single\* (\d+)-(\d+).*?L\s+Homerun (\d+)-(\d+).*?R\s+Single\* (\d+)-(\d+).*?R\s+Homerun (\d+)-(\d+)/
-        );
-        if (match) {
-            const teamName = match[1].trim().replace(/\s+/g, ''); // Clean up team name (remove spaces)
-
-            // Extract the second number from each range in the correct order
-            const numbers = [
-                match[3], // L Single second number
-                match[7], // R Single second number
-                match[5], // L Homerun second number
-                match[9], // R Homerun second number
-            ];
-
-            // Return the team name and numbers in the desired format
-            return [teamName, ...numbers];
-        }
-    })
-    .filter(Boolean); // Filter out null/undefined matches
-
-// Format and display the result with Windows line breaks
-const formattedOutput = teamData
-    .map((item) => {
-        const teamName = item[0];
-        const numbers = item.slice(1).join(' '); // Join numbers with spaces
-        return `${teamName} ${numbers}`;
-    })
-    .join('\r\n'); // Ensure Windows line breaks
-
-console.log(formattedOutput);
-```
