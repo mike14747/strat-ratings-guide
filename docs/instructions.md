@@ -445,6 +445,7 @@ Column names for the **/data/hitter_ratings.xlsx** file must use these exact col
 -   Remove all the **+** signs from the **Hold** column (may no longer need to be done).
 -   Remove all pitchers that have an **M** in the **Location** column. Most pitchers with an **X** in the **Location** column should be deleted too. **HOWEVER**, you might find that a couple low IP, carded pitchers might have been part of the X players group and have to be brought back in from the original file.
 -   Remove all uncarded pitchers (this is a tedious task for pitchers).
+-   Starting with the 2020 Ratings Guide, it seems like you'll need to delete the **INJ** column.
 -   Insert a **Year** column to the beginning of each file (the MLB year).
 -   Add an **rml_team_id** column to the end of each file.
 -   To fix an issue where Excel formats the **FIELD** column as dates once the file is closed, add an apostrophe as a prefix to each pitcher's fielding rating... **eg**: **'3e21**. The apostrophe will be removed as the data is getting uploaded and it will keep Excel from formatting the column as dates.
