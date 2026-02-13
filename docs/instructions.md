@@ -253,7 +253,7 @@ For all the following files that will be uploading data, make sure to name the s
 
 To do the above:
 
--   Paste the contents of the new ballpark data text file from the ratings disk into the below variable '**data**'... replacing whaat is already there from a previous year.
+-   Paste the contents of the new ballpark data text file from the ratings disk into the below variable '**data**'... replacing what is already there from a previous year.
 -   Run the code in Quokka.
 -   Copy what is console logged.
 -   Paste the data into a text file.
@@ -420,8 +420,8 @@ const formattedOutput = teamData.map((item) => {
 -   Remove all the **+** signs from the **CL v lhp** and **CL v rhp** columns (may no longer need to be done).
 -   Remove all hitters that have an **M** in the **Location** column. All hitters with an **X** in the **Location** column should be deleted too, but double-check that one or two don't have 100+ ABs.
 -   Remove all uncarded hitters (those without 100+ AB in full 162 game seasons).
--   Insert a **Year** column to the beginning of each file (the MLB year).
--   Add an **rml_team_id** column to the end of each file.
+-   Insert a **Year** column as the first column (the MLB year).
+-   Add an **rml_team_id** column at the far right.
 -   The **INJ** column might have to get moved to its correct place (immediately after the **HITTERS** column).
 -   Delete the **W** column (starting with the 2022 season). This is actual real life walks and is not needed.
 -   Make sure each multi-team hitter is listed in the regular **/data/hitter_ratings.xlsx** file as being on team **TOT**.
@@ -446,8 +446,8 @@ Column names for the **/data/hitter_ratings.xlsx** file must use these exact col
 -   Remove all pitchers that have an **M** in the **Location** column. Most pitchers with an **X** in the **Location** column should be deleted too. **HOWEVER**, you might find that a couple low IP, carded pitchers might have been part of the X players group and have to be brought back in from the original file.
 -   Remove all uncarded pitchers (this is a tedious task for pitchers).
 -   Starting with the 2020 Ratings Guide, it seems like you'll need to delete the **INJ** column.
--   Insert a **Year** column to the beginning of each file (the MLB year).
--   Add an **rml_team_id** column to the end of each file.
+-   Insert a **Year** column as the first column (the MLB year).
+-   Add an **rml_team_id** column at the far right.
 -   To fix an issue where Excel formats the **FIELD** column as dates once the file is closed, add an apostrophe as a prefix to each pitcher's fielding rating... **eg**: **'3e21**. The apostrophe will be removed as the data is getting uploaded and it will keep Excel from formatting the column as dates.
 -   Make sure each multi-team pitcher is listed in the regular **/data/pitcher_ratings.xlsx** file as being on team **TOT**.
 

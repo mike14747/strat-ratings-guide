@@ -14,6 +14,7 @@ import { multiTeamHittersSchema } from './validation/schema/multiTeamHittersSche
 import { convertToCsv } from './utils/convertMultiTeamHittersToCsv';
 import * as converter from 'json-2-csv';
 import { calculateObTbDpFromArr, fieldingWopsCalculate } from './utils/fieldingWopsCalculate';
+import { modifyHitters } from './utils/modifyingFunctions/modifyHitters';
 
 import { convertArrToObj } from './utils/rmlTeamArrToObj';
 
@@ -51,6 +52,15 @@ router.get('/create-multi-team-csv', async (_req, res, next) => {
         const hittersOnIndividualTeams = convertToCsv();
         const csv = converter.json2csv(hittersOnIndividualTeams);
         return csv ? res.status(200).send(csv) : res.status(500).end();
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.get('/modify-excel-hitters', async (_req, res, next) => {
+    try {
+        await modifyHitters();
+        res.status(200).send('Done!');
     } catch (error) {
         next(error);
     }
