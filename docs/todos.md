@@ -1,5 +1,7 @@
 # Todos
 
+I'd like to write some functions to have exceljs do a lot of the **Getting "Hitters.xlsx" ready** and **Getting "Pitchers.xlsx" ready** spreadsheet modifications once the ratings disk arrives.
+
 Get the login system working.
 
 Convert the frontend of the app to typescript (maybe).
