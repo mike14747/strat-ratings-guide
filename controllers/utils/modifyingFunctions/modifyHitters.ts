@@ -1,67 +1,139 @@
 import ExcelJS from 'exceljs';
-import type { CellValue } from 'exceljs';
+import type { Worksheet, CellValue } from 'exceljs';
 import path from 'path';
 
-async function verifyHeadingsAndThrow() {
-    const filePath = path.join(process.cwd(), 'controllers', 'utils', 'modifyingFunctions', 'Hitters.xlsx');
+function getHeadings(ws: ExcelJS.Worksheet): string[] {
+    const values = ws.getRow(1).values;
+    if (!Array.isArray(values)) return [];
+
+    return values
+        .slice(1)
+        .map(v => (typeof v === 'string' ? v.trim() : ''));
+}
+
+function getColumnIndex(ws: ExcelJS.Worksheet, name: string): number {
+    const headers = getHeadings(ws);
+    const idx = headers.indexOf(name);
+
+    if (idx === -1) throw new Error(`Column not found: ${name}`);
+
+    return idx + 1;
+}
+
+function checkHeadingsMatchExpected(a: string[], b: string[]) {
+    a.forEach((value, i) => {
+        if (value !== b[i]) console.log(value, 'should match:', b[i]);
+    });
+    return a.length === b.length && a.every((v, i) => v === b[i]);
+}
+
+function moveColumnToAfterColumn(
+    ws: Worksheet,
+    columnName: string,
+    afterColumnName: string,
+): void {
+    const headerRow = ws.getRow(1);
+
+    if (!Array.isArray(headerRow.values)) throw new Error('There was an error reading header row.');
+
+    const headers = headerRow.values
+        .slice(1)
+        .map(v => String(v).trim());
+
+    const fromIdx = headers.indexOf(columnName);
+    const afterIdx = headers.indexOf(afterColumnName);
+
+    if (fromIdx === -1) throw new Error(`Column not found: ${columnName}`);
+    if (afterIdx === -1) throw new Error(`Target column not found: ${afterColumnName}`);
+
+    // clone values, but not the header cell (avoids readonly errors)
+    const values: CellValue[] = ws.getColumn(fromIdx + 1).values.slice(2);
+
+    // remove original column
+    ws.spliceColumns(fromIdx + 1, 1);
+
+    // if the column was before the target, the target shifted left
+    const insertIdx = fromIdx < afterIdx ? afterIdx : afterIdx + 1;
+
+    // insert column in new position
+    ws.spliceColumns(insertIdx + 1, 0, [null, ...values]);
+
+    // ensure header is explicitly defined
+    ws.getRow(1).getCell(insertIdx + 1).value = columnName;
+}
+
+function rebuildWorksheet(ws: Worksheet): Worksheet {
+    const wb = ws.workbook!;
+    const newSheet = wb.addWorksheet('_temp');
+
+    const headerRow = ws.getRow(1);
+    if (!Array.isArray(headerRow.values)) throw new Error('Header row is not an array');
+
+    // determine the last header column
+    const headers = headerRow.values.slice(1).map(v => String(v ?? '').trim());
+    const lastCol = headers.length;
+
+    // add header row
+    newSheet.addRow(headers);
+
+    // copy data rows, skipping empty rows
+    for (let r = 2; r <= ws.rowCount; r++) {
+        const row = ws.getRow(r);
+        // extract only the values for the columns that exist
+        const rowValues = [];
+        let hasData = false;
+        for (let c = 1; c <= lastCol; c++) {
+            const val = row.getCell(c).value ?? null;
+            rowValues.push(val);
+            if (val !== null && val !== undefined && val !== '') hasData = true;
+        }
+        // only add rows that have at least one non-empty cell
+        if (hasData) newSheet.addRow(rowValues);
+    }
+
+    // remove the old worksheet
+    wb.removeWorksheet(ws.id);
+
+    // rename the new worksheet to the desired name
+    newSheet.name = ws.name;
+
+    return newSheet;
+}
+
+export async function modifyHitters(): Promise<void> {
     const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.readFile(filePath);
+    await workbook.xlsx.readFile(path.join(__dirname, '/filesToModify/Hitters.xlsx'));
+    const originalSheet = workbook.worksheets[0];
+    if (!originalSheet) throw new Error('No worksheet found');
 
-    const sheet = workbook.worksheets[0]; // original sheet
-    const headerRow = sheet.getRow(1);
-
-    // ExcelJS values start at 1, trim spaces
-    const values = headerRow.values;
-
-    // Ensure we have an array
-    const headers: string[] = Array.isArray(values)
-        ? values.slice(1).map(v => (typeof v === 'string' ? v.trim() : ''))
-        : [];
-
-    const expectedHeaders = [
-        'TM', 'Location', 'HITTERS', 'AB', 'W', 'SO v lhp', 'BBv lhp', 'HIT v lhp', 'OB v lhp',
+    const originalExpectedHeadings = [
+        'TM', 'Location', 'HITTERS', 'AB', 'W', 'SO v lhp', 'BB v lhp', 'HIT v lhp', 'OB v lhp',
         'TB v lhp', 'HR v lhp', 'BP v lhp', 'CL v lhp', 'DP v lhp',
         'SO v rhp', 'BB v rhp', 'HIT v rhp', 'OB v rhp', 'TB v rhp', 'HR v rhp', 'BP v rhp',
         'CL v rhp', 'DP v rhp', 'STEALING', 'STL', 'SPD', 'B', 'H', 'INJ',
         'CA', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'FIELDING',
     ];
 
-    const mismatch = headers.some((h, i) => h !== expectedHeaders[i]);
-    if (mismatch || headers.length !== expectedHeaders.length) {
-        console.error('Found headers:', headers);
-        console.error('Expected headers:', expectedHeaders);
-        throw new Error('Header row does not match expected headings!');
-    }
-
-    console.log('Headers verified successfully.');
-}
-
-export async function modifyHitters(): Promise<void> {
-    const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.readFile(path.join(__dirname, 'Hitters.xlsx'));
-
-    const originalSheet = workbook.worksheets[0];
-    if (!originalSheet) throw new Error('No worksheet found');
-
-    // use the above function to verify that the headers are what I'm expecting them to be
-    await verifyHeadingsAndThrow();
+    // make sure the headings in the file match what are expected
+    const initialHeaderRow = getHeadings(originalSheet);
+    if (!checkHeadingsMatchExpected(originalExpectedHeadings, initialHeaderRow)) throw new Error('Initial header row does not match expected headings!');
+    console.log('Initial headings verified successfully.');
 
     // change the name of the original sheet of this file to 'Original Hitters'
     originalSheet.name = 'Original Hitters';
 
-    // create a 'Carded Hitters' sheet and copy the original sheet data to it
-    const cardedSheet = workbook.addWorksheet('Carded Hitters');
-
+    // create a duplicate'temp' sheet, then copy the original sheet data to it
+    const duplicateSheet = workbook.addWorksheet('temp');
     originalSheet.eachRow({ includeEmpty: true }, (row, rowNum) => {
-        const newRow = cardedSheet.getRow(rowNum);
+        const newRow = duplicateSheet.getRow(rowNum);
         row.eachCell({ includeEmpty: true }, (cell, colNum) => {
             newRow.getCell(colNum).value = cell.value;
         });
         newRow.commit();
     });
 
-    // switch to 'Carded Hitters' as the working sheet
-    const ws = cardedSheet;
+    // switch to the duplicate sheet as the working sheet
+    const ws = duplicateSheet;
 
     // insert a 'Year' column and set each cell in that column to the current year minus one
     const year = new Date().getFullYear() - 1;
@@ -72,27 +144,11 @@ export async function modifyHitters(): Promise<void> {
         if (rowNum > 1) row.getCell(1).value = year;
     });
 
-    const headerRow = ws.getRow(1);
-    const rawValues = headerRow.values;
-    const headers: string[] = Array.isArray(rawValues)
-        ? rawValues.slice(1).map((v: CellValue): string =>
-            typeof v === 'string' ? v : '',
-        )
-        : [];
-
-    console.log({ headers });
-
-    const getCol = (name: string): number => {
-        const idx = headers.indexOf(name);
-        if (idx === -1) throw new Error(`Missing column: ${name}`);
-        return idx + 1;
-    };
-
-    // remove leading '+' from 'CL v lhp' and 'CL v rhp' columns
+    // remove leading '+' from 'CL v lhp' and 'CL v rhp' columns (if any are present)
     ws.eachRow((row, rowNum) => {
         if (rowNum === 1) return;
-        const clLhpCol = getCol('CL v lhp');
-        const clRhpCol = getCol('CL v rhp');
+        const clLhpCol = getColumnIndex(ws, 'CL v lhp');
+        const clRhpCol = getColumnIndex(ws, 'CL v rhp');
         [clLhpCol, clRhpCol].forEach(col => {
             const cell = row.getCell(col);
             if (typeof cell.value === 'string') {
@@ -104,13 +160,13 @@ export async function modifyHitters(): Promise<void> {
     // remove rows where 'Location' equals 'M' or 'X' and where 'AB' are less than 100
     for (let i = ws.rowCount; i > 1; i--) {
         const row = ws.getRow(i);
-        const locationCol = getCol('Location');
+        const locationCol = getColumnIndex(ws, 'Location');
         const location =
             typeof row.getCell(locationCol).value === 'string'
                 ? row.getCell(locationCol).value
                 : '';
 
-        const abCol = getCol('AB');
+        const abCol = getColumnIndex(ws, 'AB');
         const abCellValue = row.getCell(abCol).value;
 
         const ab: number =
@@ -128,79 +184,57 @@ export async function modifyHitters(): Promise<void> {
     ws.getRow(1).getCell(ws.columnCount).value = 'rml_team_id';
 
     // delete the 'W' column
-    const wIdx = getCol('W');
+    const wIdx = getColumnIndex(ws, 'W');
     ws.spliceColumns(wIdx, 1);
 
-    const injIdx = getCol('INJ');
-    // copy 'INJ' values including header
-    const injValues = [];
-    for (let r = 1; r <= ws.rowCount; r++) {
-        injValues.push(ws.getRow(r).getCell(injIdx).value ?? '');
-    }
+    // move the 'INJ' column to right after the 'HITTERS' column
+    moveColumnToAfterColumn(ws, 'INJ', 'HITTERS');
 
-    // remove original 'INJ' column
-    ws.spliceColumns(injIdx, 1);
-
-    // insert 'INJ' after 'HITTERS'
-    const hittersIdx = getCol('HITTERS');
-    ws.spliceColumns(hittersIdx + 1, 0, injValues);
-
-    // alignment
-    const leftAlign = new Set(['HITTERS', 'STEALING', 'FIELDING']);
-
-    ws.columns.forEach(col => {
-        if (!col.header) return;
-
-        col.alignment = {
-            vertical: 'middle',
-            horizontal: leftAlign.has(String(col.header)) ? 'left' : 'center',
-        };
-    });
+    // rebuild sheet to remove all empty columns and rows
+    const rebuiltSheet = rebuildWorksheet(duplicateSheet);
+    rebuiltSheet.name = 'Carded Hitters';
 
     // final headers
-    const finalHeaderRow = ws.getRow(1);
-    const finalRawValues = finalHeaderRow.values;
-    const finalHeaders: string[] = Array.isArray(finalRawValues)
-        ? finalRawValues.slice(1).map((v: CellValue): string =>
-            typeof v === 'string' ? v : '',
-        )
-        : [];
+    const finalHeadings = getHeadings(ws);
+    // console.log({ finalHeadings });
 
-    const finalExpectedHeaders = [
+    const finalExpectedHeadings = [
         'Year', 'TM', 'Location', 'HITTERS', 'INJ', 'AB',
-        'SO_v_lhp', 'BB_v_lhp', 'HIT_v_lhp', 'OB_v_lhp', 'TB_v_lhp',
-        'HR_v_lhp', 'BP_v_lhp', 'CL_v_lhp', 'DP_v_lhp',
-        'SO_v_rhp', 'BB_v_rhp', 'HIT_v_rhp', 'OB_v_rhp', 'TB_v_rhp',
-        'HR_v_rhp', 'BP_v_rhp', 'CL_v_rhp', 'DP_v_rhp',
+        'SO v lhp', 'BB v lhp', 'HIT v lhp', 'OB v lhp', 'TB v lhp',
+        'HR v lhp', 'BP v lhp', 'CL v lhp', 'DP v lhp',
+        'SO v rhp', 'BB v rhp', 'HIT v rhp', 'OB v rhp', 'TB v rhp',
+        'HR v rhp', 'BP v rhp', 'CL v rhp', 'DP v rhp',
         'STEALING', 'STL', 'SPD', 'B', 'H',
-        'd_CA', 'd_1B', 'd_2B', 'd_3B', 'd_SS',
-        'd_LF', 'd_CF', 'd_RF', 'FIELDING', 'rml_team_id',
+        'CA', '1B', '2B', '3B', 'SS',
+        'LF', 'CF', 'RF', 'FIELDING', 'rml_team_id',
     ];
 
-    const mismatch = finalHeaders.some((h, i) => h !== finalExpectedHeaders[i]);
-    if (mismatch || finalHeaders.length !== finalExpectedHeaders.length) {
-        console.error('Found final headers:', finalHeaders);
-        console.error('Expected final headers:', finalExpectedHeaders);
-        throw new Error('Header row does not match expected final headers!');
-    }
+    if (!checkHeadingsMatchExpected(finalExpectedHeadings, finalHeadings)) throw new Error('Final header row does not match expected headings!');
+    console.log('Final headings verified successfully.');
 
-    console.log('Final headers verified successfully.');
+    // switch to the rebuilt 'Carded Hitters' sheet
+    const cardedSheet = workbook.getWorksheet('Carded Hitters');
+    if (!cardedSheet) throw new Error('Carded Hitters sheet not found!');
 
-    ws.eachRow({ includeEmpty: true }, row => {
-        for (let col = 1; col <= ws.columnCount; col++) {
+    // style cells with data
+    cardedSheet.eachRow({ includeEmpty: true }, row => {
+        for (let col = 1; col <= cardedSheet.columnCount; col++) {
             const cell = row.getCell(col);
 
-            // Ensure Excel recognizes the cell
+            // ensure Excel recognizes the cell
             if (cell.value == null) cell.value = '';
 
-            // Font
+            // font
             cell.font = { name: 'Calibri', size: 12 };
 
-            // Alignment
-            const leftAlign = new Set(['HITTERS', 'STEALING', 'FIELDING']);
-            cell.alignment = { vertical: 'middle', horizontal: leftAlign.has(String(ws.getRow(1).getCell(col).value)) ? 'left' : 'center' };
+            // row height
+            row.height = 18;
 
-            // Border
+            // alignment
+            const leftAlign = new Set(['HITTERS', 'STEALING', 'FIELDING']);
+            cell.alignment = { vertical: 'bottom', horizontal: leftAlign.has(String(cardedSheet.getRow(1).getCell(col).value)) ? 'left' : 'center' };
+
+            // border
             cell.border = {
                 top: { style: 'thin' },
                 left: { style: 'thin' },
@@ -211,7 +245,10 @@ export async function modifyHitters(): Promise<void> {
     });
 
     // style the header row (background color to a light gray)
+    const headerRow = cardedSheet.getRow(1);
     headerRow.eachCell(cell => {
+        if (cell.value == null) cell.value = '';
+        cell.font = { name: 'Calibri', size: 12, bold: true };
         cell.fill = {
             type: 'pattern',
             pattern: 'solid',
@@ -220,9 +257,21 @@ export async function modifyHitters(): Promise<void> {
         cell.alignment = { vertical: 'bottom', horizontal: 'center' };
     });
 
-    ws.views = [{ state: 'frozen', ySplit: 1 }];
+    cardedSheet.views = [{ state: 'frozen', ySplit: 1 }];
+
+    // alignment
+    const leftAlign = new Set(['HITTERS', 'STEALING', 'FIELDING']);
+
+    cardedSheet.columns.forEach(col => {
+        if (!col.header) return;
+
+        col.alignment = {
+            vertical: 'bottom',
+            horizontal: leftAlign.has(String(col.header)) ? 'left' : 'center',
+        };
+    });
 
     // write changes to the same file
-    await workbook.xlsx.writeFile(path.join(__dirname, 'Hitters.xlsx'));
+    await workbook.xlsx.writeFile(path.join(__dirname, '/filesToModify/Hitters.xlsx'));
     console.log('Hitters.xlsx updated successfully!');
 }
