@@ -95,6 +95,7 @@ function rebuildWorksheet(ws: Worksheet): Worksheet {
     wb.removeWorksheet(ws.id);
 
     // rename the new worksheet to the desired name
+    console.log({ worksheetName: ws.name });
     newSheet.name = ws.name;
 
     return newSheet;

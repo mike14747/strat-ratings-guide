@@ -22,12 +22,11 @@ I have an excel file with a single sheet called: "Hitters.xlsx". I'd like to use
 -   Move the "INJ" column to immediately after the "HITTERS" column.
 -   Horizontally "Center" and "left-align" the columns as follows: all columns should be center aligned except: HITTERS, STEALING and FIELDING (which should be left-aligned).
 -   Delete the "W" column.
--   Column names must be: Year, TM, Location, HITTERS, INJ, AB, SO_v_lhp, BB_v_lhp, HIT_v_lhp, OB_v_lhp, TB_v_lhp, HR_v_lhp, BP_v_lhp, CL_v_lhp, DP_v_lhp, SO_v_rhp, BB_v_rhp, HIT_v_rhp, OB_v_rhp, TB_v_rhp, HR_v_rhp, BP_v_rhp, CL_v_rhp, DP_v_rhp, STEALING, STL, SPD, B, H, d_CA, d_1B, d_2B, d_3B, d_SS, d_LF, d_CF, d_RF, FIELDING, rml_team_id
 
 
 
 
--   Make sure each multi-team hitter is listed in the regular **/data/hitter_ratings.xlsx** file as being on team **TOT**.
+-   Make sure each multi-team hitter listed in the regular **/data/hitter_ratings.xlsx** file as being on team **TOT**.
 
 ---
 

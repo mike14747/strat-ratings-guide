@@ -424,7 +424,7 @@ const formattedOutput = teamData.map((item) => {
 -   Add an **rml_team_id** column at the far right.
 -   The **INJ** column might have to get moved to its correct place (immediately after the **HITTERS** column).
 -   Delete the **W** column (starting with the 2022 season). This is actual real life walks and is not needed.
--   Make sure each multi-team hitter is listed in the regular **/data/hitter_ratings.xlsx** file as being on team **TOT**.
+-   Make sure each multi-team hitter listed in the regular **/data/hitter_ratings.xlsx** file as being on team **TOT**.
 
 Column names for the **/data/hitter_ratings.xlsx** file must use these exact column names (with no spaces and none of them beginning with a number) because of the parser that's being used:
 
@@ -449,7 +449,7 @@ Column names for the **/data/hitter_ratings.xlsx** file must use these exact col
 -   Insert a **Year** column as the first column (the MLB year).
 -   Add an **rml_team_id** column at the far right.
 -   To fix an issue where Excel formats the **FIELD** column as dates once the file is closed, add an apostrophe as a prefix to each pitcher's fielding rating... **eg**: **'3e21**. The apostrophe will be removed as the data is getting uploaded and it will keep Excel from formatting the column as dates.
--   Make sure each multi-team pitcher is listed in the regular **/data/pitcher_ratings.xlsx** file as being on team **TOT**.
+-   Make sure each multi-team pitcher listed in the regular **/data/pitcher_ratings.xlsx** file as being on team **TOT**.
 
 Column names for the **/data/pitcher_ratings.xlsx** file must use these exact column names (with no spaces and none of them beginning with a number) because of the parser that's being used:
 
