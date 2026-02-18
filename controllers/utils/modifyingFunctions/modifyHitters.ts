@@ -1,6 +1,6 @@
 import ExcelJS from 'exceljs';
 import type { Worksheet, CellValue } from 'exceljs';
-import path from 'path';
+import * as path from 'path';
 
 function getHeadings(ws: ExcelJS.Worksheet): string[] {
     const values = ws.getRow(1).values;
