@@ -29,6 +29,8 @@ app.use(
 app.use(express.urlencoded({ limit: '20mb', parameterLimit: 100000, extended: true }));
 app.use(express.json({ limit: '20mb' }));
 
+app.use(express.static(path.join(__dirname, 'dist')));
+
 app.use(express.static(path.join(__dirname, 'frontend/components')));
 app.use(express.static(path.join(__dirname, 'frontend/css')));
 app.use(express.static(path.join(__dirname, 'frontend/images')));

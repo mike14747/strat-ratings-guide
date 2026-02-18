@@ -6,7 +6,12 @@
     "scripts": {
         "build": "rimraf dist && npx tsc",
         "start": "npm dist/server.js",
+<<<<<<< HEAD
         "dev": "concurrently \"npx tsc --project tsconfig.client.json --watch\" \"nodemon --watch server --ext ts --exec ts-node --project tsconfig.server.json server.ts\"",
+=======
+        "dev": "nodemon --exec ts-node server.ts",
+        "dev1": "npm run build && nodemon --exec ts-node server.ts",
+>>>>>>> 89cecb45a62f3aa7ae1f23dfe428cad0dd01b1fa
         "test": "mocha --exit"
     },
     "repository": {
