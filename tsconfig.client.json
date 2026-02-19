@@ -1,10 +1,16 @@
 {
-    "extends": "./tsconfig.json",
+    "extends": "./tsconfig.base.json",
     "compilerOptions": {
-        "module": "esnext",
-        "moduleResolution": "bundler",
+        "composite": true,
+        "module": "ES2020",
+        "moduleResolution": "Node",
         "rootDir": "./frontend/ts",
         "outDir": "./frontend/js",
+        "lib": [
+            "DOM",
+            "DOM.Iterable",
+            "ES2020"
+        ]
     },
     "include": [
         "frontend/ts/**/*.ts"
