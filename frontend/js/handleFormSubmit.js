@@ -89,3 +89,4 @@ export function handleFormSubmit(event, uploadFilename, url) {
         });
     });
 }
+//# sourceMappingURL=handleFormSubmit.js.map

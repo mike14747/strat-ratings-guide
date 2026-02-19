@@ -8,3 +8,4 @@ var uploadForm = document.getElementById('file-upload-form');
 uploadForm.addEventListener('submit', function (event) {
     handleFormSubmit(event, UPLOAD_FILENAME, URL);
 });
+//# sourceMappingURL=upload-pitcher-data.js.map
