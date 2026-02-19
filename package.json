@@ -5,8 +5,8 @@
     "main": "server.js",
     "scripts": {
         "build": "rimraf dist && npx tsc",
-        "start": "npm dist/server.js",
-        "dev": "nodemon --exec ts-node server.ts",
+        "start": "node dist/server.js",
+        "dev": "concurrently \"npx tsc --project tsconfig.client.json --watch\" \"nodemon --watch server --ext ts --exec ts-node --project tsconfig.server.json server.ts\"",
         "test": "mocha --exit"
     },
     "repository": {
@@ -41,7 +41,7 @@
         "typescript": "^5.4.3"
     },
     "dependencies": {
-        "concurrently": "^8.2.2",
+        "concurrently": "^9.2.1",
         "csv-parse": "^4.14.2",
         "dotenv": "^8.2.0",
         "exceljs": "^4.4.0",
