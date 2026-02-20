@@ -1,21 +1,22 @@
-"use strict";
+// frontend/js/components/seasonDropdown.ts
 class SeasonDropdownComponent extends HTMLElement {
-    // eslint-disable-next-line no-useless-constructor
     constructor() {
-        super();
-        this._data = { seasonList: [], selectedSeason: '', type: '' };
+        super(...arguments);
         this._listItems = '';
     }
-    static get observedAttributes() {
-        return ['data-seasons'];
-    }
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (name === 'data-seasons' && oldValue !== newValue && newValue) {
-            const parsed = JSON.parse(newValue);
-            this._data = parsed;
+    // No constructor needed — ESLint won't complain
+    // Setter for database-driven population
+    set data(value) {
+        this._data = value;
+        if (!this._data.seasonList || this._data.seasonList.length === 0) {
+            console.warn('Season list is empty!', this._data);
+            this._listItems = '';
+        }
+        else {
+            const selected = parseInt(this._data.selectedSeason.toString(), 10);
             this._listItems = this._data.seasonList
-                .map((season) => {
-                if (season === parseInt(this._data.selectedSeason.toString(), 10)) {
+                .map(season => {
+                if (season === selected) {
                     return `<li class="viewing">${season}</li>`;
                 }
                 else {
@@ -23,15 +24,13 @@ class SeasonDropdownComponent extends HTMLElement {
                 }
             })
                 .join('');
-            this.render();
         }
+        this.render();
     }
-    get dataSeasons() {
+    get data() {
         return this._data;
     }
-    set dataSeasons(value) {
-        this.setAttribute('data-seasons', JSON.stringify(value));
-    }
+    // Render dropdown HTML
     render() {
         this.innerHTML = `
       <div class="dropdown">
@@ -43,4 +42,8 @@ class SeasonDropdownComponent extends HTMLElement {
     `;
     }
 }
-customElements.define('season-dropdown-component', SeasonDropdownComponent);
+// Define the custom element once
+if (!customElements.get('season-dropdown-component')) {
+    customElements.define('season-dropdown-component', SeasonDropdownComponent);
+}
+export {};

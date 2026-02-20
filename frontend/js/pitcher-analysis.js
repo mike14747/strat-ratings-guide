@@ -36,7 +36,6 @@ async function getData() {
     }
 
     const seasonList = seasonListJSON.map(s => s.year);
-
     const latestSeason = Math.max(...seasonList);
 
     const urlParams = new URLSearchParams(window.location.search);
