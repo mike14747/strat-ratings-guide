@@ -14,7 +14,7 @@
     },
     "include": [
         "**/*.ts"
-    ],
+, "frontend/ts/components/footer.ts"    ],
     "exclude": [
         "frontend/ts"
     ]

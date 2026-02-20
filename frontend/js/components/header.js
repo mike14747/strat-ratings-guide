@@ -1,3 +1,4 @@
+"use strict";
 class HeaderComponent extends HTMLElement {
     constructor() {
         super();
@@ -5,7 +6,7 @@ class HeaderComponent extends HTMLElement {
         <header class="header">
             <div class="header-left">
                 <div>
-                    <img src="analyze.png" />
+                    <img src="/images/analyze.png" />
                 </div>
                     
                 <div>
@@ -20,9 +21,7 @@ class HeaderComponent extends HTMLElement {
         `;
     }
 }
-
 customElements.define('header-component', HeaderComponent);
-
 class NavComponent extends HTMLElement {
     constructor() {
         super();
@@ -41,5 +40,4 @@ class NavComponent extends HTMLElement {
         `;
     }
 }
-
 customElements.define('nav-component', NavComponent);

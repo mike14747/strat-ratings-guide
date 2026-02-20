@@ -1,6 +1,7 @@
 {
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
+        "target": "ES2015",
         "module": "ES2020",
         "moduleResolution": "Node",
         "rootDir": "./frontend/ts",
@@ -16,5 +17,5 @@
     },
     "include": [
         "frontend/ts/**/*.ts"
-    ]
+, "frontend/ts/components/footer.ts"    ]
 }

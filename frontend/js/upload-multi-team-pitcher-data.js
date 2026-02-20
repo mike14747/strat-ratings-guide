@@ -1,10 +1,10 @@
 import { handleFormSubmit } from './handleFormSubmit.js';
-var UPLOAD_FILENAME = 'multi_team_pitchers.xlsx';
-var URL = '/api/pitchers/multi-team';
-var filenameElement = document.getElementById('filename');
+const UPLOAD_FILENAME = 'multi_team_pitchers.xlsx';
+const URL = '/api/pitchers/multi-team';
+const filenameElement = document.getElementById('filename');
 filenameElement.textContent = UPLOAD_FILENAME;
 // add an event listener on the form element, then run the handleFormSubmit function if the submit button was clicked
-var uploadForm = document.getElementById('file-upload-form');
-uploadForm.addEventListener('submit', function (event) {
+const uploadForm = document.getElementById('file-upload-form');
+uploadForm.addEventListener('submit', (event) => {
     handleFormSubmit(event, UPLOAD_FILENAME, URL);
 });
