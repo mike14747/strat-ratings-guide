@@ -20,9 +20,9 @@ Add **Hitter_Stats_202x.xlsx** and **Pitcher_Stats_202x.xlsx** files to the curr
 
 Those files will include the following sheets:
 
--   Original_with_TOT
--   Original_with_Ind_Teams
--   Carded
+- Original_with_TOT
+- Original_with_Ind_Teams
+- Carded
 
 **NOTE**: The number of columns of data coming from baseball-reference may change from year to year, so the **formatted** columns in the files may need to be tweaked each year. Also, it seems like baseball-reference changed their naming of team for multi-team hitters and pitchers recently... going from **TOT** to **2TM**, **3TM**, **etc**. I prefer to change all those to **TOT** after I get the data.
 
@@ -30,11 +30,12 @@ Those files will include the following sheets:
 
 It will take some work to get the player names in the **Player** column formatted properly. Why?
 
--   They will be in First Name Last Name format with a possible asterisk or pound sign after them.
--   The symbols (or lack of a symbol) after their name need to be converted to the hand they bat/pitch.
--   They may have non-breaking spaces that need to be converted to regular spaces.
--   They may have accented characters that need to be converted to regular letters.
--   Here's an example of some of the above:
+- They will be in First Name Last Name format with a possible asterisk or pound sign after them.
+- The symbols (or lack of a symbol) after their name need to be converted to the hand they bat/pitch (then removed from their name).
+- They may have non-breaking spaces that need to be converted to regular spaces.
+- They may have periods which need to be removed.
+- They may have accented characters that need to be converted to regular letters.
+- Here's an example of some of the above:
 
 ```text
 José Ramírez#
@@ -73,17 +74,17 @@ _Convert spaces_
 Convert non-breaking spaces to regular spaces (plus trim extra white space):
 
 ```text
-=TRIM(SUBSTITUTE(A2,CHAR(160)," "))
+=TRIM(SUBSTITUTE(B2,CHAR(160)," "))
 ```
 
 ---
 
 _Extract bats/throws data from names_
 
-Convert baseball-reference **bats/throws** (\*, # or nothing) to L,S or R:
+Convert baseball-reference **bats/throws** (\*, # or nothing) to L, S or R:
 
 ```text
-=IF(ISNUMBER(SEARCH("~\_", AG2)), "L", IF(ISNUMBER(SEARCH("~#", AG2)), "S", "R"))
+=IF(ISNUMBER(SEARCH("~*", B2)), "L", IF(ISNUMBER(SEARCH("~#", B2)), "S", "R"))
 ```
 
 ---
@@ -95,7 +96,7 @@ Change names from **FirstName LastName** to **LastName, FirstName**.
 This will format all names that have a single space and will yield “N/A” for those with 0 spaces or more than 1 space (eg: Bryan De La Cruz). Those will need to be done manually.
 
 ```text
-=IF(LEN(AG2)-LEN(SUBSTITUTE(AG2," ",""))=1,RIGHT(AG2,LEN(AG2)-FIND(" ",AG2))&", "&LEFT(AG2, FIND(" ",AG2)-1),"N/A")
+=IF(LEN(B2)-LEN(SUBSTITUTE(B2," ",""))=1,RIGHT(B2,LEN(B2)-FIND(" ",B2))&", "&LEFT(B2, FIND(" ",B2)-1),"N/A")
 ```
 
 ---
@@ -106,12 +107,12 @@ This will format all names that have a single space and will yield “N/A” for
 
 I've added the following:
 
--   "carded_players" table in the database and its schema.
--   "carded-players" api route and controller.
--   "cardedPlayers" data models.
--   "carded_players.xlsx" file which will have its data uploaded to the database.
--   Functions to process the uploaded excel data (parsing, rounding IP, adding an abbrevName field, etc).
--   Added html and js files to the frontend for uploading "carded_players.xlsx".
+- "carded_players" table in the database and its schema.
+- "carded-players" api route and controller.
+- "cardedPlayers" data models.
+- "carded_players.xlsx" file which will have its data uploaded to the database.
+- Functions to process the uploaded excel data (parsing, rounding IP, adding an abbrevName field, etc).
+- Added html and js files to the frontend for uploading "carded_players.xlsx".
 
 #### Using this new feature
 
@@ -129,10 +130,10 @@ Each time a significant number of RML team changes occur (eg: after drafts), thi
 
 **TIP**: If you have a few players who have blank RML teams, here are some things to watch look for:
 
--   An erroneous space after the comma in a player's name in Strat's ratings disk.
--   Spaces between last name segments don't match between the Master Roster and the Ratings Disk.
--   "Jr" or "II" suffixes don't match between the Master Roster and the Ratings Disk.
--   AB or IP from the original "Hitters Stats" or "Pitchers Stats" files from the preliminary Baseball-Reference data might be 1 different from what is in the Ratings Disk.
+- An erroneous space after the comma in a player's name in Strat's ratings disk.
+- Spaces between last name segments don't match between the Master Roster and the Ratings Disk.
+- "Jr" or "II" suffixes don't match between the Master Roster and the Ratings Disk.
+- AB or IP from the original "Hitters Stats" or "Pitchers Stats" files from the preliminary Baseball-Reference data might be 1 different from what is in the Ratings Disk.
 
 > Try to update the Ratings Disk data in **/data/hitter_ratings.xlsx** and **/data/pitcher_ratings.xlsx** when the issues are with names not matching.
 >
@@ -158,9 +159,9 @@ Typically, I add **Hitter_Stats_202x.xlsx** and **Pitcher_Stats_202x.xlsx** file
 
 Those files will include the following sheets:
 
--   Original_with_TOT
--   Original_with_Ind_Teams
--   Carded
+- Original_with_TOT
+- Original_with_Ind_Teams
+- Carded
 
 > **UPDATE**: On January 8, 2024 I finished a new route and function to generate the above multi-team hitter AB/IP (respectively) on their individual teams.
 >
@@ -184,11 +185,11 @@ It's going to take some data manipulation to get that info into **/data/multi_te
 
 The final data needs to have these columns (and a row for each team played for):
 
--   Year
--   Name
--   Bats
--   Tm
--   AB
+- Year
+- Name
+- Bats
+- Tm
+- AB
 
 Keep the [Baseball Reference](https://www.baseball-reference.com/) team names as they are... they will be converted to **real_team_id** by the app before getting loaded into the database.
 
@@ -212,11 +213,11 @@ It's going to take some data manipulation to get that info into **/data/multi_te
 
 The final data needs to have these columns (and a row for each team played for):
 
--   Year
--   Name
--   Throws
--   Tm
--   IP
+- Year
+- Name
+- Throws
+- Tm
+- IP
 
 Keep the [Baseball Reference](https://www.baseball-reference.com/) team names as they are... they will be converted to **real_team_id** by the app before getting loaded into the database.
 
@@ -236,10 +237,10 @@ Now the whole file can get uploaded from the **Upload Multi-Team Pitcher Data** 
 
 For all the following files that will be uploading data, make sure to name the single sheet in these files the same as the file name minus the extension.
 
--   /data/hitter_ratings.xlsx --> sheet name: hitter_ratings
--   /data/pitcher_ratings.xlsx --> sheet name: pitcher_ratings
--   /data/multi_team_hitters.xlsx --> sheet name: multi_team_hitters
--   /data/multi_team_pitchers.xlsx --> sheet name: multi_team_pitchers
+- /data/hitter_ratings.xlsx --> sheet name: hitter_ratings
+- /data/pitcher_ratings.xlsx --> sheet name: pitcher_ratings
+- /data/multi_team_hitters.xlsx --> sheet name: multi_team_hitters
+- /data/multi_team_pitchers.xlsx --> sheet name: multi_team_pitchers
 
 ---
 
@@ -247,22 +248,22 @@ For all the following files that will be uploading data, make sure to name the s
 
 ### New ballpark data into the database
 
--   Convert **Ballpark.txt** team by team singles/homers data to **data/bp_ratings.xlsx**.
--   The formatted data column needs to be added to **/config/ratings_guide_db(seeds).sql**.
--   Add the entire **/config/ratings_guide_db(seeds).sql** file into the **ratings_guide_db** database with MySQL Workbench using copy/paste/execute.
+- Convert **Ballpark.txt** team by team singles/homers data to **data/bp_ratings.xlsx**.
+- The formatted data column needs to be added to **/config/ratings_guide_db(seeds).sql**.
+- Add the entire **/config/ratings_guide_db(seeds).sql** file into the **ratings_guide_db** database with MySQL Workbench using copy/paste/execute.
 
 To do the above:
 
--   Paste the contents of the new ballpark data text file from the ratings disk into the below variable '**data**'... replacing what is already there from a previous year.
--   Run the code in Quokka.
--   Copy what is console logged.
--   Paste the data into a text file.
--   Remove all single quotes from the beginning and end of each line.
--   Import the data into: **bp_ratings.xlsx**... into an area to the right of the columns in the file next to the year for which the data applies.
--   Double check that the teams are in the same order as the ones already in the file.
--   Copy the single and homerun data into the proper columns.
--   Add the data from this file to: **ratings_guide_db(seeds).sql**.
--   Add the contents of **ratings_guide_db(seeds).sql** to the database via **Workbench**.
+- Paste the contents of the new ballpark data text file from the ratings disk into the below variable '**data**'... replacing what is already there from a previous year.
+- Run the code in Quokka.
+- Copy what is console logged.
+- Paste the data into a text file.
+- Remove all single quotes from the beginning and end of each line.
+- Import the data into: **bp_ratings.xlsx**... into an area to the right of the columns in the file next to the year for which the data applies.
+- Double check that the teams are in the same order as the ones already in the file.
+- Copy the single and homerun data into the proper columns.
+- Add the data from this file to: **ratings_guide_db(seeds).sql**.
+- Add the contents of **ratings_guide_db(seeds).sql** to the database via **Workbench**.
 
 ```js
 const teams = {
@@ -365,7 +366,7 @@ const teamData = data
     .map((line) => {
         // Match team names and ranges for each line
         const match = line.match(
-            /^([A-Za-z.\s\(\)]+)\s+L\s+Single\* (\d+)-(\d+).*?L\s+Homerun (\d+)-(\d+).*?R\s+Single\* (\d+)-(\d+).*?R\s+Homerun (\d+)-(\d+)/
+            /^([A-Za-z.\s\(\)]+)\s+L\s+Single\* (\d+)-(\d+).*?L\s+Homerun (\d+)-(\d+).*?R\s+Single\* (\d+)-(\d+).*?R\s+Homerun (\d+)-(\d+)/,
         );
         if (match) {
             const teamName = match[1].trim().replace(/[\s.]+/g, ''); // Clean up team name (remove spaces and periods)
@@ -395,9 +396,9 @@ const formattedOutput = teamData.map((item) => {
 
 ### Notes for both Hitters.xlsx and Pitchers.xlsx
 
--   It's no longer necessary to rename the **Location** column to **real_team_id**, since that is now calculated by the app when uploading data. This is confirmed to be true. In fact, changing the name from **Location** will now generate an error from the Joi schema validation.
--   It's also no longer necessary to change the **TM** column to reflect my preferred team abbreviations (eg: ARIZ instead of ARN) since that is now converted by the app when uploading data.
--   Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. I had some issues with St Louis in the past... (falsely?) thinking they used to be listed as **STN** instead of **SLN** in the past. Also, I removed the extra St Louis row (real_team_id = 32) from the **real_teams.xlsx** file and changed the original (real_team_id = 27) St Louis to SLN. Also, Oakland likely won't appear since (as of 2025) the team is in the process of moving.
+- It's no longer necessary to rename the **Location** column to **real_team_id**, since that is now calculated by the app when uploading data. This is confirmed to be true. In fact, changing the name from **Location** will now generate an error from the Joi schema validation.
+- It's also no longer necessary to change the **TM** column to reflect my preferred team abbreviations (eg: ARIZ instead of ARN) since that is now converted by the app when uploading data.
+- Make sure the Strat and baseball-reference real team abbreviations haven't changed from what they've been. I had some issues with St Louis in the past... (falsely?) thinking they used to be listed as **STN** instead of **SLN** in the past. Also, I removed the extra St Louis row (real_team_id = 32) from the **real_teams.xlsx** file and changed the original (real_team_id = 27) St Louis to SLN. Also, Oakland likely won't appear since (as of 2025) the team is in the process of moving.
 
 > **IMPORTANT** (for both **Hitters.xlsx** and **Pitchers.xlsx**): Every hitter and pitcher that played for multiple teams needs to have their **TM** column manually set to **TOT**.
 >
@@ -409,51 +410,51 @@ const formattedOutput = teamData.map((item) => {
 
 ### Getting "Hitters.xlsx" ready
 
--   Open the **Hitters.xlsx** file that came in the ratings disk.
--   Rename the lone sheet to **Original Hitters**, then copy it to the end and rename the copied sheet to **Carded Hitters**.
--   From this point forward, you'll be working only with the **Carded Hitters** sheet.
--   Set the font to **Calibri** and **12pt**.
--   Set the top row to a light gray background, then freeze the top row.
--   Set the row height for all rows to **18.00**.
--   Set **All Borders** around the data.
--   "Center" and ""left-align" the columns as needed.
--   Remove all the **+** signs from the **CL v lhp** and **CL v rhp** columns (may no longer need to be done).
--   Remove all hitters that have an **M** in the **Location** column. All hitters with an **X** in the **Location** column should be deleted too, but double-check that one or two don't have 100+ ABs.
--   Remove all uncarded hitters (those without 100+ AB in full 162 game seasons).
--   Insert a **Year** column as the first column (the MLB year).
--   Add an **rml_team_id** column at the far right.
--   The **INJ** column might have to get moved to its correct place (immediately after the **HITTERS** column).
--   Delete the **W** column (starting with the 2022 season). This is actual real life walks and is not needed.
--   Make sure each multi-team hitter listed in the regular **/data/hitter_ratings.xlsx** file as being on team **TOT**.
+- Open the **Hitters.xlsx** file that came in the ratings disk.
+- Rename the lone sheet to **Original Hitters**, then copy it to the end and rename the copied sheet to **Carded Hitters**.
+- From this point forward, you'll be working only with the **Carded Hitters** sheet.
+- Set the font to **Calibri** and **12pt**.
+- Set the top row to a light gray background, then freeze the top row.
+- Set the row height for all rows to **18.00**.
+- Set **All Borders** around the data.
+- "Center" and ""left-align" the columns as needed.
+- Remove all the **+** signs from the **CL v lhp** and **CL v rhp** columns (may no longer need to be done).
+- Remove all hitters that have an **M** in the **Location** column. All hitters with an **X** in the **Location** column should be deleted too, but double-check that one or two don't have 100+ ABs.
+- Remove all uncarded hitters (those without 100+ AB in full 162 game seasons).
+- Insert a **Year** column as the first column (the MLB year).
+- Add an **rml_team_id** column at the far right.
+- The **INJ** column might have to get moved to its correct place (immediately after the **HITTERS** column).
+- Delete the **W** column (starting with the 2022 season). This is actual real life walks and is not needed.
+- Make sure each multi-team hitter listed in the regular **/data/hitter_ratings.xlsx** file as being on team **TOT**.
 
 Column names for the **/data/hitter_ratings.xlsx** file must use these exact column names (with no spaces and none of them beginning with a number) because of the parser that's being used:
 
--   Year, TM, Location, HITTERS, INJ, AB, SO_v_lhp, BB_v_lhp, HIT_v_lhp, OB_v_lhp, TB_v_lhp, HR_v_lhp, BP_v_lhp, CL_v_lhp, DP_v_lhp, SO_v_rhp, BB_v_rhp, HIT_v_rhp, OB_v_rhp, TB_v_rhp, HR_v_rhp, BP_v_rhp, CL_v_rhp, DP_v_rhp, STEALING, STL, SPD, B, H, d_CA, d_1B, d_2B, d_3B, d_SS, d_LF, d_CF, d_RF, FIELDING, rml_team_id
+- Year, TM, Location, HITTERS, INJ, AB, SO_v_lhp, BB_v_lhp, HIT_v_lhp, OB_v_lhp, TB_v_lhp, HR_v_lhp, BP_v_lhp, CL_v_lhp, DP_v_lhp, SO_v_rhp, BB_v_rhp, HIT_v_rhp, OB_v_rhp, TB_v_rhp, HR_v_rhp, BP_v_rhp, CL_v_rhp, DP_v_rhp, STEALING, STL, SPD, B, H, d_CA, d_1B, d_2B, d_3B, d_SS, d_LF, d_CF, d_RF, FIELDING, rml_team_id
 
 ---
 
 ### Getting "Pitchers.xlsx" ready
 
--   Open the **Pitchers.xlsx** file that came in the ratings disk.
--   Rename the lone sheet to **Original Pitchers**, then copy it to the end and rename the copied sheet to **Carded Pitchers**.
--   From this point forward, you'll be working only with the **Carded Pitchers** sheet.
--   Set the font to **Calibri** and **12pt**.
--   Set the top row to a light gray background, then freeze the top row.
--   Set the row height for all rows to **18.00**.
--   Set **All Borders** around the data.
--   "Center" and ""left-align" the columns as needed.
--   Remove all the **+** signs from the **Hold** column (may no longer need to be done).
--   Remove all pitchers that have an **M** in the **Location** column. Most pitchers with an **X** in the **Location** column should be deleted too. **HOWEVER**, you might find that a couple low IP, carded pitchers might have been part of the X players group and have to be brought back in from the original file.
--   Remove all uncarded pitchers (this is a tedious task for pitchers).
--   Starting with the 2020 Ratings Guide, it seems like you'll need to delete the **INJ** column.
--   Insert a **Year** column as the first column (the MLB year).
--   Add an **rml_team_id** column at the far right.
--   To fix an issue where Excel formats the **FIELD** column as dates once the file is closed, add an apostrophe as a prefix to each pitcher's fielding rating... **eg**: **'3e21**. The apostrophe will be removed as the data is getting uploaded and it will keep Excel from formatting the column as dates.
--   Make sure each multi-team pitcher listed in the regular **/data/pitcher_ratings.xlsx** file as being on team **TOT**.
+- Open the **Pitchers.xlsx** file that came in the ratings disk.
+- Rename the lone sheet to **Original Pitchers**, then copy it to the end and rename the copied sheet to **Carded Pitchers**.
+- From this point forward, you'll be working only with the **Carded Pitchers** sheet.
+- Set the font to **Calibri** and **12pt**.
+- Set the top row to a light gray background, then freeze the top row.
+- Set the row height for all rows to **18.00**.
+- Set **All Borders** around the data.
+- "Center" and ""left-align" the columns as needed.
+- Remove all the **+** signs from the **Hold** column (may no longer need to be done).
+- Remove all pitchers that have an **M** in the **Location** column. Most pitchers with an **X** in the **Location** column should be deleted too. **HOWEVER**, you might find that a couple low IP, carded pitchers might have been part of the X players group and have to be brought back in from the original file.
+- Remove all uncarded pitchers (this is a tedious task for pitchers).
+- Starting with the 2020 Ratings Guide, it seems like you'll need to delete the **INJ** column.
+- Insert a **Year** column as the first column (the MLB year).
+- Add an **rml_team_id** column at the far right.
+- To fix an issue where Excel formats the **FIELD** column as dates once the file is closed, add an apostrophe as a prefix to each pitcher's fielding rating... **eg**: **'3e21**. The apostrophe will be removed as the data is getting uploaded and it will keep Excel from formatting the column as dates.
+- Make sure each multi-team pitcher listed in the regular **/data/pitcher_ratings.xlsx** file as being on team **TOT**.
 
 Column names for the **/data/pitcher_ratings.xlsx** file must use these exact column names (with no spaces and none of them beginning with a number) because of the parser that's being used:
 
--   Year, TM, Location, PITCHERS, IP, SO_v_l, BB_v_l, HIT_v_l, OB_v_l, TB_v_l, HR_v_l, BP_v_l, DP_v_l, SO_v_r, BB_v_r, HIT_v_r, OB_v_r, TB_v_r, HR_v_r, BP_v_r, DP_v_r, HO, ENDURANCE, FIELD, BK, WP, BAT_B, STL, SPD, rml_team_id
+- Year, TM, Location, PITCHERS, IP, SO_v_l, BB_v_l, HIT_v_l, OB_v_l, TB_v_l, HR_v_l, BP_v_l, DP_v_l, SO_v_r, BB_v_r, HIT_v_r, OB_v_r, TB_v_r, HR_v_r, BP_v_r, DP_v_r, HO, ENDURANCE, FIELD, BK, WP, BAT_B, STL, SPD, rml_team_id
 
 ---
 
@@ -461,11 +462,11 @@ Column names for the **/data/pitcher_ratings.xlsx** file must use these exact co
 
 After viewing the processed rating guide data in a browser, you'll see that there will likely be 10-20 players with no RML teams assigned to them. This could be due to a difference in names between the Ratings Guide and my name abbreviations... eg:
 
--   Dejong,P vs DeJong,P
--   Bradley Jr,J vs Bradley,J
--   D'Arnaud,T vs d'Arnaud,T
--   Woods-Richard,S vs Woods Richardson,S
--   and maybe even some with no apparent reason
+- Dejong,P vs DeJong,P
+- Bradley Jr,J vs Bradley,J
+- D'Arnaud,T vs d'Arnaud,T
+- Woods-Richard,S vs Woods Richardson,S
+- and maybe even some with no apparent reason
 
 In these cases, just add their **rml_team_id** manually before reuploading the data.
 
